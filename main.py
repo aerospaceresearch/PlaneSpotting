@@ -4,6 +4,48 @@ import os
 from planespotting import utils
 
 
+samplerate = 2000000 # of the recorded IQ date with 2MHz for each I and Q
+samplerate_avrmlat = 12000000 # AVR, freerunning 48-bit timestamp @ 12MHz
+
+
+def load_dump1090_file(file):
+
+    dump1090_msg = []
+
+    json_data = {
+        "meta" : {
+            "file" : file.split(os.sep)[-1],
+            "mlat_mode" : ""
+        },
+        "data" : []
+    }
+
+    if os.path.exists(file) and utils.is_binary(file) is False:
+        with open(file, 'r') as infile:
+
+            id = 0
+            payload = []
+
+            for line in infile:
+                line = line.rstrip()
+                if line.startswith("@") and line.endswith(";"):
+                    data = {
+                        "id" : id,
+                        "raw" : line,
+                        "timestamp" : int(line[1:13], 16) // (samplerate_avrmlat // samplerate) - (112 + 8) * 2,
+                        "adsb_msg" : line[13:-1]
+                    }
+
+                    payload.append(data)
+
+                id += 1
+
+            json_data["meta"]["mlat_mode"] = "avrmlat"
+            json_data["data"] = payload
+
+    return json_data
+
+
 def main(filename):
 
     if os.path.isdir(args.file):
@@ -22,8 +64,11 @@ def main(filename):
 
 
     print("processing", len(processing_files))
+    print("")
+    
     for file in processing_files:
         print("processing", file)
+        load_dump1090_file(file)
 
         print("convert raw adsb files")
 
@@ -31,6 +76,7 @@ def main(filename):
 
         print("decode again planes by icao address. #1")
         print("decode again planes by icao address. #n")
+        print("")
 
 
 def getArgs():

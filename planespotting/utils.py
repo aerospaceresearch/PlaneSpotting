@@ -12,5 +12,16 @@ def get_all_files(filename):
 
     return processing_files
 
+
 def get_one_file(filename):
     return [filename]
+
+
+def is_binary(file):
+    try:
+        with open(file, 'tr') as check_file:  # try opening file in text mode
+            check_file.read()
+            return False
+
+    except:  # if false then file is non-binary
+        return True
