@@ -14,7 +14,7 @@ def hexToDec(hexdec):
     dec = int(hexdec, 16)
     return bin(dec)[2:].zfill(56)
 
-def df(frame):
+def getDF(frame):
     bin_frame = hexToDec(frame)
     df = int(bin_frame[0:5], 2)
     return df
@@ -22,7 +22,7 @@ def df(frame):
 def getTC(frame):
     data = frame[8:22]
     bin = hexToDec(data)
-    if getMsgLength(df(frame)) == 112:
+    if getMsgLength(getDF(frame)) == 112:
         return int(bin[0:5],2)
     else:
         return None
@@ -30,23 +30,34 @@ def getTC(frame):
 def decode(data):
     for frames in data["data"]:
         x = list()
-        if identifier1(df(frames['adsb_msg']), getTC(frames['adsb_msg'])):
-            print("Reaching decoder with identifier1")
+
+        df = getDF(frames['adsb_msg'])
+        tc = getTC(frames['adsb_msg'])
+
+        decode_id = 0
+
+        # grouping messages by df and tc, that can be decoded the same or share similar parts
+        if identifier1(df, tc):
+            decode_id = 1
             continue
-        if identifier2(df(frames['adsb_msg']), getTC(frames['adsb_msg'])):
-            print("Reaching decoder with identifier2")
+        if identifier2(df, tc):
+            decode_id = 2
             continue
-        if identifier3(df(frames['adsb_msg']), getTC(frames['adsb_msg'])):
-            print("Reaching decoder with identifier3")
+        if identifier3(df, tc):
+            decode_id = 3
             continue
-        if identifier4(df(frames['adsb_msg']), getTC(frames['adsb_msg'])):
-            print("Reaching decoder with identifier4")
+        if identifier4(df, tc):
+            decode_id = 4
             continue
-        if identifier5(df(frames['adsb_msg']), getTC(frames['adsb_msg'])):
-            print("Reaching decoder with identifier5")
+        if identifier5(df, tc):
+            decode_id = 5
             continue
-        if identifier6(df(frames['adsb_msg']), getTC(frames['adsb_msg'])):
-            print("Reaching decoder with identifier6")
+        if identifier6(df, tc):
+            decode_id = 6
             continue
-        if identifier7(df(frames['adsb_msg']), getTC(frames['adsb_msg'])):
-            print("Reaching decoder with identifier7")
+        if identifier7(df, tc):
+            decode_id = 7
+
+        # todo more decoders needed, because many messages escape them!
+
+        print(frames["id"], frames["timestamp"], df, tc, frames['adsb_msg'], decode_id)
