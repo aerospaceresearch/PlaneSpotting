@@ -25,3 +25,13 @@ def is_binary(file):
 
     except:  # if false then file is non-binary
         return True
+
+
+def hexToDec(hexdec):
+    dec = int(hexdec, 16)
+    return bin(dec)[2:].zfill(56)
+
+
+def hexToBin(hexdec):
+    dec = int(hexdec, 16)
+    return bin(dec)[2:].zfill(56)

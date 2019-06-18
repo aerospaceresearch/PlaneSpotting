@@ -1,18 +1,16 @@
 from planespotting.identifiers import *
+from planespotting.utils import *
 
 
 long_msg_bits = 112
 short_msg_bits = 56
+
 
 def getMsgLength(df):
     if df > 16:
         return long_msg_bits
     else:
         return short_msg_bits
-
-def hexToDec(hexdec):
-    dec = int(hexdec, 16)
-    return bin(dec)[2:].zfill(56)
 
 def getDF(frame):
     bin_frame = hexToDec(frame)
@@ -27,9 +25,28 @@ def getTC(frame):
     else:
         return None
 
+def getICAO(frame):
+    return frame[2:8]
+
+def getAirbornePosition(frame):
+    data = frame[8:22]
+    bin = hexToDec(data)
+
+    SS = int(bin[5:7],2)
+    NICsb = int(bin[7],2)
+    ALT = int(bin[8:20],2)
+    T = int(bin[20],2)
+    F = int(bin[21],2)
+    LAT_CPR = int(bin[22:39],2)
+    LON_CPR = int(bin[39:],2)
+
+    return SS, NICsb, ALT, T, F, LAT_CPR, LON_CPR
+
+
 def decode(data):
-    for frames in data["data"]:
-        x = list()
+
+    for id in range(len(data["data"])):
+        frames = data["data"][id]
 
         df = getDF(frames['adsb_msg'])
         tc = getTC(frames['adsb_msg'])
@@ -45,6 +62,20 @@ def decode(data):
             continue
         if identifier3(df, tc):
             decode_id = 3
+
+            SS, NICsb, ALT, T, F, LAT_CPR, LON_CPR = getAirbornePosition(frames['adsb_msg'])
+
+            # filling in the now known values
+            data["data"][id]["ICAO"] = getICAO(frames['adsb_msg'])
+            data["data"][id]["SS"] = SS
+            data["data"][id]["NICsb"] = NICsb
+            data["data"][id]["ALT"] = ALT
+            data["data"][id]["T"] = T
+            data["data"][id]["F"] = F
+            data["data"][id]["LAT_CPR"] = LAT_CPR
+            data["data"][id]["LON_CPR"] = LON_CPR
+
+            print(data["data"][id])
             continue
         if identifier4(df, tc):
             decode_id = 4
@@ -60,4 +91,4 @@ def decode(data):
 
         # todo more decoders needed, because many messages escape them!
 
-        print(frames["id"], frames["timestamp"], df, tc, frames['adsb_msg'], decode_id)
+        #print(frames["id"], frames["timestamp"], df, tc, frames['adsb_msg'], decode_id)
