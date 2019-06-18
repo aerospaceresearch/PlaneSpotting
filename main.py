@@ -2,6 +2,7 @@ import argparse
 import os
 
 from planespotting import utils
+from planespotting.decoder import decode
 
 
 samplerate = 2000000 # of the recorded IQ date with 2MHz for each I and Q
@@ -65,10 +66,10 @@ def main(filename):
 
     print("processing", len(processing_files))
     print("")
-    
+
     for file in processing_files:
         print("processing", file)
-        load_dump1090_file(file)
+        decode(load_dump1090_file(file))
 
         print("convert raw adsb files")
 
