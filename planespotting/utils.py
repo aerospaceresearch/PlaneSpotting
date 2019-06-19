@@ -46,6 +46,14 @@ def const_frame():
             "gs_long":None,
             "gs_alt":None,
         },
+        "data":[]
+    }
+
+    return json_frame
+
+def const_frame_data():
+
+    json_frame = {
         "data":{
             "id":None,
             "raw":None,

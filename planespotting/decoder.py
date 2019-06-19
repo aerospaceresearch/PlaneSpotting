@@ -82,12 +82,13 @@ def getVelocityData(frame, subtype):
 def decode(data):
     #for id in range(len(data["data"])):
     for frames in data['data']:
-        #frames = data["data"]
+
         df = getDF(frames['adsb_msg'])
         tc = getTC(frames['adsb_msg'])
         frames['df'] = df
         frames['tc'] = tc
         decode_id = 0
+
         #print(frames['adsb_msg'])
         # grouping messages by df and tc, that can be decoded the same or share similar parts
         if identifier1(df, tc):
@@ -112,11 +113,12 @@ def decode(data):
             frames["LAT_CPR"] = LAT_CPR
             frames["LON_CPR"] = LON_CPR
 
-            print(frames)
+            #print(frames)
             continue
         if identifier4(df, tc):
             decode_id = 4
             subtype = int(hexToDec(frames['adsb_msg'][8:22])[5:8], 2)
+
             if subtype == 1:
                 IC, RESV_A, NAC, S_ew, V_ew, S_ns, V_ns, VrSrc, S_vr, Vr, RESV_B, S_Dif, S_Dif, Dif = getVelocityData(frames['adsb_msg'], subtype)
                 frames['Subtype'] = subtype
@@ -150,7 +152,7 @@ def decode(data):
                 frames["RESV_B"] = RESV_B
                 frames["S_Dif"] = S_Dif
                 frames["Dif"] = Dif
-            print(frames)
+            #print(frames)
             continue
         if identifier5(df, tc):
             decode_id = 5

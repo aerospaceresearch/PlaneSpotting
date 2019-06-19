@@ -6,8 +6,6 @@ import time
 
 from planespotting import utils
 from planespotting.decoder import decode
-from planespotting.utils import const_frame
-
 
 
 samplerate = 2000000 # of the recorded IQ date with 2MHz for each I and Q
@@ -25,7 +23,7 @@ def load_dump1090_file(file):
     #     },
     #     "data" : []
     # }
-    json_data = const_frame()
+    json_data = utils.const_frame()
     json_data["meta"]["file"] = file.split(os.sep)[-1]
     json_data["meta"]["mlat_mode"] = "avrmlat"
     if os.path.exists(file) and utils.is_binary(file) is False:
@@ -33,10 +31,12 @@ def load_dump1090_file(file):
 
             id = 0
             payload = []
+
             for line in infile:
                 line = line.rstrip()
+
                 if line.startswith("@") and line.endswith(";"):
-                    data = const_frame()['data']
+                    data = utils.const_frame_data()['data']
                     # data = {
                     #     "id" : id,
                     #     "raw" : line,
@@ -49,10 +49,10 @@ def load_dump1090_file(file):
                     data['adsb_msg'] = line[13:-1]
                     payload.append(data)
 
-
-                id += 1
+                    id += 1
 
             json_data["data"] = payload
+
     return json_data
 
 
