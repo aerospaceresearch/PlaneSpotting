@@ -42,7 +42,6 @@ def const_frame():
         "meta":{
             "file":None,
             "mlat_mode":None,
-            "mlat_mode":None,
             "gs_lat":None,
             "gs_long":None,
             "gs_alt":None,
@@ -55,7 +54,8 @@ def const_frame():
             "SamplePos":None,
             "df":None,
             "tc":None,
-            "capability":None,        
+            "callsign_bin":None,
+            "capability":None,
             "ICAO":None,
             "parity":None,
             "SS":None,
