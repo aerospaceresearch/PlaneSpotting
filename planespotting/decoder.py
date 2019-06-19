@@ -78,6 +78,22 @@ def getVelocityData(frame, subtype):
         return IC, RESV_A, NAC, S_hdg, Hdg, AS_t, AS, VrSrc, S_vr, Vr, RESV_B, S_Dif, Dif
 
 
+def get_SeenPlanes(data):
+
+    all_seen_planes = []
+
+    for frames in data["data"]:
+        seen = 0
+        for plane in all_seen_planes:
+
+            if frames["ICAO"] == plane:
+                seen = 1
+
+        if seen == 0:
+            all_seen_planes.append(frames["ICAO"])
+
+    return all_seen_planes
+
 
 def decode(data):
     #for id in range(len(data["data"])):
@@ -118,6 +134,7 @@ def decode(data):
         if identifier4(df, tc):
             decode_id = 4
             subtype = int(hexToDec(frames['adsb_msg'][8:22])[5:8], 2)
+            frames["ICAO"] = getICAO(frames['adsb_msg'])
 
             if subtype == 1:
                 IC, RESV_A, NAC, S_ew, V_ew, S_ns, V_ns, VrSrc, S_vr, Vr, RESV_B, S_Dif, S_Dif, Dif = getVelocityData(frames['adsb_msg'], subtype)
@@ -166,3 +183,15 @@ def decode(data):
         # todo more decoders needed, because many messages escape them!
 
         #print(frames["id"], frames["timestamp"], df, tc, frames['adsb_msg'], decode_id)
+
+
+
+    # finding all the already available and seen ICAO addresses
+    all_seen_planes = get_SeenPlanes(data)
+    print(len(all_seen_planes))
+
+    for plane in all_seen_planes:
+        print(plane)
+        for frame in data["data"]:
+            if plane == frame["ICAO"]:
+                print(frame["ICAO"], frame["id"], frame["F"], frame["ALT"], frame["LAT_CPR"], frame['LON_CPR'])
