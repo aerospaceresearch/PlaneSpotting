@@ -61,7 +61,7 @@ def getVelocityData(frame, subtype):
         Dif = int(msg_bin[49:56], 2)
         return IC, RESV_A, NAC, S_ew, V_ew, S_ns, V_ns, VrSrc, S_vr, Vr, RESV_B, S_Dif, S_Dif, Dif
 
-    elif int(msg_bin[5:8], 2) == 3:
+    elif subtype == 3:
         IC = int(msg_bin[8], 2)
         RESV_A = int(msg_bin[9], 2)
         NAC =  int(msg_bin[10:13], 2)
