@@ -75,7 +75,7 @@ def getVelocityData(frame, subtype):
         RESV_B = int(msg_bin[46:48], 2)
         S_Dif = int(msg_bin[48], 2)
         Dif = int(msg_bin[49:56], 2)
-        return IC, RESV_A, NAC, S_hdg, Hdg, As_t, AS, VrSrc, S_vr, Vr, RESV_B, S_Dif, Dif
+        return IC, RESV_A, NAC, S_hdg, Hdg, AS_t, AS, VrSrc, S_vr, Vr, RESV_B, S_Dif, Dif
 
 
 
@@ -136,7 +136,7 @@ def decode(data):
                 frames["Dif"] = Dif
 
             elif subtype == 3:
-                IC, RESV_A, NAC, S_hdg, Hdg, As_t, AS, VrSrc, S_vr, Vr, RESV_B, S_Dif, Dif = getVelocityData(frames['adsb_msg'], subtype)
+                IC, RESV_A, NAC, S_hdg, Hdg, AS_t, AS, VrSrc, S_vr, Vr, RESV_B, S_Dif, Dif = getVelocityData(frames['adsb_msg'], subtype)
                 frames['Subtype'] = subtype
                 frames["IC"] = IC
                 frames["RESV_A"] = RESV_A
