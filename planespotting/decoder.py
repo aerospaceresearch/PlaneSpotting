@@ -29,7 +29,7 @@ def getICAO(frame):
     return frame[2:8]
 
 def getAirbornePosition(frame):
-    print(frame)
+    #print(frame)
     data = frame[8:22]
     bin = hexToDec(data)
 
@@ -88,12 +88,11 @@ def decode(data):
         frames['df'] = df
         frames['tc'] = tc
         decode_id = 0
-        print(frames['adsb_msg'])
+        #print(frames['adsb_msg'])
         # grouping messages by df and tc, that can be decoded the same or share similar parts
         if identifier1(df, tc):
             decode_id = 1
-            frames['callsign_bin']=hexToDec(frames['adsb_msg'])[40:96]
-            print(frames)
+            frames['callsign_bin']=hexToDec(frames['adsb_msg'])[40:88]
             continue
         if identifier2(df, tc):
             decode_id = 2
