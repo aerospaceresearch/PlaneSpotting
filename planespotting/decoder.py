@@ -44,10 +44,9 @@ def getAirbornePosition(frame):
 
 
 def decode(data):
-
-    for id in range(len(data["data"])):
-        frames = data["data"][id]
-
+    #for id in range(len(data["data"])):
+    for frames in data['data']:
+        #frames = data["data"]
         df = getDF(frames['adsb_msg'])
         tc = getTC(frames['adsb_msg'])
 
@@ -66,16 +65,16 @@ def decode(data):
             SS, NICsb, ALT, T, F, LAT_CPR, LON_CPR = getAirbornePosition(frames['adsb_msg'])
 
             # filling in the now known values
-            data["data"][id]["ICAO"] = getICAO(frames['adsb_msg'])
-            data["data"][id]["SS"] = SS
-            data["data"][id]["NICsb"] = NICsb
-            data["data"][id]["ALT"] = ALT
-            data["data"][id]["T"] = T
-            data["data"][id]["F"] = F
-            data["data"][id]["LAT_CPR"] = LAT_CPR
-            data["data"][id]["LON_CPR"] = LON_CPR
+            frames["ICAO"] = getICAO(frames['adsb_msg'])
+            frames["SS"] = SS
+            frames["NICsb"] = NICsb
+            frames["ALT"] = ALT
+            frames["T"] = T
+            frames["F"] = F
+            frames["LAT_CPR"] = LAT_CPR
+            frames["LON_CPR"] = LON_CPR
 
-            print(data["data"][id])
+            print(frames)
             continue
         if identifier4(df, tc):
             decode_id = 4

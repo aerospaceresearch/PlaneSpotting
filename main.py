@@ -1,8 +1,13 @@
 import argparse
 import os
+import json
+import time
+
 
 from planespotting import utils
 from planespotting.decoder import decode
+from planespotting.utils import const_frame
+
 
 
 samplerate = 2000000 # of the recorded IQ date with 2MHz for each I and Q
@@ -13,42 +18,45 @@ def load_dump1090_file(file):
 
     dump1090_msg = []
 
-    json_data = {
-        "meta" : {
-            "file" : file.split(os.sep)[-1],
-            "mlat_mode" : ""
-        },
-        "data" : []
-    }
-
+    # json_data = {
+    #     "meta" : {
+    #         "file" : file.split(os.sep)[-1],
+    #         "mlat_mode" : ""
+    #     },
+    #     "data" : []
+    # }
+    json_data = const_frame()
+    json_data["meta"]["file"] = file.split(os.sep)[-1]
+    json_data["meta"]["mlat_mode"] = "avrmlat"
     if os.path.exists(file) and utils.is_binary(file) is False:
         with open(file, 'r') as infile:
 
             id = 0
             payload = []
-
             for line in infile:
                 line = line.rstrip()
                 if line.startswith("@") and line.endswith(";"):
-                    data = {
-                        "id" : id,
-                        "raw" : line,
-                        "timestamp" : int(line[1:13], 16) // (samplerate_avrmlat // samplerate) - (112 + 8) * 2,
-                        "adsb_msg" : line[13:-1]
-                    }
-
+                    data = const_frame()['data']
+                    # data = {
+                    #     "id" : id,
+                    #     "raw" : line,
+                    #     "timestamp" : int(line[1:13], 16) // (samplerate_avrmlat // samplerate) - (112 + 8) * 2,
+                    #     "adsb_msg" : line[13:-1]
+                    # }
+                    data['id'] =  id
+                    data['raw'] = line
+                    data['timestamp'] = int(line[1:13], 16) // (samplerate_avrmlat // samplerate) - (112 + 8) * 2
+                    data['adsb_msg'] = line[13:-1]
                     payload.append(data)
+
 
                 id += 1
 
-            json_data["meta"]["mlat_mode"] = "avrmlat"
             json_data["data"] = payload
-
     return json_data
 
 
 def main(filename):
-
     if os.path.isdir(args.file):
         print("loading in all files in folder:", filename)
 
@@ -66,7 +74,6 @@ def main(filename):
 
     print("processing", len(processing_files))
     print("")
-
     for file in processing_files:
         print("processing", file)
         decode(load_dump1090_file(file))
