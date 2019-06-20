@@ -248,7 +248,7 @@ def decode(data):
 
                     nl_lat = latitude(lat_even, lat_odd, t_even, t_odd)
                     nl_lon = longitude(lon_even, lon_odd, t_even, t_odd, nl_lat)
-                    print(nl_lat, nl_lon)
+                    print(nl_lat, nl_lon, lat_even, lat_odd, lon_even, lon_odd)
 
                     lat.append(nl_lat)
                     lon.append(nl_lon)
