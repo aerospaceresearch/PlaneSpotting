@@ -196,6 +196,26 @@ def decode(data):
 
     for plane in all_seen_planes:
         print(plane)
+        relevant_planes_id = []
+
         for frame in data["data"]:
-            if plane == frame["ICAO"]:
-                print(frame["ICAO"], frame["id"], frame["F"], frame["ALT"], frame["LAT_CPR"], frame['LON_CPR'])
+            if plane == frame["ICAO"] and identifier3(frame["df"], frame["tc"]):
+                #print(frame["ICAO"], frame["id"], frame["F"], frame["ALT"], frame["LAT_CPR"], frame['LON_CPR'])
+                relevant_planes_id.append(frame["id"])
+
+
+        # finding just alternating "franes"
+        frame_b4 = 0
+        id_b4 = 0
+
+        for i in range(len(relevant_planes_id)):
+            frame = data["data"][relevant_planes_id[i]]
+            if i > 0:
+                if frame_b4 != frame["F"]:
+                    print(frame["ICAO"], frame["id"], frame["F"], frame["ALT"], frame["LAT_CPR"], frame['LON_CPR'])
+
+                    # do positioning here with one alternating even and odd frame
+                    # print(id_b4, frame["id"])
+
+            frame_b4 = data["data"][relevant_planes_id[i]]["F"]
+            id_b4 = frame["id"]
