@@ -175,7 +175,7 @@ def latitude(lat_even, lat_odd, t_even, t_odd): #Calculation of the latitude coo
     else:
         return latOdd
 
-def longitude(lat_even1, lat_odd1, long_even, long_odd, t_even, t_odd, nl_lat):  #Calculation of longitude coordinate of the aircraft
+def longitude(long_even, long_odd, t_even, t_odd, nl_lat):  #Calculation of longitude coordinate of the aircraft
     #if(NL(int(lat_even1, 2)) != NL(int(lat_odd1, 2))):
     #print(NL(10.2157745361328), NL(10.2162144547802))
     if(t_even > t_odd):
