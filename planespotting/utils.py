@@ -222,21 +222,22 @@ Location determination functions ends hemisphere
 For more information visit https://mode-s.org/decode/index.html
 '''
 
-def pos_local():
-    msg = "8D40621D58C382D690C8AC2863A7"
-    latRef = 52.258
-    lonRef = 3.918
+def pos_local(latRef, lonRef, F, Latcpr, Loncpr):
+
     isEven = False
-    msg_bin = hexToBin(msg)
-    if msg_bin[53] == "0":
+
+    if F == 0:
         isEven = True
+
     if isEven:
         dLat = 360/60
     else:
         dLat = 360/59
-    Latcpr = int(msg_bin[54:71], 2)/131072
+
+    Latcpr = Latcpr/131072
     j = math.floor(latRef/dLat) + math.floor(((latRef%dLat)/dLat) - Latcpr + 0.5)
     lat = dLat * (j + Latcpr)
+
     if isEven:
         if (NL(lat)) > 0:
             dLon = 360/NL(lat)
@@ -248,7 +249,7 @@ def pos_local():
         else:
             dLon = 360
 
-    Loncpr = int(msg_bin[71:88], 2)/131072
+    Loncpr = Loncpr/131072
     m = math.floor(lonRef/dLon) + math.floor(((lonRef%dLon)/dLon) - Loncpr + 0.5)
     lon = dLon * (m + Loncpr)
 

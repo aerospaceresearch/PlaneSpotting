@@ -250,11 +250,18 @@ def decode(data):
                     nl_lon = longitude(lon_even, lon_odd, t_even, t_odd, nl_lat)
                     print(nl_lat, nl_lon, lat_even, lat_odd, lon_even, lon_odd)
 
+                    latRef = 50.9
+                    lonRef = 11.6
+
+                    lat_ambigous, lon_ambigous = pos_local(latRef, lonRef, frame["F"], frame["LAT_CPR"], frame["LON_CPR"])
+                    if nl_lat != lat_ambigous or nl_lon != lon_ambigous:
+                        print(">>>", nl_lat, lat_ambigous, nl_lon, lon_ambigous)
+
                     lat.append(nl_lat)
                     lon.append(nl_lon)
 
             frame_b4 = data["data"][relevant_planes_id[i]]["F"]
             id_b4 = frame["id"]
 
-        plt.plot(lon, lat, "*-")
-        plt.show()
+        #plt.plot(lon, lat, "*-")
+        #plt.show()
