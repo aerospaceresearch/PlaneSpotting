@@ -201,6 +201,14 @@ def longitude(lat_even1, lat_odd1, long_even, long_odd, t_even, t_odd, nl_lat): 
     else:
         return lon
 
+'''
+The calculation of both latitude and longitude is done
+with respect to the newest frame received.
+
+But, two frames are considered for calculation in order to
+remove the ambiguity in the frames.
+'''
+
 def altitude(bin_altitude):
     qBit = bin_altitude[7]
     alt=bin_altitude[0:7]+bin_altitude[8:]
