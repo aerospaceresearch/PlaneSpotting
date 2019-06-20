@@ -6,11 +6,14 @@ long_msg_bits = 112
 short_msg_bits = 56
 
 
-def getMsgLength(df):
+def getMsgLength(df): #Returns the bit length of a message according to the type (df>16)
     if df > 16:
         return long_msg_bits
     else:
         return short_msg_bits
+'''
+All messages above df 16 are long messages
+'''
 
 def getDF(frame):
     bin_frame = hexToDec(frame)
@@ -28,7 +31,7 @@ def getTC(frame):
 def getICAO(frame):
     return frame[2:8]
 
-def getAirbornePosition(frame):
+def getAirbornePosition(frame): #Extraction of position oriented data
     #print(frame)
     data = frame[8:22]
     bin = hexToDec(data)
@@ -43,7 +46,7 @@ def getAirbornePosition(frame):
 
     return SS, NICsb, ALT, T, F, LAT_CPR, LON_CPR
 
-def getVelocityData(frame, subtype):
+def getVelocityData(frame, subtype): #Extraction of velocity oriented data
     msg_bin = hexToDec(frame[8:22])
     if subtype == 1:
         IC = int(msg_bin[8], 2)

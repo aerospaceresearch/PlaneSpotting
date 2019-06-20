@@ -146,7 +146,7 @@ def NL(lat): #this function calculates the number of longitude zones
         nl = 2 * math.pi / (math.acos(1 - a/b))
         nl = int(nl)
         return nl
-        
+
     except:
         return 1
 
@@ -211,5 +211,5 @@ def altitude(bin_altitude):
         return altitude * 100 - 1000
 '''
 Location determination functions ends hemisphere
-For more information visit mode-s.org
+For more information visit https://mode-s.org/decode/index.html
 '''
