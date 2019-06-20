@@ -1,3 +1,5 @@
+import matplotlib.pylab as plt
+
 from planespotting.identifiers import *
 from planespotting.utils import *
 
@@ -208,14 +210,51 @@ def decode(data):
         frame_b4 = 0
         id_b4 = 0
 
+        lat = []
+        lon = []
+
         for i in range(len(relevant_planes_id)):
             frame = data["data"][relevant_planes_id[i]]
             if i > 0:
                 if frame_b4 != frame["F"]:
-                    print(frame["ICAO"], frame["id"], frame["F"], frame["ALT"], frame["LAT_CPR"], frame['LON_CPR'])
+                    #print(frame["ICAO"], frame["id"], frame["F"], frame["T"], frame["ALT"], frame["LAT_CPR"], frame['LON_CPR'])
 
                     # do positioning here with one alternating even and odd frame
                     # print(id_b4, frame["id"])
 
+                    if frame["F"] % 2 == 0:
+                        # frame is even
+                        lat_even = frame["LAT_CPR"]
+                        t_even = frame["id"]
+
+                        lon_even = frame["LON_CPR"]
+
+                        lat_odd = data["data"][id_b4]["LAT_CPR"]
+                        t_odd = data["data"][id_b4]["id"]
+
+                        lon_odd = data["data"][id_b4]["LON_CPR"]
+
+                    else:
+                        # frame is odd
+                        lat_even = data["data"][id_b4]["LAT_CPR"]
+                        t_even = data["data"][id_b4]["id"]
+
+                        lon_even = data["data"][id_b4]["LON_CPR"]
+
+                        lat_odd = frame["LAT_CPR"]
+                        t_odd = frame["id"]
+
+                        lon_odd = frame["LON_CPR"]
+
+                    nl_lat = latitude(lat_even, lat_odd, t_even, t_odd)
+                    nl_lon = longitude(lon_even, lon_odd, t_even, t_odd, nl_lat)
+                    print(nl_lat, nl_lon)
+
+                    lat.append(nl_lat)
+                    lon.append(nl_lon)
+
             frame_b4 = data["data"][relevant_planes_id[i]]["F"]
             id_b4 = frame["id"]
+
+        plt.plot(lon, lat, "*-")
+        plt.show()
