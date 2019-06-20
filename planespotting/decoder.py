@@ -35,7 +35,7 @@ def getAirbornePosition(frame):
 
     SS = int(bin[5:7],2)
     NICsb = int(bin[7],2)
-    ALT = int(bin[8:20],2)
+    ALT = bin[8:20]
     T = int(bin[20],2)
     F = int(bin[21],2)
     LAT_CPR = int(bin[22:39],2)

@@ -79,6 +79,7 @@ def const_frame_data(): #This serves as a template for the json structure. Consi
             "latitude":None,
             "longitude":None,
             "altitude":None,
+            "isBaroAlt":None,
             "callsign":None,
             #Airborne velocity Subtype 1data
             "Subtype":None,
@@ -145,27 +146,32 @@ def NL(lat): #this function calculates the number of longitude zones
         nl = 2 * math.pi / (math.acos(1 - a/b))
         nl = int(nl)
         return nl
+        
     except:
         return 1
 
 def latitude(lat_even, lat_odd, t_even, t_odd): #Calculation of the latitude coordinate of the aircraft
     dlatEven = 6;
     dlatOdd = 360/59;
-    cprEven = int(lat_even, 2)/131072
-    cprOdd = int(lat_odd, 2)/131072
+    cprEven = lat_even/131072
+    cprOdd = lat_odd/131072
     j = lat_index(cprEven, cprOdd)
     latEven = dlatEven * (j % 60 + cprEven)
     latOdd = dlatOdd * (j % 59 + cprOdd)    #Calculation of relative latitudes
+
     if latEven >= 270:
         latEven -= 360
+
     if latOdd >= 270:
         latOdd -= 360
+
     if(NL(latEven) != NL(latOdd)):  #Confirmation of the validation of the calculated latitude, checks if latitude from both odd and evven frame lies in the same zone
         #exit("The positions are in different latitude zones")
         return 0
         #exit()
     if(t_even >= t_odd):
         return latEven
+
     else:
         return latOdd
 
@@ -175,19 +181,23 @@ def longitude(lat_even1, lat_odd1, long_even, long_odd, t_even, t_odd, nl_lat): 
     if(t_even > t_odd):
         ni = max(NL(nl_lat),1)
         dLon = 360 / ni
-        cprEven1 = int(long_even, 2)/131072
-        cprOdd1 = int(long_odd, 2)/131072
+        cprEven1 = long_even/131072
+        cprOdd1 = long_odd/131072
         m = math.floor(cprEven1 * (NL(nl_lat) - 1) - cprOdd1 * NL(nl_lat) + 0.5)
         lon =  dLon*(m % ni + cprEven1)
+
+
     elif(t_odd > t_even):
         ni = max(NL(nl_lat)-1,1)
         dLon = 360 / ni
-        cprEven1 = int(long_even, 2)/131072
-        cprOdd1 = int(long_odd, 2)/131072
+        cprEven1 = long_even/131072
+        cprOdd1 = long_odd/131072
         m = math.floor(cprEven1 * (NL(nl_lat) - 1) - cprOdd1 * NL(nl_lat) + 0.5) #Longitude index
         lon = dLon*(m%ni + cprOdd1)
+
     if(lon >= 180):                             #Coordinate correction, if it lies in the southern hemisphere
         return lon - 360
+
     else:
         return lon
 
