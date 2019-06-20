@@ -128,6 +128,7 @@ def decode(data):
             frames["F"] = F
             frames["LAT_CPR"] = LAT_CPR
             frames["LON_CPR"] = LON_CPR
+            frames["isBaroAlt"] = 1
 
             #print(frames)
             continue
