@@ -118,15 +118,21 @@ def calculate_vel(data):
                 if hdg < 0:
                     hdg += 360
 
-                frames['Hdg'], frames['velocity'] = hdg, vel
+                frames['heading'], frames['velocity'] = hdg, vel
                 # data['data'][i] = frames
                 # print(data['data'][i])
 
                 #Vertical Rate calculation Below
                 '''
-                To be taken care of: S_vr - up/down
-                                    VrSrc : Baro-pressure change/geometric change
+                To be taken care of: VrSrc : Baro-pressure change/geometric change
                 '''
                 Vr = (frames['Vr'] -1) * 64
                 frames["vert_rate"] = Vr if frames['S_vr'] == 0 else Vr*-1
+
+            elif frames['Subtype'] == 3:
+                #Airspeed Calculation
+                hdg = None
+                if frames['S_hdg'] == 1:
+                    hdg = frames['Hdg'] / 1024 * 360
+                frames['heading'] = hdg
                 print(frames)

@@ -97,8 +97,9 @@ def const_frame_data(): #This serves as a template for the json structure. Consi
             "S_Dif":None,
             "Dif":None,
             "isGspeed":None,
-            "velocity":None,
-            "vert_rate":None,
+            "velocity":None, #result
+            "vert_rate":None, #result
+            "heading":None,    #result
             #Subtype 3
             "S_hdg":None,
             "Hdg":None,
