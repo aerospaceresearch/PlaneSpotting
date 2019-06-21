@@ -135,4 +135,18 @@ def calculate_vel(data):
                 if frames['S_hdg'] == 1:
                     hdg = frames['Hdg'] / 1024 * 360
                 frames['heading'] = hdg
-                print(frames)
+                '''
+                To be taken care of: AS_t
+                0/1::IAS/TAS
+                '''
+                #Airspeed calculation below
+                frames['isGspeed'] = 0
+                frames['velocity'] = frames['AS']
+
+                #Vertical rate Below
+                Vr = (frames['Vr'] -1) * 64
+                frames["vert_rate"] = Vr if frames['S_vr'] == 0 else Vr*-1
+
+            data['data'][i] = frames
+
+    return data
