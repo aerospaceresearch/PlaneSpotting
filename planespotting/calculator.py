@@ -2,6 +2,8 @@ from planespotting.identifiers import *
 from planespotting.utils import *
 import json
 #All imports end here
+latRef = 50.9
+lonRef = 11.6
 
 def calculator(all_seen_planes, data):
     #all_seen_planes = get_SeenPlanes(data)
@@ -63,8 +65,9 @@ def calculator(all_seen_planes, data):
                     nl_lon = longitude(lon_even, lon_odd, t_even, t_odd, nl_lat)
                     #print(nl_lat, nl_lon, lat_even, lat_odd, lon_even, lon_odd, altitude(hexToDec(frame['adsb_msg'][8:22])[8:20]))
 
-                    latRef = 50.9
-                    lonRef = 11.6
+
+
+
 
                     lat_ambigous, lon_ambigous = pos_local(latRef, lonRef, frame["F"], frame["LAT_CPR"], frame["LON_CPR"])
                     if nl_lat != lat_ambigous or nl_lon != lon_ambigous:
@@ -76,10 +79,19 @@ def calculator(all_seen_planes, data):
                     lon.append(nl_lon)
                     frame['latitude'] = nl_lat
                     frame['longitude'] = nl_lon
-                    print(frame)
+
+
+            #print(json.dumps(frame, indent = 4))
 
             data["data"][relevant_planes_id[i]] = frame
             frame_b4 = data["data"][relevant_planes_id[i]]["F"]
             id_b4 = frame["id"]
 
+        for i in range(len(relevant_planes_id)):
+            frame = data['data'][relevant_planes_id[i]]
+            #exit("hellp")
+            if frame['latitude'] == None and frame['longitude'] == None and identifier3(frame["df"], frame["tc"]):
+                frame["latitude"], frame["longitude"] = pos_local(latRef, lonRef, frame["F"], frame["LAT_CPR"], frame["LON_CPR"])
+                #exit(frame)
+        print(json.dumps(frame, indent=4))
     #print(json.dumps(data, indent=4))
