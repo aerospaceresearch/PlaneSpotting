@@ -5,7 +5,7 @@ from planespotting.utils import *
 latRef = 50.9
 lonRef = 11.6
 
-def calculator(all_seen_planes, data):
+def calculate_pos(all_seen_planes, data):
 
     print(len(all_seen_planes))
 
@@ -91,3 +91,4 @@ def calculator(all_seen_planes, data):
                 frame['latitude'] = lat_ambigous
                 frame['longitude'] = lon_ambigous
             data['data'][relevant_planes_id[i]] = frame
+    return data
