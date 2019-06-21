@@ -1,6 +1,7 @@
-
 from planespotting.identifiers import *
 from planespotting.utils import *
+#All imports ends here
+
 def calculator(all_seen_planes, data):
     #all_seen_planes = get_SeenPlanes(data)
     print(len(all_seen_planes))
@@ -57,7 +58,7 @@ def calculator(all_seen_planes, data):
 
                     nl_lat = latitude(lat_even, lat_odd, t_even, t_odd)
                     nl_lon = longitude(lon_even, lon_odd, t_even, t_odd, nl_lat)
-                    print(nl_lat, nl_lon, lat_even, lat_odd, lon_even, lon_odd)
+                    print(nl_lat, nl_lon, lat_even, lat_odd, lon_even, lon_odd, altitude(hexToDec(frame['adsb_msg'][8:22])[8:20]))
 
                     latRef = 50.9
                     lonRef = 11.6
