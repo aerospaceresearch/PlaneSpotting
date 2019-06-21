@@ -97,7 +97,8 @@ def calculate_pos(all_seen_planes, data):
 
 def calculate_vel(data):
 
-    for frames in data['data']:
+    for i in range(len(data['data'])):
+        frames = data['data'][i]
         if identifier4(frames['df'], frames['tc']):
             #print(frames['Subtype'])
             if frames['Subtype'] == 1:
@@ -118,5 +119,14 @@ def calculate_vel(data):
                     hdg += 360
 
                 frames['Hdg'], frames['velocity'] = hdg, vel
+                # data['data'][i] = frames
+                # print(data['data'][i])
 
+                #Vertical Rate calculation Below
+                '''
+                To be taken care of: S_vr - up/down
+                                    VrSrc : Baro-pressure change/geometric change
+                '''
+                Vr = (frames['Vr'] -1) * 64
+                frames["vert_rate"] = Vr if frames['S_vr'] == 0 else Vr*-1
                 print(frames)
