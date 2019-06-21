@@ -90,3 +90,4 @@ def calculator(all_seen_planes, data):
 
                 frame['latitude'] = lat_ambigous
                 frame['longitude'] = lon_ambigous
+            data['data'][relevant_planes_id[i]] = frame
