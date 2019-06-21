@@ -10,7 +10,7 @@ def calculate_pos(all_seen_planes, data):
     print(len(all_seen_planes))
 
     for plane in all_seen_planes:
-        print(plane)
+        #print(plane)
         relevant_planes_id = []
 
         for frame in data["data"]:
@@ -92,3 +92,10 @@ def calculate_pos(all_seen_planes, data):
                 frame['longitude'] = lon_ambigous
             data['data'][relevant_planes_id[i]] = frame
     return data
+
+
+
+def calculate_vel(data):
+    for frames in data['data']:
+        if identifier4(frames['df'], frames['tc']):
+            print(frames['Subtype'])

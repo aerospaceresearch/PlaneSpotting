@@ -191,3 +191,4 @@ def decode(data):
 
     # finding all the already available and seen ICAO addresses
     data = calculate_pos(get_SeenPlanes(data), data)
+    calculate_vel(data)
