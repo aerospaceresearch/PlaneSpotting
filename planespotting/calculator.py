@@ -1,5 +1,6 @@
 from planespotting.identifiers import *
 from planespotting.utils import *
+import json
 #All imports ends here
 
 def calculator(all_seen_planes, data):
@@ -25,6 +26,7 @@ def calculator(all_seen_planes, data):
 
         for i in range(len(relevant_planes_id)):
             frame = data["data"][relevant_planes_id[i]]
+            frame['altitude'] = altitude(frame['ALT'])
             if i > 0:
                 if frame_b4 != frame["F"]:
                     #print(frame["ICAO"], frame["id"], frame["F"], frame["T"], frame["ALT"], frame["LAT_CPR"], frame['LON_CPR'])
@@ -71,6 +73,12 @@ def calculator(all_seen_planes, data):
 
                     lat.append(nl_lat)
                     lon.append(nl_lon)
-
+                    frame['latitude'] = nl_lat
+                    frame['longitude'] = nl_lon
+            data["data"][relevant_planes_id[i]] = frame
             frame_b4 = data["data"][relevant_planes_id[i]]["F"]
             id_b4 = frame["id"]
+    for frame in data['data']:
+        #print(json.dumps(data, indent=4))
+        if frame['ALT'] != None:
+            print(json.dumps(frame, indent=4))
