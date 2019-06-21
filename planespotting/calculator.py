@@ -81,17 +81,16 @@ def calculator(all_seen_planes, data):
                     frame['longitude'] = nl_lon
 
 
-            #print(json.dumps(frame, indent = 4))
-
             data["data"][relevant_planes_id[i]] = frame
             frame_b4 = data["data"][relevant_planes_id[i]]["F"]
             id_b4 = frame["id"]
 
         for i in range(len(relevant_planes_id)):
             frame = data['data'][relevant_planes_id[i]]
-            #exit("hellp")
+
             if frame['latitude'] == None and frame['longitude'] == None and identifier3(frame["df"], frame["tc"]):
                 frame["latitude"], frame["longitude"] = pos_local(latRef, lonRef, frame["F"], frame["LAT_CPR"], frame["LON_CPR"])
-                #exit(frame)
+
+
         print(json.dumps(frame, indent=4))
     #print(json.dumps(data, indent=4))
