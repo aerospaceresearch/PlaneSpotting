@@ -1,7 +1,3 @@
-import matplotlib.pylab as plt
-
-from planespotting.identifiers import *
-from planespotting.utils import *
 from planespotting.calculator import *
 
 
@@ -195,6 +191,3 @@ def decode(data):
 
     # finding all the already available and seen ICAO addresses
     calculator(get_SeenPlanes(data), data)
-
-        #plt.plot(lon, lat, "*-")
-        #plt.show()
