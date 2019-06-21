@@ -76,9 +76,10 @@ def calculator(all_seen_planes, data):
                     lon.append(nl_lon)
                     frame['latitude'] = nl_lat
                     frame['longitude'] = nl_lon
+                    print(frame)
 
             data["data"][relevant_planes_id[i]] = frame
             frame_b4 = data["data"][relevant_planes_id[i]]["F"]
             id_b4 = frame["id"]
 
-    print(json.dumps(data, indent=4))
+    #print(json.dumps(data, indent=4))
