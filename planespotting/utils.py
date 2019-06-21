@@ -150,11 +150,11 @@ def NL(lat): #this function calculates the number of longitude zones
     except:
         return 1
 
-def latitude(lat_even, lat_odd, t_even, t_odd): #Calculation of the latitude coordinate of the aircraft
+def latitude(lat_cpr_even, lat_cpr_odd, t_even, t_odd): #Calculation of the latitude coordinate of the aircraft
     dlatEven = 6;
     dlatOdd = 360/59;
-    cprEven = lat_even/131072
-    cprOdd = lat_odd/131072
+    cprEven = lat_cpr_even/131072
+    cprOdd = lat_cpr_odd/131072
     j = lat_index(cprEven, cprOdd)
     latEven = dlatEven * (j % 60 + cprEven)
     latOdd = dlatOdd * (j % 59 + cprOdd)    #Calculation of relative latitudes
@@ -175,14 +175,14 @@ def latitude(lat_even, lat_odd, t_even, t_odd): #Calculation of the latitude coo
     else:
         return latOdd
 
-def longitude(long_even, long_odd, t_even, t_odd, nl_lat):  #Calculation of longitude coordinate of the aircraft
+def longitude(long_cpr_even, long_cpr_odd, t_even, t_odd, nl_lat):  #Calculation of longitude coordinate of the aircraft
     #if(NL(int(lat_even1, 2)) != NL(int(lat_odd1, 2))):
     #print(NL(10.2157745361328), NL(10.2162144547802))
     if(t_even > t_odd):
         ni = max(NL(nl_lat),1)
         dLon = 360 / ni
-        cprEven1 = long_even/131072
-        cprOdd1 = long_odd/131072
+        cprEven1 = long_cpr_even/131072
+        cprOdd1 = long_cpr_odd/131072
         m = math.floor(cprEven1 * (NL(nl_lat) - 1) - cprOdd1 * NL(nl_lat) + 0.5)
         lon =  dLon*(m % ni + cprEven1)
 
@@ -190,8 +190,8 @@ def longitude(long_even, long_odd, t_even, t_odd, nl_lat):  #Calculation of long
     elif(t_odd > t_even):
         ni = max(NL(nl_lat)-1,1)
         dLon = 360 / ni
-        cprEven1 = long_even/131072
-        cprOdd1 = long_odd/131072
+        cprEven1 = long_cpr_even/131072
+        cprOdd1 = long_cpr_odd/131072
         m = math.floor(cprEven1 * (NL(nl_lat) - 1) - cprOdd1 * NL(nl_lat) + 0.5) #Longitude index
         lon = dLon*(m%ni + cprOdd1)
 
@@ -209,9 +209,9 @@ But, two frames are considered for calculation in order to
 remove the ambiguity in the frames.
 '''
 
-def altitude(bin_altitude):
-    qBit = bin_altitude[7]
-    alt=bin_altitude[0:7]+bin_altitude[8:]
+def altitude(bin_alt):
+    qBit = bin_alt[7]
+    alt=bin_alt[0:7]+bin_alt[8:]
     altitude = int(alt, 2)
     if(int(qBit) == 1):  #Checks for the altitude multiplication unit, 0 = 100ft, 1 = 25ft
         return altitude * 25 - 1000
@@ -222,7 +222,7 @@ Location determination functions ends hemisphere
 For more information visit https://mode-s.org/decode/index.html
 '''
 
-def pos_local(latRef, lonRef, F, Latcpr, Loncpr):
+def pos_local(latRef, lonRef, F, lat_cpr, lon_cpr):
 
     isEven = False
 
@@ -234,9 +234,9 @@ def pos_local(latRef, lonRef, F, Latcpr, Loncpr):
     else:
         dLat = 360/59
 
-    Latcpr = Latcpr/131072
-    j = math.floor(latRef/dLat) + math.floor(((latRef%dLat)/dLat) - Latcpr + 0.5)
-    lat = dLat * (j + Latcpr)
+    lat_cpr = lat_cpr/131072
+    j = math.floor(latRef/dLat) + math.floor(((latRef%dLat)/dLat) - lat_cpr + 0.5)
+    lat = dLat * (j + lat_cpr)
 
     if isEven:
         if (NL(lat)) > 0:
@@ -249,8 +249,8 @@ def pos_local(latRef, lonRef, F, Latcpr, Loncpr):
         else:
             dLon = 360
 
-    Loncpr = Loncpr/131072
-    m = math.floor(lonRef/dLon) + math.floor(((lonRef%dLon)/dLon) - Loncpr + 0.5)
-    lon = dLon * (m + Loncpr)
+    lon_cpr = lon_cpr/131072
+    m = math.floor(lonRef/dLon) + math.floor(((lonRef%dLon)/dLon) - lon_cpr + 0.5)
+    lon = dLon * (m + lon_cpr)
 
     return lat, lon
