@@ -96,6 +96,27 @@ def calculate_pos(all_seen_planes, data):
 
 
 def calculate_vel(data):
+
     for frames in data['data']:
         if identifier4(frames['df'], frames['tc']):
-            print(frames['Subtype'])
+            #print(frames['Subtype'])
+            if frames['Subtype'] == 1:
+                frames['isGspeed'] = 1
+                #Horizontal velocity Calculation Below
+                if frames['S_ew'] == 1:
+                    Vwe = -1 * (frames['V_ew'] - 1)
+                else:
+                    Vwe = frames['V_ew'] -1
+                if frames['S_ns'] == 1:
+                    Vsn = -1 * (frames['V_ns'] - 1)
+                else:
+                    Vsn = (frames['V_ns'] - 1)
+
+                vel = ((Vwe ** 2) + (Vsn ** 2)) ** 0.5
+                hdg = (math.atan2(Vwe, Vsn)*360) / (2 * math.pi)
+                if hdg < 0:
+                    hdg += 360
+
+                frames['Hdg'], frames['velocity'] = hdg, vel
+
+                print(frames)
