@@ -197,24 +197,14 @@ def decode(data):
             frames['NIC_bit'] = int(adsb_msg_data[52], 2)
             frames['HRD'] = int(adsb_msg_data[53], 2)
             frames['resv_op'] = int(adsb_msg_data[54:56], 2)
+
             if ver == 1:
                 frames['BAQ'] = int(adsb_msg_data[48:50], 2)
+
             elif ver == 2:
                 frames['GVA'] = int(adsb_msg_data[48:50], 2)
                 frames['SIL_bit'] = int(adsb_msg_data[54], 2)
-            # if ver == 2:
-            #     frames['stype_code'] = int(adsb_msg_data[5:8], 2)
-            #     frames['sccc'] = int(adsb_msg_data[8:20], 2)
-            #     frames['lw_codes'] = int(adsb_msg_data[20:24], 2)
-            #     frames['op_mc'] = int(adsb_msg_data[24:40], 2)
-            #     frames['ver'] = ver
-            #     frames['NIC'] = int(adsb_msg_data[43], 2)
-            #     frames['NACp'] = int(adsb_msg_data[44:48], 2)
-            #     #frames['GVA'] = int(adsb_msg_data[48:50], 2)
-            #     frames['SIL'] = int(adsb_msg_data[50:52], 2)
-            #     frames['HRD'] = int(adsb_msg_data[53], 2)
-            #     #frames['SIL_bit'] = int(adsb_msg_data[54], 2)
-            exit(frames)
+            
             continue
         if identifier7(df, tc):
             decode_id = 7
