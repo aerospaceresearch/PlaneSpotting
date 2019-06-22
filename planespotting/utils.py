@@ -114,8 +114,11 @@ def const_frame_data(): #This serves as a template for the json structure. Consi
             "NIC":None,
             "NACp":None,
             "SIL":None,
+            "NIC_bit":None,
             "HRD":None,
-            #version 2 Needs more understanding
+            #version 2
+            "GVA":None,
+            "SIL_bit":None,
             #Enhanced MODE-S
             "bds_1":None,
             "bds_2":None,
