@@ -110,8 +110,10 @@ def calculate_pos(all_seen_planes, data):
         lonGlobal = longitudeMean_global / hit_counter_global
 
 
+    # todo: adding a logic to decide whether to take the generated latGlobal or lonGlobal or the groundstation setup.
 
-    # still the odd-even method, but checking for outliers
+
+    # still the odd-even method, but checking for outliers and rpearing them.
     for plane in all_seen_planes:
         #print(plane)
         relevant_planes_id = []
@@ -139,6 +141,9 @@ def calculate_pos(all_seen_planes, data):
 
 
     # finding the leftover positions
+    hit_counter_global = 0
+    latitudeMean_global = 0
+    longitudeMean_global = 0
 
     for plane in all_seen_planes:
         #print(plane)
