@@ -56,7 +56,7 @@ def load_dump1090_file(file):
     return json_data
 
 
-def main(filename):
+def main(filename, latitude, longitude):
     if os.path.isdir(args.file):
         print("loading in all files in folder:", filename)
 
@@ -76,7 +76,18 @@ def main(filename):
     print("")
     for file in processing_files:
         print("processing", file)
-        decode(load_dump1090_file(file))
+
+        data = load_dump1090_file(file)
+
+        if data["meta"]["gs_lat"] is None or data["meta"]["gs_lon"] is None:
+            # if the gs location is already set, we don't need the inputs.
+            # if they are set, we take them from the loaded data strcture.
+            data["meta"]["gs_lat"] = float(latitude)
+            data["meta"]["gs_lon"] = float(longitude)
+
+        print(data["meta"]["gs_lat"], data["meta"]["gs_lon"])
+
+        decode(data)
 
         print("convert raw adsb files")
 
@@ -102,6 +113,14 @@ def getArgs():
                         dest='file',
                         help='load in the file or folder')
 
+    parser.add_argument('--lat', action='store', default=None,
+                        dest='latitude',
+                        help='sets the groundstation latitude')
+
+    parser.add_argument('--lon', action='store', default=None,
+                        dest='longitude',
+                        help='sets the groundstation longitude')
+
     #parser.add_argument('--version', action='version', version='0.0')
 
     return parser.parse_args()
@@ -110,4 +129,4 @@ def getArgs():
 if __name__ == '__main__':
     args = getArgs()
 
-    main(args.file)
+    main(args.file, args.latitude, args.longitude)

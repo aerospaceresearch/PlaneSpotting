@@ -2,10 +2,12 @@ from planespotting.identifiers import *
 from planespotting.utils import *
 
 #All imports end here
-latRef = 50.9
-lonRef = 11.6
+
 
 def calculate_pos(all_seen_planes, data):
+
+    latRef = data["meta"]["gs_lat"]
+    lonRef = data["meta"]["gs_lon"]
 
     print(len(all_seen_planes))
 
@@ -78,6 +80,22 @@ def calculate_pos(all_seen_planes, data):
 
 
         #todo after the odd-even positioning, the average position can be used for latRef and lonRef
+        hit_counter = 0
+        latitudeMean = 0
+        longitudeMean = 0
+
+        for i in range(len(relevant_planes_id)):
+            frame = data['data'][relevant_planes_id[i]]
+
+            if frame['latitude'] is not None:
+                #print(frame["ICAO"], frame["latitude"], frame["longitude"])
+                hit_counter += 1
+                latitudeMean += frame["latitude"]
+                longitudeMean += frame["longitude"]
+
+        if hit_counter != 0:
+            print(plane, hit_counter, latitudeMean/hit_counter, longitudeMean/hit_counter, latRef, lonRef)
+
 
 
         # finding the leftover positions
