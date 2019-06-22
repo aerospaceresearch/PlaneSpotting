@@ -82,8 +82,8 @@ def main(filename, latitude, longitude):
         if data["meta"]["gs_lat"] is None or data["meta"]["gs_lon"] is None:
             # if the gs location is already set, we don't need the inputs.
             # if they are set, we take them from the loaded data strcture.
-            data["meta"]["gs_lat"] = float(latitude)
-            data["meta"]["gs_lon"] = float(longitude)
+            data["meta"]["gs_lat"] = latitude
+            data["meta"]["gs_lon"] = longitude
 
         print(data["meta"]["gs_lat"], data["meta"]["gs_lon"])
 

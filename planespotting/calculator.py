@@ -4,10 +4,38 @@ from planespotting.utils import *
 #All imports end here
 
 
+def get_meanposition(data, relevant_planes_id, hit_counter_global, latitudeMean_global, longitudeMean_global):
+    hit_counter = 0
+    latitudeMean = 0
+    longitudeMean = 0
+
+    for i in range(len(relevant_planes_id)):
+        frame = data['data'][relevant_planes_id[i]]
+
+        if frame['latitude'] is not None:
+            # print(frame["ICAO"], frame["latitude"], frame["longitude"])
+            hit_counter += 1
+            latitudeMean += frame["latitude"]
+            longitudeMean += frame["longitude"]
+
+            hit_counter_global += 1
+            latitudeMean_global += frame["latitude"]
+            longitudeMean_global += frame["longitude"]
+
+    return hit_counter, latitudeMean, longitudeMean, hit_counter_global, latitudeMean_global, longitudeMean_global
+
+
 def calculate_pos(all_seen_planes, data):
 
     latRef = data["meta"]["gs_lat"]
     lonRef = data["meta"]["gs_lon"]
+
+    latGlobal = latRef
+    lonGlobal = lonRef
+
+    hit_counter_global = 0
+    latitudeMean_global = 0
+    longitudeMean_global = 0
 
     print(len(all_seen_planes))
 
@@ -63,13 +91,6 @@ def calculate_pos(all_seen_planes, data):
                     nl_lat = latitude(lat_even, lat_odd, t_even, t_odd)
                     nl_lon = longitude(lon_even, lon_odd, t_even, t_odd, nl_lat)
 
-
-                    lat_ambigous, lon_ambigous = pos_local(latRef, lonRef, frame["F"], frame["LAT_CPR"], frame["LON_CPR"])
-                    if nl_lat != lat_ambigous or nl_lon != lon_ambigous:
-                        #print(">>>", stray position detected)
-                        nl_lat = lat_ambigous
-                        nl_lon = lon_ambigous
-
                     frame['latitude'] = nl_lat
                     frame['longitude'] = nl_lon
 
@@ -79,36 +100,79 @@ def calculate_pos(all_seen_planes, data):
             id_b4 = frame["id"]
 
 
-        #todo after the odd-even positioning, the average position can be used for latRef and lonRef
-        hit_counter = 0
-        latitudeMean = 0
-        longitudeMean = 0
+        # finding the mean location of all planes
+        hit_counter, latitudeMean, longitudeMean, hit_counter_global, latitudeMean_global, longitudeMean_global = \
+            get_meanposition(data, relevant_planes_id, hit_counter_global, latitudeMean_global, longitudeMean_global)
+
+
+    if hit_counter_global != 0:
+        latGlobal = latitudeMean_global / hit_counter_global
+        lonGlobal = longitudeMean_global / hit_counter_global
+
+
+
+    # still the odd-even method, but checking for outliers
+    for plane in all_seen_planes:
+        #print(plane)
+        relevant_planes_id = []
+
+        for frame in data["data"]:
+            if plane == frame["ICAO"] and identifier3(frame["df"], frame["tc"]):
+                #print(frame["ICAO"], frame["id"], frame["F"], frame["ALT"], frame["LAT_CPR"], frame['LON_CPR'])
+                relevant_planes_id.append(frame["id"])
+
 
         for i in range(len(relevant_planes_id)):
             frame = data['data'][relevant_planes_id[i]]
 
-            if frame['latitude'] is not None:
-                #print(frame["ICAO"], frame["latitude"], frame["longitude"])
-                hit_counter += 1
-                latitudeMean += frame["latitude"]
-                longitudeMean += frame["longitude"]
+            if frame['latitude'] is not None or frame['longitude'] is not None and identifier3(frame["df"], frame["tc"]):
+                lat_ambigous, lon_ambigous = pos_local(latGlobal, lonGlobal, frame["F"], frame["LAT_CPR"], frame["LON_CPR"])
 
-        if hit_counter != 0:
-            print(plane, hit_counter, latitudeMean/hit_counter, longitudeMean/hit_counter, latRef, lonRef)
+                if frame['latitude'] != lat_ambigous or frame['longitude'] != lon_ambigous:
+                    # print(">>>", stray position detected)
+                    frame['latitude'] = lat_ambigous
+                    frame['longitude'] = lon_ambigous
+
+            data['data'][relevant_planes_id[i]] = frame
 
 
 
-        # finding the leftover positions
+
+    # finding the leftover positions
+
+    for plane in all_seen_planes:
+        #print(plane)
+        relevant_planes_id = []
+
+        for frame in data["data"]:
+            if plane == frame["ICAO"] and identifier3(frame["df"], frame["tc"]):
+                #print(frame["ICAO"], frame["id"], frame["F"], frame["ALT"], frame["LAT_CPR"], frame['LON_CPR'])
+                relevant_planes_id.append(frame["id"])
+
 
         for i in range(len(relevant_planes_id)):
             frame = data['data'][relevant_planes_id[i]]
 
             if frame['latitude'] == None and frame['longitude'] == None and identifier3(frame["df"], frame["tc"]):
-                lat_ambigous, lon_ambigous = pos_local(latRef, lonRef, frame["F"], frame["LAT_CPR"], frame["LON_CPR"])
+                lat_ambigous, lon_ambigous = pos_local(latGlobal, lonGlobal, frame["F"], frame["LAT_CPR"], frame["LON_CPR"])
 
                 frame['latitude'] = lat_ambigous
                 frame['longitude'] = lon_ambigous
             data['data'][relevant_planes_id[i]] = frame
+
+
+
+        # todo after the odd-even positioning, the average position can be used for latRef and lonRef
+        hit_counter, latitudeMean, longitudeMean, hit_counter_global, latitudeMean_global, longitudeMean_global = \
+            get_meanposition(data, relevant_planes_id, hit_counter_global, latitudeMean_global, longitudeMean_global)
+
+
+    if hit_counter_global != 0:
+        latGlobal = latitudeMean_global / hit_counter_global
+        lonGlobal = longitudeMean_global / hit_counter_global
+
+    print("possible groundstation location", latGlobal, lonGlobal)
+
     return data
 
 
