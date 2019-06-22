@@ -179,6 +179,9 @@ def decode(data):
             continue
         if identifier6(df, tc):
             decode_id = 6
+            frames['ICAO'] = getICAO(frames['adsb_msg'])
+            frames['ver'] = int(hexToDec(frames['adsb_msg'][8:22])[40:43], 2)
+            exit(frames)
             continue
         if identifier7(df, tc):
             decode_id = 7
