@@ -228,9 +228,6 @@ def decode(data):
 
         # todo more decoders needed, because many messages escape them!
 
-        #print(frames["id"], frames["timestamp"], df, tc, frames['adsb_msg'], decode_id)
-
-
 
     # finding all the already available and seen ICAO addresses
     data = calculate_pos(get_SeenPlanes(data), data)

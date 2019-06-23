@@ -37,15 +37,10 @@ def load_dump1090_file(file):
 
                 if line.startswith("@") and line.endswith(";"):
                     data = utils.const_frame_data()['data']
-                    # data = {
-                    #     "id" : id,
-                    #     "raw" : line,
-                    #     "timestamp" : int(line[1:13], 16) // (samplerate_avrmlat // samplerate) - (112 + 8) * 2,
-                    #     "adsb_msg" : line[13:-1]
-                    # }
+
                     data['id'] =  id
                     data['raw'] = line
-                    data['timestamp'] = int(line[1:13], 16) // (samplerate_avrmlat // samplerate) - (112 + 8) * 2
+                    data['SamplePos'] = int(line[1:13], 16) // (samplerate_avrmlat // samplerate) - (112 + 8) * 2
                     data['adsb_msg'] = line[13:-1]
                     payload.append(data)
 
