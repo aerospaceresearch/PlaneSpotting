@@ -227,22 +227,7 @@ def longitude(long_cpr_even, long_cpr_odd, t_even, t_odd, nl_lat):  #Calculation
     else:
         return lon
 
-'''
-The calculation of both latitude and longitude is done
-with respect to the newest frame received.
 
-But, two frames are considered for calculation in order to
-remove the ambiguity in the frames.
-'''
-
-def altitude(bin_alt):
-    qBit = bin_alt[7]
-    alt=bin_alt[0:7]+bin_alt[8:]
-    altitude = int(alt, 2)
-    if(int(qBit) == 1):  #Checks for the altitude multiplication unit, 0 = 100ft, 1 = 25ft
-        return altitude * 25 - 1000
-    else:
-        return altitude * 100 - 1000
 '''
 Location determination functions ends hemisphere
 For more information visit https://mode-s.org/decode/index.html

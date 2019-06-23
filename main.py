@@ -1,9 +1,5 @@
 import argparse
 import os
-import json
-import time
-
-
 from planespotting import utils
 from planespotting.decoder import decode
 
