@@ -133,8 +133,11 @@ def const_frame_data(): #This serves as a template for the json structure. Consi
             "tgt_alt_source":None,
             "prev_lat":None,
             "prev_long":None,
-            "isLocalUni":None #If the location is calculated is locally unambiguous (1 frame method)
-
+            "isLocalUni":None, #If the location is calculated is locally unambiguous (1 frame method)
+            # multilateration
+            "x": None,
+            "y": None,
+            "z": None
         }
     }
     return json_frame

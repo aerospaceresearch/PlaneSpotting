@@ -1,5 +1,6 @@
 from planespotting.identifiers import *
 from planespotting.utils import *
+import numpy as np
 
 #All imports end here
 
@@ -23,6 +24,27 @@ def get_meanposition(data, relevant_planes_id, hit_counter_global, latitudeMean_
             longitudeMean_global += frame["longitude"]
 
     return hit_counter, latitudeMean, longitudeMean, hit_counter_global, latitudeMean_global, longitudeMean_global
+
+
+def get_cartesian_coordinates(lat=0.0, lon=0.0, alt=0.0):
+    lat, lon = np.deg2rad(lat), np.deg2rad(lon)
+    R_earth = 6371000.0 # radius of the earth in meters
+    altitude = alt * 0.3048 # from feet to meters
+    R = R_earth + altitude
+
+    x = R * np.cos(lat) * np.cos(lon)
+    y = R * np.cos(lat) * np.sin(lon)
+    z = R * np.sin(lat)
+
+    return x, y, z
+
+
+def get_geo_coordinates(x, y, z):
+    R = np.sqrt(x**2 + y**2 + z**2)
+    lat = np.arcsin(z / R)
+    lon = np.arctan2(y, x)
+
+    return np.rad2deg(lon), np.rad2deg(lat), R
 
 
 def calculate_pos(all_seen_planes, data):
@@ -249,5 +271,18 @@ def calculate_vel(data):
                 frames["vert_rate"] = Vr if frames['S_vr'] == 0 else Vr*-1
 
             data['data'][i] = frames
+
+    return data
+
+
+def convert_position(data):
+
+    for i in range (len(data["data"])):
+        frames = data['data'][i]
+
+        if frames["latitude"] is not None and frames["longitude"] is not None and frames["altitude"] is not None:
+            frames["x"], frames["y"], frames["z"] = get_cartesian_coordinates(frames["latitude"], frames["longitude"], frames["altitude"])
+
+        data['data'][i] = frames
 
     return data
