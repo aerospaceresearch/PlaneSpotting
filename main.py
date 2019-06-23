@@ -82,7 +82,7 @@ def main(filename, latitude, longitude):
 
         print(data["meta"]["gs_lat"], data["meta"]["gs_lon"])
 
-        decode(data)
+        data = decode(data)
 
         print("convert raw adsb files")
 
@@ -91,6 +91,10 @@ def main(filename, latitude, longitude):
         print("decode again planes by icao address. #1")
         print("decode again planes by icao address. #n")
         print("")
+
+        print("storing adsb-data")
+        path = "data" + os.sep + "adsb"
+        utils.store_file(path, file, data)
 
 
 def getArgs():

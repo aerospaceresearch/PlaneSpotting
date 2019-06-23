@@ -1,5 +1,6 @@
 import os
 import math
+import json
 
 def get_all_files(filename):
 
@@ -266,3 +267,20 @@ def pos_local(latRef, lonRef, F, lat_cpr, lon_cpr):
     lon = dLon * (m + lon_cpr)
 
     return lat, lon
+
+
+def create_folder(path):
+
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+
+def store_file(path, file, data):
+
+    filename = file.split(os.sep)[-1].split(".")[0] + ".json"
+
+    # create the folder
+    create_folder(path)
+
+    with open(path + os.sep + filename, "w") as outfile:
+        json.dump(data, outfile, indent=4)

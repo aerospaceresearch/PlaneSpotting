@@ -233,3 +233,5 @@ def decode(data):
     data = calculate_pos(get_SeenPlanes(data), data)
     data = convert_position(data)
     data = calculate_vel(data)
+
+    return data
