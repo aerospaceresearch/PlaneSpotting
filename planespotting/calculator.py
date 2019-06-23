@@ -55,7 +55,6 @@ def calculate_pos(all_seen_planes, data):
 
         for i in range(len(relevant_planes_id)):
             frame = data["data"][relevant_planes_id[i]]
-            frame['altitude'] = altitude(frame['ALT'])
 
             if i > 0:
                 if frame_b4 != frame["F"]:

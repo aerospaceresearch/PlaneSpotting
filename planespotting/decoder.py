@@ -61,6 +61,7 @@ def getVelocityData(frame, subtype): #Extraction of velocity oriented data
         RESV_B = int(msg_bin[46:48], 2)
         S_Dif = int(msg_bin[48], 2)
         Dif = int(msg_bin[49:56], 2)
+
         return IC, RESV_A, NAC, S_ew, V_ew, S_ns, V_ns, VrSrc, S_vr, Vr, RESV_B, S_Dif, S_Dif, Dif
 
     elif subtype == 3:
@@ -77,6 +78,7 @@ def getVelocityData(frame, subtype): #Extraction of velocity oriented data
         RESV_B = int(msg_bin[46:48], 2)
         S_Dif = int(msg_bin[48], 2)
         Dif = int(msg_bin[49:56], 2)
+
         return IC, RESV_A, NAC, S_hdg, Hdg, AS_t, AS, VrSrc, S_vr, Vr, RESV_B, S_Dif, Dif
 
 
@@ -113,9 +115,11 @@ def decode(data):
             decode_id = 1
             frames['callsign_bin']=hexToDec(frames['adsb_msg'])[40:88]
             continue
+
         if identifier2(df, tc):
             decode_id = 2
             continue
+
         if identifier3(df, tc):
             decode_id = 3
 
@@ -130,10 +134,12 @@ def decode(data):
             frames["F"] = F
             frames["LAT_CPR"] = LAT_CPR
             frames["LON_CPR"] = LON_CPR
-            frames["isBaroAlt"] = 1
+            #frames["isBaroAlt"] = 1 # is it really baroalt?
+            frames['altitude'] = altitude(ALT)
 
             #print(frames)
             continue
+
         if identifier4(df, tc):
             decode_id = 4
             subtype = int(hexToDec(frames['adsb_msg'][8:22])[5:8], 2)
@@ -174,9 +180,11 @@ def decode(data):
                 frames["Dif"] = Dif
             #print(frames)
             continue
+
         if identifier5(df, tc):
             decode_id = 5
             continue
+
         if identifier6(df, tc):
             decode_id = 6
             adsb_msg = frames['adsb_msg']
@@ -193,7 +201,6 @@ def decode(data):
             frames['NIC'] = int(adsb_msg_data[43], 2)
             frames['NACp'] = int(adsb_msg_data[44:48], 2)
             frames['SIL'] = int(adsb_msg_data[50:52], 2)
-            #frames['NIC_bit'] = int(adsb_msg_data[52], 2)
             frames['NIC_bit'] = int(adsb_msg_data[52], 2)
             frames['HRD'] = int(adsb_msg_data[53], 2)
             frames['resv_op'] = int(adsb_msg_data[54:56], 2)
@@ -206,6 +213,7 @@ def decode(data):
                 frames['SIL_bit'] = int(adsb_msg_data[54], 2)
             
             continue
+
         if identifier7(df, tc):
             decode_id = 7
 
