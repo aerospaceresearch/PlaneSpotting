@@ -114,6 +114,15 @@ def decode(data):
         if identifier1(df, tc):
             decode_id = 1
             frames['callsign_bin']=hexToDec(frames['adsb_msg'])[40:88]
+            lookup_table = "#ABCDEFGHIJKLMNOPQRSTUVWXYZ#####_###############0123456789######"
+            #print(msg, "Aircraft identifier", df, tc)
+            data = frames['callsign_bin']
+            callsign = ""
+            for i in range(0, len(data), 6):
+                index = int(data[i:i+6], 2)
+                callsign += lookup_table[index]
+            frames['callsign'] = callsign
+            exit(frames)
             continue
 
         if identifier2(df, tc):
@@ -134,7 +143,7 @@ def decode(data):
             frames["F"] = F
             frames["LAT_CPR"] = LAT_CPR
             frames["LON_CPR"] = LON_CPR
-            #frames["isBaroAlt"] = 1 # is it really baroalt?
+            frames["isBaroAlt"] = 1
             frames['altitude'] = altitude(ALT)
 
             #print(frames)
@@ -211,7 +220,7 @@ def decode(data):
             elif ver == 2:
                 frames['GVA'] = int(adsb_msg_data[48:50], 2)
                 frames['SIL_bit'] = int(adsb_msg_data[54], 2)
-            
+
             continue
 
         if identifier7(df, tc):
