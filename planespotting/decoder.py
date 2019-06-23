@@ -98,6 +98,16 @@ def get_SeenPlanes(data):
 
     return all_seen_planes
 
+def getCallsign(callsign_bin):
+    lookup_table = "#ABCDEFGHIJKLMNOPQRSTUVWXYZ#####_###############0123456789######"
+    #print(msg, "Aircraft identifier", df, tc)
+    #dat = frames['callsign_bin']
+    callsign = ""
+    for i in range(0, len(callsign_bin), 6):
+        index = int(callsign_bin[i:i+6], 2)
+        callsign += lookup_table[index]
+
+    return callsign
 
 def decode(data):
     #for id in range(len(data["data"])):
@@ -113,15 +123,15 @@ def decode(data):
         # grouping messages by df and tc, that can be decoded the same or share similar parts
         if identifier1(df, tc):
             decode_id = 1
-            frames['callsign_bin']=hexToDec(frames['adsb_msg'])[40:88]
-            lookup_table = "#ABCDEFGHIJKLMNOPQRSTUVWXYZ#####_###############0123456789######"
-            #print(msg, "Aircraft identifier", df, tc)
-            dat = frames['callsign_bin']
-            callsign = ""
-            for i in range(0, len(dat), 6):
-                index = int(dat[i:i+6], 2)
-                callsign += lookup_table[index]
-            frames['callsign'] = callsign
+            # frames['callsign_bin']=hexToDec(frames['adsb_msg'])[40:88]
+            # lookup_table = "#ABCDEFGHIJKLMNOPQRSTUVWXYZ#####_###############0123456789######"
+            # #print(msg, "Aircraft identifier", df, tc)
+            # dat = frames['callsign_bin']
+            # callsign = ""
+            # for i in range(0, len(dat), 6):
+            #     index = int(dat[i:i+6], 2)
+            #     callsign += lookup_table[index]
+            frames['callsign'] = getCallsign(hexToDec(frames['adsb_msg'])[40:88])
             #exit(frames)
             continue
 
@@ -224,6 +234,37 @@ def decode(data):
             continue
 
         if identifier7(df, tc):
+            adsb_msg_bin = hexToDec(frames['adsb_msg'][8:22])
+            bds1 = int(adsb_msg_bin[:4], 2)
+            bds2 = int(adsb_msg_bin[4:8], 2)
+
+            if bds1 == 2 and bds2 == 0:
+                frames['callsign'] = getCallsign(hexToDec(frames['adsb_msg'])[40:88])
+                #print(frames)
+                #exit(frames)
+            if bds1 == 4 and bds2 == 0: #Not tested due to lack of frames
+                frames['mcp_alt'] = int(adsb_msg_bin[1:13], 2) * 16
+                frames['fms_alt'] = int(adsb_msg_bin[14:26], 2) * 16
+                frames['baro_set'] = int(adsb_msg_bin[27: 39], 2) * 0.1 + 800
+                frames['VNAV_state'] = int(adsb_msg_bin[48], 2)
+                frames['Alt_hold_state'] = int(adsb_msg_bin[49], 2)
+                frames['Apr_state'] = int(adsb_msg_bin[50], 2)
+                frames['tgt_alt_source'] = adsb_msg_bin[54:56] #values are 00 01 10 11, so no conversion
+
+            if bds1 == 5 and bds2 == 0:
+                frames['roll_angle'] = (int(adsb_msg_bin[2:11], 2) * (45.0/256.0) if adsb_msg_bin[1] == 0 else int(adsb_msg_bin[2:11], 2) - 512) * (45.0/256.0)
+                frames['true_track_angle'] = (int(adsb_msg_bin[13:23], 2) * (90.0/512.0) if adsb_msg_bin[12] == 0 else int(adsb_msg_bin[13:23], 2) - 512) * (90.0/512.0)
+                frames['ground_speed'] = int(adsb_msg_bin[24:34], 2) * 2
+                frames['track_angle_rate'] = (int(adsb_msg_bin[36:45], 2) * (8.0/256.0) if adsb_msg_bin[35] == 0 else int(adsb_msg_bin[36:45], 2) - 512) * (8.0/256.0)
+                frames['TAS'] = int(adsb_msg_bin[46:56], 2) * 2
+                # todo more decoders needed, because many messages escape them!
+
+            if bds1 == 6 and bds2 == 0:
+                frames['mag_hdg'] = (int(adsb_msg_bin[2:12], 2) * (90.0/512.0) if adsb_msg_bin[1] == 0 else int(adsb_msg_bin[2:12], 2) - 512) * (90.0/512.0)
+                frames['IAS'] = int(adsb_msg_bin[13:23], 2) * 1
+                frames['mach'] = int(adsb_msg_bin[24:34], 2) * (2.048/512)
+                frames['baro_alt_rate'] = (int(adsb_msg_bin[36:45], 2) * (32) if adsb_msg_bin[35] == 0 else int(adsb_msg_bin[36:46], 2) - 512) * (32)
+                frames['inertial_alt_rate'] = (int(adsb_msg_bin[47:56], 2) * (32) if adsb_msg_bin[46] == 0 else int(adsb_msg_bin[47:56], 2) - 512) * (32)
             decode_id = 7
 
         # todo more decoders needed, because many messages escape them!

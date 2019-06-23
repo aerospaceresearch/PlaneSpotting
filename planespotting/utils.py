@@ -66,7 +66,7 @@ def const_frame_data(): #This serves as a template for the json structure. Consi
             "SamplePos":None,
             "df":None,
             "tc":None,
-            "callsign_bin":None,
+            #"callsign_bin":None,
             "capability":None,
             "ICAO":None,
             "parity":None,
@@ -132,9 +132,22 @@ def const_frame_data(): #This serves as a template for the json structure. Consi
             "Alt_hold_state":None,
             "Apr_state":None,
             "tgt_alt_source":None,
-            "prev_lat":None,
-            "prev_long":None,
-            "isLocalUni":None, #If the location is calculated is locally unambiguous (1 frame method)
+            #BDS5, 0
+            "roll_angle":None,
+            "true_track_angle":None,
+            "ground_speed":None,
+            "track_angle_rate":None,
+            "TAS":None,
+            # BDS 6, 0
+            "mag_hdg":None,
+            "IAS":None,
+            "mach":None,
+            "baro_alt_rate":None,
+            "inertial_alt_rate":None,
+
+            #"prev_lat":None,
+            #"prev_long":None,
+            #"isLocalUni":None, #If the location is calculated is locally unambiguous (1 frame method)
             # multilateration
             "x": None,
             "y": None,
