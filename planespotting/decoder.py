@@ -274,7 +274,6 @@ def decode(data):
                 frames['ground_speed'] = int(adsb_msg_bin[24:34], 2) * 2
                 frames['track_angle_rate'] = (int(adsb_msg_bin[36:45], 2) * (8.0/256.0) if adsb_msg_bin[35] == 0 else int(adsb_msg_bin[36:45], 2) - 512) * (8.0/256.0)
                 frames['TAS'] = int(adsb_msg_bin[46:56], 2) * 2
-                # todo more decoders needed, because many messages escape them!
 
             if bds1 == 6 and bds2 == 0:
                 frames['mag_hdg'] = (int(adsb_msg_bin[2:12], 2) * (90.0/512.0) if adsb_msg_bin[1] == 0 else int(adsb_msg_bin[2:12], 2) - 512) * (90.0/512.0)

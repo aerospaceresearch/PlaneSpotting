@@ -144,11 +144,6 @@ def const_frame_data(): #This serves as a template for the json structure. Consi
             "mach":None,
             "baro_alt_rate":None,
             "inertial_alt_rate":None,
-
-            #"prev_lat":None,
-            #"prev_long":None,
-            #"isLocalUni":None, #If the location is calculated is locally unambiguous (1 frame method)
-            # multilateration
             "x": None,
             "y": None,
             "z": None
@@ -156,16 +151,6 @@ def const_frame_data(): #This serves as a template for the json structure. Consi
     }
     return json_frame
 
-
-'''
-Below are the functions for location determination
-'''
-#calculation of latitude index, which is mostly 8
-
-'''
-Location determination functions ends hemisphere
-For more information visit https://mode-s.org/decode/index.html
-'''
 def create_folder(path):
 
     if not os.path.exists(path):

@@ -5,9 +5,6 @@ import numpy as np
 
 #All imports end here
 
-'''
-Functions moved in here
-'''
 def lat_index(lat_cpr_even, lat_cpr_odd):
     return math.floor((59 * lat_cpr_even) - (60*lat_cpr_odd) + 0.5)
 
@@ -108,14 +105,6 @@ def pos_local(latRef, lonRef, F, lat_cpr, lon_cpr):
 
     return lat, lon
 
-
-
-
-'''
-Moved Functions end here
-'''
-
-
 def get_meanposition(data, relevant_planes_id, hit_counter_global, latitudeMean_global, longitudeMean_global):
     hit_counter = 0
     latitudeMean = 0
@@ -178,7 +167,6 @@ def calculate_position(all_seen_planes, data):
 
         for frame in data["data"]:
             if plane == frame["ICAO"] and identifier3(frame["df"], frame["tc"]):
-                #print(frame["ICAO"], frame["id"], frame["F"], frame["ALT"], frame["LAT_CPR"], frame['LON_CPR'])
                 relevant_planes_id.append(frame["id"])
 
 
@@ -191,7 +179,6 @@ def calculate_position(all_seen_planes, data):
 
             if i > 0:
                 if frame_b4 != frame["F"]:
-                    #print(frame["ICAO"], frame["id"], frame["F"], frame["T"], frame["ALT"], frame["LAT_CPR"], frame['LON_CPR'])
 
                     # do positioning here with one alternating even and odd frame
                     # print(id_b4, frame["id"])
