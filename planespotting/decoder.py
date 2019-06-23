@@ -5,7 +5,7 @@ long_msg_bits = 112
 short_msg_bits = 56
 
 
-def getMsgLength(df): #Returns the bit length of a message according to the type (df>16)
+def get_MsgLength(df): #Returns the bit length of a message according to the type (df>16)
     if df > 16:
         return long_msg_bits
     else:
@@ -14,23 +14,27 @@ def getMsgLength(df): #Returns the bit length of a message according to the type
 All messages above df 16 are long messages
 '''
 
-def getDF(frame):
+def get_DF(frame):
     bin_frame = hexToDec(frame)
     df = int(bin_frame[0:5], 2)
     return df
 
-def getTC(frame):
+
+def get_TC(frame):
     data = frame[8:22]
     bin = hexToDec(data)
-    if getMsgLength(getDF(frame)) == 112:
+
+    if get_MsgLength(get_DF(frame)) == 112:
         return int(bin[0:5],2)
     else:
         return None
 
-def getICAO(frame):
+
+def get_ICAO(frame):
     return frame[2:8]
 
-def getAirbornePosition(frame): #Extraction of position oriented data
+
+def get_AirbornePosition(frame): #Extraction of position oriented data
     #print(frame)
     data = frame[8:22]
     bin = hexToDec(data)
@@ -45,7 +49,8 @@ def getAirbornePosition(frame): #Extraction of position oriented data
 
     return SS, NICsb, ALT, T, F, LAT_CPR, LON_CPR
 
-def getVelocityData(frame, subtype): #Extraction of velocity oriented data
+
+def get_VelocityData(frame, subtype): #Extraction of velocity oriented data
     msg_bin = hexToDec(frame[8:22])
     if subtype == 1:
         IC = int(msg_bin[8], 2)
@@ -98,7 +103,8 @@ def get_SeenPlanes(data):
 
     return all_seen_planes
 
-def getCallsign(callsign_bin):
+
+def get_Callsign(callsign_bin):
     lookup_table = "#ABCDEFGHIJKLMNOPQRSTUVWXYZ#####_###############0123456789######"
     #print(msg, "Aircraft identifier", df, tc)
     #dat = frames['callsign_bin']
@@ -109,12 +115,13 @@ def getCallsign(callsign_bin):
 
     return callsign
 
+
 def decode(data):
     #for id in range(len(data["data"])):
     for frames in data['data']:
 
-        df = getDF(frames['adsb_msg'])
-        tc = getTC(frames['adsb_msg'])
+        df = get_DF(frames['adsb_msg'])
+        tc = get_TC(frames['adsb_msg'])
         frames['df'] = df
         frames['tc'] = tc
         decode_id = 0
@@ -123,16 +130,7 @@ def decode(data):
         # grouping messages by df and tc, that can be decoded the same or share similar parts
         if identifier1(df, tc):
             decode_id = 1
-            # frames['callsign_bin']=hexToDec(frames['adsb_msg'])[40:88]
-            # lookup_table = "#ABCDEFGHIJKLMNOPQRSTUVWXYZ#####_###############0123456789######"
-            # #print(msg, "Aircraft identifier", df, tc)
-            # dat = frames['callsign_bin']
-            # callsign = ""
-            # for i in range(0, len(dat), 6):
-            #     index = int(dat[i:i+6], 2)
-            #     callsign += lookup_table[index]
-            frames['callsign'] = getCallsign(hexToDec(frames['adsb_msg'])[40:88])
-            #exit(frames)
+            frames['callsign'] = get_Callsign(hexToDec(frames['adsb_msg'])[40:88])
             continue
 
         if identifier2(df, tc):
@@ -142,10 +140,10 @@ def decode(data):
         if identifier3(df, tc):
             decode_id = 3
 
-            SS, NICsb, ALT, T, F, LAT_CPR, LON_CPR = getAirbornePosition(frames['adsb_msg'])
+            SS, NICsb, ALT, T, F, LAT_CPR, LON_CPR = get_AirbornePosition(frames['adsb_msg'])
 
             # filling in the now known values
-            frames["ICAO"] = getICAO(frames['adsb_msg'])
+            frames["ICAO"] = get_ICAO(frames['adsb_msg'])
             frames["SS"] = SS
             frames["NICsb"] = NICsb
             frames["ALT"] = ALT
@@ -162,10 +160,10 @@ def decode(data):
         if identifier4(df, tc):
             decode_id = 4
             subtype = int(hexToDec(frames['adsb_msg'][8:22])[5:8], 2)
-            frames["ICAO"] = getICAO(frames['adsb_msg'])
+            frames["ICAO"] = get_ICAO(frames['adsb_msg'])
 
             if subtype == 1:
-                IC, RESV_A, NAC, S_ew, V_ew, S_ns, V_ns, VrSrc, S_vr, Vr, RESV_B, S_Dif, S_Dif, Dif = getVelocityData(frames['adsb_msg'], subtype)
+                IC, RESV_A, NAC, S_ew, V_ew, S_ns, V_ns, VrSrc, S_vr, Vr, RESV_B, S_Dif, S_Dif, Dif = get_VelocityData(frames['adsb_msg'], subtype)
                 frames['Subtype'] = subtype
                 frames["IC"] = IC
                 frames["RESV_A"] = RESV_A
@@ -182,7 +180,7 @@ def decode(data):
                 frames["Dif"] = Dif
 
             elif subtype == 3:
-                IC, RESV_A, NAC, S_hdg, Hdg, AS_t, AS, VrSrc, S_vr, Vr, RESV_B, S_Dif, Dif = getVelocityData(frames['adsb_msg'], subtype)
+                IC, RESV_A, NAC, S_hdg, Hdg, AS_t, AS, VrSrc, S_vr, Vr, RESV_B, S_Dif, Dif = get_VelocityData(frames['adsb_msg'], subtype)
                 frames['Subtype'] = subtype
                 frames["IC"] = IC
                 frames["RESV_A"] = RESV_A
@@ -207,7 +205,7 @@ def decode(data):
         if identifier6(df, tc):
             decode_id = 6
             adsb_msg = frames['adsb_msg']
-            frames['ICAO'] = getICAO(adsb_msg)
+            frames['ICAO'] = get_ICAO(adsb_msg)
             adsb_msg_data = hexToDec(adsb_msg[8:22])
             ver = int(adsb_msg_data[40:43], 2)
 
@@ -239,7 +237,7 @@ def decode(data):
             bds2 = int(adsb_msg_bin[4:8], 2)
 
             if bds1 == 2 and bds2 == 0:
-                frames['callsign'] = getCallsign(hexToDec(frames['adsb_msg'])[40:88])
+                frames['callsign'] = get_Callsign(hexToDec(frames['adsb_msg'])[40:88])
                 #print(frames)
                 #exit(frames)
             if bds1 == 4 and bds2 == 0: #Not tested due to lack of frames
@@ -271,8 +269,8 @@ def decode(data):
 
 
     # finding all the already available and seen ICAO addresses
-    data = calculate_pos(get_SeenPlanes(data), data)
+    data = calculate_position(get_SeenPlanes(data), data)
     data = convert_position(data)
-    data = calculate_vel(data)
+    data = calculate_velocity(data)
 
     return data

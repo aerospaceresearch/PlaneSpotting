@@ -47,7 +47,7 @@ def get_geo_coordinates(x, y, z):
     return np.rad2deg(lon), np.rad2deg(lat), R
 
 
-def calculate_pos(all_seen_planes, data):
+def calculate_position(all_seen_planes, data):
 
     latRef = data["meta"]["gs_lat"]
     lonRef = data["meta"]["gs_lon"]
@@ -160,16 +160,6 @@ def calculate_pos(all_seen_planes, data):
         hit_counter, latitudeMean, longitudeMean, hit_counter_global, latitudeMean_global, longitudeMean_global = \
                  get_meanposition(data, relevant_planes_id, hit_counter_global, latitudeMean_global, longitudeMean_global)
 
-    # for plane in all_seen_planes:
-    #     relevant_planes_id = []
-    #
-    #     for frame in data['data']:
-    #         if plane == frame['ICAO'] and identifier3(frame['df'], frame['tc']):
-    #             relevant_planes_id.append(frame['id'])
-    #
-    #
-    #     hit_counter, latitudeMean, longitudeMean, hit_counter_global, latitudeMean_global, longitudeMean_global = \
-    #         get_meanposition(data, relevant_planes_id, hit_counter_global, latitudeMean_global, longitudeMean_global)
 
     if hit_counter_global != 0:
         latGlobal = latitudeMean_global / hit_counter_global
@@ -218,7 +208,7 @@ def calculate_pos(all_seen_planes, data):
 
 
 
-def calculate_vel(data):
+def calculate_velocity(data):
 
     for i in range(len(data['data'])):
         frames = data['data'][i]

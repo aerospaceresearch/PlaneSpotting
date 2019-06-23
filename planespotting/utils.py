@@ -177,8 +177,8 @@ def NL(lat): #this function calculates the number of longitude zones
         return 1
 
 def latitude(lat_cpr_even, lat_cpr_odd, t_even, t_odd): #Calculation of the latitude coordinate of the aircraft
-    dlatEven = 6;
-    dlatOdd = 360/59;
+    dlatEven = 6
+    dlatOdd = 360/59
     cprEven = lat_cpr_even/131072
     cprOdd = lat_cpr_odd/131072
     j = lat_index(cprEven, cprOdd)
