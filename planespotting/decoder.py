@@ -116,13 +116,13 @@ def decode(data):
             frames['callsign_bin']=hexToDec(frames['adsb_msg'])[40:88]
             lookup_table = "#ABCDEFGHIJKLMNOPQRSTUVWXYZ#####_###############0123456789######"
             #print(msg, "Aircraft identifier", df, tc)
-            data = frames['callsign_bin']
+            dat = frames['callsign_bin']
             callsign = ""
-            for i in range(0, len(data), 6):
-                index = int(data[i:i+6], 2)
+            for i in range(0, len(dat), 6):
+                index = int(dat[i:i+6], 2)
                 callsign += lookup_table[index]
             frames['callsign'] = callsign
-            exit(frames)
+            #exit(frames)
             continue
 
         if identifier2(df, tc):

@@ -135,18 +135,19 @@ def calculate_pos(all_seen_planes, data):
                     frame['longitude'] = lon_ambigous
 
             data['data'][relevant_planes_id[i]] = frame
-
-
-    for plane in all_seen_planes:
-        relevant_planes_id = []
-
-        for frame in data['data']:
-            if plane == frame['ICAO'] and identifier3(frame['df'], frame['tc']):
-                relevant_planes_id.append(frame['id'])
-
-
         hit_counter, latitudeMean, longitudeMean, hit_counter_global, latitudeMean_global, longitudeMean_global = \
-            get_meanposition(data, relevant_planes_id, hit_counter_global, latitudeMean_global, longitudeMean_global)
+                 get_meanposition(data, relevant_planes_id, hit_counter_global, latitudeMean_global, longitudeMean_global)
+
+    # for plane in all_seen_planes:
+    #     relevant_planes_id = []
+    #
+    #     for frame in data['data']:
+    #         if plane == frame['ICAO'] and identifier3(frame['df'], frame['tc']):
+    #             relevant_planes_id.append(frame['id'])
+    #
+    #
+    #     hit_counter, latitudeMean, longitudeMean, hit_counter_global, latitudeMean_global, longitudeMean_global = \
+    #         get_meanposition(data, relevant_planes_id, hit_counter_global, latitudeMean_global, longitudeMean_global)
 
     if hit_counter_global != 0:
         latGlobal = latitudeMean_global / hit_counter_global
