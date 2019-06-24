@@ -9,16 +9,20 @@ samplerate_avrmlat = 12000000 # AVR, freerunning 48-bit timestamp @ 12MHz
 
 
 def load_dump1090_file(file):
+    '''
+    The json from the input file is loaded here.
+
+    A new empty json structure gets initialised here and the raw data from the
+    input file is plugged into this new json.
+
+    What is this new json structure: It contains all the keys to all possible data that
+                                    can be extracted using the decoder script. The decoder.py files
+                                    fills up the keys in them.
+
+    '''
 
     dump1090_msg = []
 
-    # json_data = {
-    #     "meta" : {
-    #         "file" : file.split(os.sep)[-1],
-    #         "mlat_mode" : ""
-    #     },
-    #     "data" : []
-    # }
     json_data = utils.const_frame()
     json_data["meta"]["file"] = file.split(os.sep)[-1]
     json_data["meta"]["mlat_mode"] = "avrmlat"
@@ -48,6 +52,9 @@ def load_dump1090_file(file):
 
 
 def main(filename, latitude, longitude):
+    '''
+    The expected inputs to the filename parameter: Path to a file, path to a folder.
+    '''
     if os.path.isdir(args.file):
         print("loading in all files in folder:", filename)
 
@@ -116,7 +123,7 @@ def getArgs():
                         dest='longitude',
                         help='sets the groundstation longitude')
 
-    #parser.add_argument('--version', action='version', version='0.0')
+    #parser.add_argument('--version', action='version', version='0.0') keeping this comment for future reminder
 
     return parser.parse_args()
 
