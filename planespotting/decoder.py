@@ -190,6 +190,7 @@ def decode(data):
         if identifier1(df, tc):
             decode_id = 1
             frames['callsign'] = get_Callsign(hexToDec(frames['adsb_msg'])[40:88])
+            frames['parity'] = frames['adsb_msg'][-6:]
             continue
 
         if identifier2(df, tc):
@@ -200,7 +201,7 @@ def decode(data):
             decode_id = 3
 
             SS, NICsb, ALT, T, F, LAT_CPR, LON_CPR = get_AirbornePosition(frames['adsb_msg'])
-
+            frames['parity'] = frames['adsb_msg'][-6:]
             # filling in the now known values
             frames["ICAO"] = get_ICAO(frames['adsb_msg'])
             frames["SS"] = SS
@@ -220,7 +221,7 @@ def decode(data):
             decode_id = 4
             subtype = int(hexToDec(frames['adsb_msg'][8:22])[5:8], 2)
             frames["ICAO"] = get_ICAO(frames['adsb_msg'])
-
+            frames['parity'] = frames['adsb_msg'][-6:]
             if subtype == 1:
                 IC, RESV_A, NAC, S_ew, V_ew, S_ns, V_ns, VrSrc, S_vr, Vr, RESV_B, S_Dif, S_Dif, Dif = get_VelocityData(frames['adsb_msg'], subtype)
                 frames['Subtype'] = subtype
@@ -267,6 +268,7 @@ def decode(data):
             frames['ICAO'] = get_ICAO(adsb_msg)
             adsb_msg_data = hexToDec(adsb_msg[8:22])
             ver = int(adsb_msg_data[40:43], 2)
+            frames['parity'] = frames['adsb_msg'][-6:]
 
 
             frames['stype_code'] = int(adsb_msg_data[5:8], 2)
@@ -295,6 +297,7 @@ def decode(data):
             frames['ICAO'] = get_crcICAO(frames['adsb_msg'])
             bds1 = int(adsb_msg_bin[:4], 2)
             bds2 = int(adsb_msg_bin[4:8], 2)
+            frames['parity'] = frames['adsb_msg'][-6:]
 
             if bds1 == 2 and bds2 == 0:
                 frames['callsign'] = get_Callsign(hexToDec(frames['adsb_msg'])[40:88])
@@ -323,7 +326,7 @@ def decode(data):
                 frames['baro_alt_rate'] = (int(adsb_msg_bin[36:45], 2) * (32) if adsb_msg_bin[35] == 0 else int(adsb_msg_bin[36:46], 2) - 512) * (32)
                 frames['inertial_alt_rate'] = (int(adsb_msg_bin[47:56], 2) * (32) if adsb_msg_bin[46] == 0 else int(adsb_msg_bin[47:56], 2) - 512) * (32)
             decode_id = 7
-
+            
         # todo more decoders needed, because many messages escape them!
 
 
