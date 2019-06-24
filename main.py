@@ -69,7 +69,8 @@ def main(filename, latitude, longitude):
         print("neither file, nor folder. ending programme.")
         return
 
-
+    if len(processing_files) == 0:
+        exit("No input files found in the directory. Quitting")
     print("processing", len(processing_files))
     print("")
     for file in processing_files:
