@@ -111,7 +111,7 @@ def getArgs():
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-f', '--from', action='store', default=os.sep,
+    parser.add_argument('-f', '--from', action='store', default="input"+os.sep,
                         dest='file',
                         help='load in the file or folder')
 
