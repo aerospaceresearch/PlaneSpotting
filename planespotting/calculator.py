@@ -114,10 +114,10 @@ all position calculation functions end here.
 
 def get_meanposition(data, relevant_planes_id, hit_counter_global, latitudeMean_global, longitudeMean_global):
 
-'''
-Calculation of the mean of all the decoded positions (lat, lon). Returns the mean (lat, lon)
-This mean(lat, lon) is used as the reference position for the locally unambigous method
-'''
+    '''
+    Calculation of the mean of all the decoded positions (lat, lon). Returns the mean (lat, lon)
+    This mean(lat, lon) is used as the reference position for the locally unambigous method
+    '''
 
     hit_counter = 0
     latitudeMean = 0

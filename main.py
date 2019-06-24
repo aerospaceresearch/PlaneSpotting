@@ -51,7 +51,7 @@ def load_dump1090_file(file):
     return json_data
 
 
-def main(filename, latitude, longitude):
+def main(filename, output, latitude, longitude):
     '''
     The expected inputs to the filename parameter: Path to a file, path to a folder.
     '''
@@ -97,7 +97,13 @@ def main(filename, latitude, longitude):
         print("")
 
         print("storing adsb-data")
-        path = "data" + os.sep + "adsb"
+        if output == None:
+            path = "data" + os.sep + "adsb"
+        else:
+            if output.find(os.sep, 0) != len(output)-1:
+                path = output + os.sep + "data" + os.sep + "adsb"
+            else:
+                path = output + "data" + os.sep + "adsb"
         utils.store_file(path, file, data)
 
 
@@ -124,6 +130,10 @@ def getArgs():
                         dest='longitude',
                         help='sets the groundstation longitude')
 
+    parser.add_argument('-o', '--output', action='store', default=None,
+                        dest='output',
+                        help='Path to output file')
+
     #parser.add_argument('--version', action='version', version='0.0') keeping this comment for future reminder
 
     return parser.parse_args()
@@ -132,4 +142,4 @@ def getArgs():
 if __name__ == '__main__':
     args = getArgs()
 
-    main(args.file, args.latitude, args.longitude)
+    main(args.file, args.output, args.latitude, args.longitude)
