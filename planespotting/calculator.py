@@ -36,9 +36,7 @@ def latitude(lat_cpr_even, lat_cpr_odd, t_even, t_odd): #Calculation of the lati
         latOdd -= 360
 
     if(NL(latEven) != NL(latOdd)):  #Confirmation of the validation of the calculated latitude, checks if latitude from both odd and evven frame lies in the same zone
-        #exit("The positions are in different latitude zones")
         return 0
-        #exit()
     if(t_even >= t_odd):
         return latEven
 
@@ -46,8 +44,7 @@ def latitude(lat_cpr_even, lat_cpr_odd, t_even, t_odd): #Calculation of the lati
         return latOdd
 
 def longitude(long_cpr_even, long_cpr_odd, t_even, t_odd, nl_lat):  #Calculation of longitude coordinate of the aircraft
-    #if(NL(int(lat_even1, 2)) != NL(int(lat_odd1, 2))):
-    #print(NL(10.2157745361328), NL(10.2162144547802))
+
     if(t_even > t_odd):
         ni = max(NL(nl_lat),1)
         dLon = 360 / ni
@@ -114,7 +111,6 @@ def get_meanposition(data, relevant_planes_id, hit_counter_global, latitudeMean_
         frame = data['data'][relevant_planes_id[i]]
 
         if frame['latitude'] is not None:
-            # print(frame["ICAO"], frame["latitude"], frame["longitude"])
             hit_counter += 1
             latitudeMean += frame["latitude"]
             longitudeMean += frame["longitude"]
@@ -181,7 +177,6 @@ def calculate_position(all_seen_planes, data):
                 if frame_b4 != frame["F"]:
 
                     # do positioning here with one alternating even and odd frame
-                    # print(id_b4, frame["id"])
 
                     if frame["F"] == 0:
                         # frame is even
@@ -250,7 +245,6 @@ def calculate_position(all_seen_planes, data):
                 lat_ambigous, lon_ambigous = pos_local(latGlobal, lonGlobal, frame["F"], frame["LAT_CPR"], frame["LON_CPR"])
 
                 if frame['latitude'] != lat_ambigous or frame['longitude'] != lon_ambigous:
-                    # print(">>>", stray position detected)
                     frame['latitude'] = lat_ambigous
                     frame['longitude'] = lon_ambigous
 
@@ -270,12 +264,10 @@ def calculate_position(all_seen_planes, data):
     longitudeMean_global = 0
 
     for plane in all_seen_planes:
-        #print(plane)
         relevant_planes_id = []
 
         for frame in data["data"]:
             if plane == frame["ICAO"] and identifier3(frame["df"], frame["tc"]):
-                #print(frame["ICAO"], frame["id"], frame["F"], frame["ALT"], frame["LAT_CPR"], frame['LON_CPR'])
                 relevant_planes_id.append(frame["id"])
 
 
@@ -311,7 +303,6 @@ def calculate_velocity(data):
     for i in range(len(data['data'])):
         frames = data['data'][i]
         if identifier4(frames['df'], frames['tc']):
-            #print(frames['Subtype'])
             if frames['Subtype'] == 1:
                 frames['isGspeed'] = 1
                 #Horizontal velocity Calculation Below
@@ -330,9 +321,6 @@ def calculate_velocity(data):
                     hdg += 360
 
                 frames['heading'], frames['velocity'] = hdg, vel
-                # data['data'][i] = frames
-                # print(data['data'][i])
-
                 #Vertical Rate calculation Below
                 '''
                 To be taken care of: VrSrc : Baro-pressure change/geometric change

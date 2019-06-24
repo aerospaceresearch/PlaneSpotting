@@ -1,4 +1,6 @@
-from planespotting.calculator import *
+from planespotting.calculator import (calculate_position, convert_position, calculate_velocity)
+from planespotting.utils import *
+from planespotting.identifiers import *
 
 
 long_msg_bits = 112
