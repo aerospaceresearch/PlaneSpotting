@@ -1,5 +1,4 @@
 import os
-import math
 import json
 
 def get_all_files(filename):

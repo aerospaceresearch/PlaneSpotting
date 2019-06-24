@@ -1,6 +1,6 @@
 from planespotting.identifiers import *
 from planespotting.utils import *
-from planespotting.decoder import *
+import math
 import numpy as np
 
 #All imports end here
