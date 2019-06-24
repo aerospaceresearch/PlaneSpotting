@@ -162,6 +162,8 @@ def const_frame_data(): #This serves as a template for the json structure. Consi
             "mach":None,
             "baro_alt_rate":None,
             "inertial_alt_rate":None,
+            #DF 21 & 5
+            "squawk":None,
             "x": None,
             "y": None,
             "z": None

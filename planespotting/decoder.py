@@ -326,7 +326,29 @@ def decode(data):
                 frames['baro_alt_rate'] = (int(adsb_msg_bin[36:45], 2) * (32) if adsb_msg_bin[35] == 0 else int(adsb_msg_bin[36:46], 2) - 512) * (32)
                 frames['inertial_alt_rate'] = (int(adsb_msg_bin[47:56], 2) * (32) if adsb_msg_bin[46] == 0 else int(adsb_msg_bin[47:56], 2) - 512) * (32)
             decode_id = 7
-            # if frames['df'] == 21:
+            if frames['df'] == 21:
+                msg_bin = hexToDec(frames['adsb_msg'])
+                C1 = msg_bin[19]
+                A1 = msg_bin[20]
+                C2 = msg_bin[21]
+                A2 = msg_bin[22]
+                C4 = msg_bin[23]
+                A4 = msg_bin[24]
+                # _ = mbin[25]
+                B1 = msg_bin[26]
+                D1 = msg_bin[27]
+                B2 = msg_bin[28]
+                D2 = msg_bin[29]
+                B4 = msg_bin[30]
+                D4 = msg_bin[31]
+
+                str1 = int(A4+A2+A1, 2)
+                str2 = int(B4+B2+B1, 2)
+                str3 = int(C4+C2+C1, 2)
+                str4 = int(D4+D2+D1, 2)
+
+                frames['squawk'] = str(str1) + str(str2) + str(str3) + str(str4)
+                
 
         # todo more decoders needed, because many messages escape them!
 
