@@ -27,3 +27,7 @@ def identifier6(df, tc): #Operation status
 def identifier7(df, tc): #Enhanced Mode-S
     if 20 <= df <= 21:
         return True
+
+def identifier8(df, tc): #For squawk Ident msgs
+    if df == 5:
+        return True
