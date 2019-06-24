@@ -4,7 +4,9 @@ import math
 import numpy as np
 
 #All imports end here
-
+'''
+Beginning of position calculation functions
+'''
 def lat_index(lat_cpr_even, lat_cpr_odd):
     return math.floor((59 * lat_cpr_even) - (60*lat_cpr_odd) + 0.5)
 
@@ -68,6 +70,10 @@ def longitude(long_cpr_even, long_cpr_odd, t_even, t_odd, nl_lat):  #Calculation
     else:
         return lon
 
+'''
+functions for two frame methods ends here
+'''
+
 
 def pos_local(latRef, lonRef, F, lat_cpr, lon_cpr):
 
@@ -102,7 +108,17 @@ def pos_local(latRef, lonRef, F, lat_cpr, lon_cpr):
 
     return lat, lon
 
+'''
+all position calculation functions end here.
+'''
+
 def get_meanposition(data, relevant_planes_id, hit_counter_global, latitudeMean_global, longitudeMean_global):
+
+'''
+Calculation of the mean of all the decoded positions (lat, lon). Returns the mean (lat, lon)
+This mean(lat, lon) is used as the reference position for the locally unambigous method
+'''
+
     hit_counter = 0
     latitudeMean = 0
     longitudeMean = 0
@@ -158,6 +174,9 @@ def calculate_position(all_seen_planes, data):
     print(len(all_seen_planes))
 
     for plane in all_seen_planes:
+        '''
+        Position decoding by the globally unambigous position (aka Two frame method)
+        '''
         #print(plane)
         relevant_planes_id = []
 
@@ -263,6 +282,9 @@ def calculate_position(all_seen_planes, data):
     latitudeMean_global = 0
     longitudeMean_global = 0
 
+    '''
+    Decoding the frames that had escaped the initial decoding run.
+    '''
     for plane in all_seen_planes:
         relevant_planes_id = []
 
