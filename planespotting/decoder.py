@@ -1,6 +1,7 @@
 from planespotting.calculator import (calculate_position, convert_position, calculate_velocity)
 from planespotting.utils import *
 from planespotting.identifiers import *
+import numpy as np
 
 
 long_msg_bits = 112
@@ -35,6 +36,43 @@ def get_TC(frame):
 def get_ICAO(frame):
     return frame[2:8]
 
+def crc(msg, encoding=False):
+    ''' Mode-S Cyclic Redundancy Check
+    Detect if bit error occurs in the Mode-S message
+    Args:
+        msg (string): 28 bytes hexadecimal message string
+        encoding (bool): True to encode the date only and return the checksum
+    Returns:
+        string: message checksum, or parity bits (encoder)
+    '''
+
+    # the polynominal generattor code for CRC [1111111111111010000001001]
+    generator_poly = np.array([1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,0,0,0,0,0,1,0,0,1])
+    generatornumber = len(generator_poly)
+
+    msgnpbin = bin2np(hex2bin(msg))
+
+    if encoding:
+        msgnpbin[-24:] = [0] * 24
+
+    # loop all bits, except last 24 parity bits
+    for i in range(len(msgnpbin) - 24):
+        if msgnpbin[i] == 0:
+            continue
+
+        # perform XOR logic operation, when 1
+        msgnpbin[i : i+generatornumber] = np.bitwise_xor(msgnpbin[i : i+generatornumber], generator_poly)
+
+    # last 24 parity bits
+    rest = np2bin(msgnpbin[-24:])
+    return rest
+
+
+def get_crcICAO(frame):
+    c0 = int(crc(frame, encoding = True), 2)
+    c1 = int(frame[-6:], 16)
+    icao = '%06X' % (c0 ^ c1)
+    return icao
 
 def get_AirbornePosition(frame): #Extraction of position oriented data
     #print(frame)
@@ -254,6 +292,7 @@ def decode(data):
 
         if identifier7(df, tc):
             adsb_msg_bin = hexToDec(frames['adsb_msg'][8:22])
+            frames['ICAO'] = get_crcICAO(frames['adsb_msg'])
             bds1 = int(adsb_msg_bin[:4], 2)
             bds2 = int(adsb_msg_bin[4:8], 2)
 

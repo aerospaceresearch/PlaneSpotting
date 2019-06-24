@@ -1,5 +1,7 @@
 import os
 import json
+import math
+import numpy as np
 
 def get_all_files(filename):
 
@@ -36,6 +38,22 @@ def hexToDec(hexdec):
 def hexToBin(hexdec):
     dec = int(hexdec, 16)
     return bin(dec)[2:].zfill(56)
+
+def hex2bin(hexstr):
+    ''' Convert a hexdecimal string to binary string, with zero fillings. '''
+    scale = 16
+    num_of_bits = len(hexstr) * math.log(scale, 2)
+    binstr = bin(int(hexstr, scale))[2:].zfill(int(num_of_bits))
+    return binstr
+
+def bin2np(binarystr):
+    ''' Convert binary string to numpy array. '''
+    return np.array([int(i) for i in binarystr])
+
+def np2bin(npbin):
+    """Convert a binary numpy array to string."""
+    return np.array2string(npbin, separator='')[1:-1]
+
 '''
 Small type utility functions ends here
 '''
