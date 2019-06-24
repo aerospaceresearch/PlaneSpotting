@@ -326,7 +326,8 @@ def decode(data):
                 frames['baro_alt_rate'] = (int(adsb_msg_bin[36:45], 2) * (32) if adsb_msg_bin[35] == 0 else int(adsb_msg_bin[36:46], 2) - 512) * (32)
                 frames['inertial_alt_rate'] = (int(adsb_msg_bin[47:56], 2) * (32) if adsb_msg_bin[46] == 0 else int(adsb_msg_bin[47:56], 2) - 512) * (32)
             decode_id = 7
-            
+            # if frames['df'] == 21:
+
         # todo more decoders needed, because many messages escape them!
 
 

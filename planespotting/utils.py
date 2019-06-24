@@ -32,7 +32,8 @@ def is_binary(file):
 
 def hexToDec(hexdec):
     dec = int(hexdec, 16)
-    return bin(dec)[2:].zfill(56)
+    bits = len(hexdec) * 4
+    return bin(dec)[2:].zfill(bits)
 
 
 def hexToBin(hexdec):
