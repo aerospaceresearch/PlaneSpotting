@@ -418,6 +418,7 @@ def decode(data):
 
         if identifier10(frames['df'], frames['tc']):
             frames['ICAO'] = get_crcICAO(frames['adsb_msg'])
+            frames['altitude'] = get_altCode(frames['adsb_msg'])
 
         if identifier11(frames['df'], frames['tc']):
             frames['ICAO'] = get_crcICAO(frames['adsb_msg'])
