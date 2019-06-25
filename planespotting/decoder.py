@@ -124,7 +124,20 @@ def get_crcICAO(frame):
     return icao
 
 def get_AirbornePosition(frame): #Extraction of position oriented data
-    #print(frame)
+    '''
+    This function cuts and converts the binary data into its equivalent integer.
+    The data cut consists of the variables required for position determination.
+    Args:
+        frame(string): 112bit DF 17/18 and tc:9-18 ADS-B message
+    Returns:
+        SS(integer): Surveillance status
+        NICsb(integer) : NIC supplement-B
+        ALT(integer):Altitude
+        T(integer):Time
+        F(integer):CPR odd/even frame flag
+        LAT_CPR(integer):Latitude in CPR format
+        LON_CPR(integer):Longitude in CPR format
+    '''
     data = frame[8:22]
     bin = hexToDec(data)
 
@@ -139,7 +152,44 @@ def get_AirbornePosition(frame): #Extraction of position oriented data
     return SS, NICsb, ALT, T, F, LAT_CPR, LON_CPR
 
 
-def get_VelocityData(frame, subtype): #Extraction of velocity oriented data
+def get_VelocityData(frame, subtype): #Extraction of velocity oriented
+    '''
+    This function cuts and converts the binary data into its equivalent integer.
+    The data cut consists of the variables required for veocity and heading calculation.
+    Args:
+        frame(string): 112bit DF 17/18 and tc:9-18 ADS-B message
+    Returns:
+        IC(integer) : Intent change flag
+        RESV_A(integer) : Reserved-A
+        NAC(integer) : Velocity uncertainty (NAC)
+        S_ew(integer) : East-West velocity sign
+        V_ew(integer) : East-West velocity
+        S_ns(integer) : North-South velocity sign
+        V_ns(integer) : North-South velocity
+        VrSrc(integer) : Vertical rate source
+        S_vr(integer) : Vertical rate sign
+        Vr(integer) : Vertical rate
+        RESV_B(integer) : Reserved-B
+        S_Dif(integer) : Diff from baro alt, sign
+        Dif(integer) : Diff from baro alt
+
+    When subtype = 3
+    Returns:
+            IC(integer) : Intent change flag
+            RESV_A(integer) : Reserved-A
+            NAC(integer) : Velocity uncertainty (NAC)
+            S_hdg(integer) : Heading status
+            Hdg(integer) : Heading (proportion)
+            AS_t (integer) : Airspeed Type
+            AS (integer) : Airspeed
+            VrSrc (integer) : Vertical rate source
+            S_vr (integer) : Vertical rate sign
+            Vr(integer) : Vertical rate
+            RESV_B (integer) : Reserved-B
+            S_Dif (integer) : Difference from baro alt, sign
+            Dif(integer) : Difference from baro alt
+
+    '''
     msg_bin = hexToDec(frame[8:22])
     if subtype == 1:
         IC = int(msg_bin[8], 2)
@@ -156,7 +206,7 @@ def get_VelocityData(frame, subtype): #Extraction of velocity oriented data
         S_Dif = int(msg_bin[48], 2)
         Dif = int(msg_bin[49:56], 2)
 
-        return IC, RESV_A, NAC, S_ew, V_ew, S_ns, V_ns, VrSrc, S_vr, Vr, RESV_B, S_Dif, S_Dif, Dif
+        return IC, RESV_A, NAC, S_ew, V_ew, S_ns, V_ns, VrSrc, S_vr, Vr, RESV_B, S_Dif, Dif
 
     elif subtype == 3:
         IC = int(msg_bin[8], 2)
@@ -322,7 +372,7 @@ def decode(data):
             frames["ICAO"] = get_ICAO(frames['adsb_msg'])
             frames['parity'] = frames['adsb_msg'][-6:]
             if subtype == 1:
-                IC, RESV_A, NAC, S_ew, V_ew, S_ns, V_ns, VrSrc, S_vr, Vr, RESV_B, S_Dif, S_Dif, Dif = get_VelocityData(frames['adsb_msg'], subtype)
+                IC, RESV_A, NAC, S_ew, V_ew, S_ns, V_ns, VrSrc, S_vr, Vr, RESV_B, S_Dif, Dif = get_VelocityData(frames['adsb_msg'], subtype)
                 frames['Subtype'] = subtype
                 frames["IC"] = IC
                 frames["RESV_A"] = RESV_A
