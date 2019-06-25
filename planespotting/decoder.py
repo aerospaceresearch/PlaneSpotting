@@ -410,9 +410,20 @@ def decode(data):
         '''
 
         if identifier8(frames['df'], frames['tc']):
-
+            frames['ICAO'] = get_crcICAO(frames['adsb_msg'])
             frames['squawk'] = get_Squawk(frames['adsb_msg'])
-            #exit(frames)
+
+        if identifier9(frames['df'], frames['tc']):
+            frames['ICAO'] = get_crcICAO(frames['adsb_msg'])
+
+        if identifier10(frames['df'], frames['tc']):
+            frames['ICAO'] = get_crcICAO(frames['adsb_msg'])
+
+        if identifier11(frames['df'], frames['tc']):
+            frames['ICAO'] = get_crcICAO(frames['adsb_msg'])
+
+        #Currently decoding only icao from DF0, 4, 5, 16, need more reading on what more can we decode
+
         # todo more decoders needed, because many messages escape them!
 
 

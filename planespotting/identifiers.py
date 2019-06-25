@@ -31,3 +31,15 @@ def identifier7(df, tc): #Enhanced Mode-S
 def identifier8(df, tc): #For squawk Ident msgs
     if df == 5:
         return True
+
+def identifier9(df, tc):
+    if df == 0:
+        return True
+
+def identifier10(df, tc):
+    if df == 4:
+        return True
+
+def identifier11(df, tc):
+    if df == 16:
+        return True
