@@ -470,20 +470,23 @@ def decode(data):
                 frames['Alt_hold_state'] = int(adsb_msg_bin[49], 2)
                 frames['Apr_state'] = int(adsb_msg_bin[50], 2)
                 frames['tgt_alt_source'] = adsb_msg_bin[54:56] #values are 00 01 10 11, so no conversion
+                #mcpalt always 32768 and baro 800mb
+                #got in file 1, 4 frames - only from light
 
             if bds1 == 5 and bds2 == 0:
-                frames['roll_angle'] = (int(adsb_msg_bin[2:11], 2) * (45.0/256.0) if adsb_msg_bin[1] == 0 else int(adsb_msg_bin[2:11], 2) - 512) * (45.0/256.0)
-                frames['true_track_angle'] = (int(adsb_msg_bin[13:23], 2) * (90.0/512.0) if adsb_msg_bin[12] == 0 else int(adsb_msg_bin[13:23], 2) - 512) * (90.0/512.0)
+                frames['roll_angle'] = int(adsb_msg_bin[2:11], 2) * (45.0/256.0) if adsb_msg_bin[1] == "0" else (int(adsb_msg_bin[2:11], 2) - 512) * (45.0/256.0)
+                frames['true_track_angle'] = int(adsb_msg_bin[13:23], 2) * (90.0/512.0) if adsb_msg_bin[12] == "0" else (int(adsb_msg_bin[13:23], 2) - 512) * (90.0/512.0)
                 frames['ground_speed'] = int(adsb_msg_bin[24:34], 2) * 2
-                frames['track_angle_rate'] = (int(adsb_msg_bin[36:45], 2) * (8.0/256.0) if adsb_msg_bin[35] == 0 else int(adsb_msg_bin[36:45], 2) - 512) * (8.0/256.0)
+                frames['track_angle_rate'] = int(adsb_msg_bin[36:45], 2) * (8.0/256.0) if adsb_msg_bin[35] == "0" else (int(adsb_msg_bin[36:45], 2) - 512) * (8.0/256.0)
                 frames['TAS'] = int(adsb_msg_bin[46:56], 2) * 2
-
+                #found in file 1, only 1 frame
             if bds1 == 6 and bds2 == 0:
-                frames['mag_hdg'] = (int(adsb_msg_bin[2:12], 2) * (90.0/512.0) if adsb_msg_bin[1] == 0 else int(adsb_msg_bin[2:12], 2) - 512) * (90.0/512.0)
+                frames['mag_hdg'] = int(adsb_msg_bin[2:12], 2) * (90.0/512.0) if adsb_msg_bin[1] == "0" else (int(adsb_msg_bin[2:12], 2) - 1024) * (90.0/512.0)
                 frames['IAS'] = int(adsb_msg_bin[13:23], 2) * 1
                 frames['mach'] = int(adsb_msg_bin[24:34], 2) * (2.048/512)
-                frames['baro_alt_rate'] = (int(adsb_msg_bin[36:45], 2) * (32) if adsb_msg_bin[35] == 0 else int(adsb_msg_bin[36:46], 2) - 512) * (32)
-                frames['inertial_alt_rate'] = (int(adsb_msg_bin[47:56], 2) * (32) if adsb_msg_bin[46] == 0 else int(adsb_msg_bin[47:56], 2) - 512) * (32)
+                frames['baro_alt_rate'] = int(adsb_msg_bin[36:45], 2) * (32) if adsb_msg_bin[35] == "0" else (int(adsb_msg_bin[36:46], 2) - 512) * (32)
+                frames['inertial_alt_rate'] = int(adsb_msg_bin[47:56], 2) * 32 if adsb_msg_bin[46] == "0" else (int(adsb_msg_bin[47:56], 2)-512)*32
+                #found lot of frames in 1
 
             if frames['df'] == 20:
                 frames['altitude'] = get_altCode(frames['adsb_msg'])
@@ -494,7 +497,7 @@ def decode(data):
                 frames['squawk'] = get_Squawk(frames['adsb_msg'])
 
         '''
-        Decoding 56 bit msgs from hemisphere
+        Decoding 56 bit msgs from here
         '''
 
         if identifier8(frames['df'], frames['tc']):
