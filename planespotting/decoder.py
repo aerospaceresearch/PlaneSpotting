@@ -18,12 +18,27 @@ All messages above df 16 are long messages
 '''
 
 def get_DF(frame):
+    '''
+    This function returns the Downlink Format of any ads-b message present in the stream
+    Args:
+        frame(string): The 56/112 bit ads-b message
+    Returns:
+        df(integer): Downlink format of 'frame'
+    '''
     bin_frame = hexToDec(frame)
     df = int(bin_frame[0:5], 2)
     return df
 
 
 def get_TC(frame):
+    '''
+    Extraction of Type code from 112 bit ads-b messages
+    Args:
+        frame(string) : 112 bit ads-b message
+    Return:
+        (int)binary(adsb_dataBlock)[0-4]: It returns the integer part of the first 4 bit of the
+                                            ads-b message block
+    '''
     data = frame[8:22]
     bin = hexToDec(data)
 
@@ -34,6 +49,13 @@ def get_TC(frame):
 
 
 def get_ICAO(frame):
+    '''
+    Extracts the ICAO of Downlink Format 11, 17 & 18 messages only
+    Args:
+        frame(string): ADS-b message with DF 11, 17 or 18
+    Returns:
+        frame[2-7](string): The icao 24-bit address in hexadecimal format
+    '''
     return frame[2:8]
 
 def get_gray2alt(codestr):
@@ -89,6 +111,13 @@ def crc(msg, encoding=False):
 
 
 def get_crcICAO(frame):
+    '''
+    Extracts the ICAO of Downlink Format 0, 4, 5, 16, 20 & 21 messages only
+    Args:
+        frame(string): ADS-b message with DF 0, 4, 5, 16, 20 or 21
+    Returns:
+        icao(string): The icao 24-bit address in hexadecimal format
+    '''
     c0 = int(crc(frame, encoding = True), 2)
     c1 = int(frame[-6:], 16)
     icao = '%06X' % (c0 ^ c1)
