@@ -228,7 +228,7 @@ def calculate_position(all_seen_planes, data):
                     frame['longitude'] = nl_lon
 
 
-            data["data"][relevant_planes_id[i]] = frame
+            #data["data"][relevant_planes_id[i]] = frame
             frame_b4 = data["data"][relevant_planes_id[i]]["F"]
             id_b4 = frame["id"]
 
@@ -267,7 +267,7 @@ def calculate_position(all_seen_planes, data):
                     frame['latitude'] = lat_ambigous
                     frame['longitude'] = lon_ambigous
 
-            data['data'][relevant_planes_id[i]] = frame
+            #data['data'][relevant_planes_id[i]] = frame
         hit_counter, latitudeMean, longitudeMean, hit_counter_global, latitudeMean_global, longitudeMean_global = \
                  get_meanposition(data, relevant_planes_id, hit_counter_global, latitudeMean_global, longitudeMean_global)
 
@@ -301,8 +301,6 @@ def calculate_position(all_seen_planes, data):
 
                 frame['latitude'] = lat_ambigous
                 frame['longitude'] = lon_ambigous
-            data['data'][relevant_planes_id[i]] = frame
-
 
 
         # todo after the odd-even positioning, the average position can be used for latRef and lonRef
@@ -368,7 +366,6 @@ def calculate_velocity(data):
                 Vr = (frames['Vr'] -1) * 64
                 frames["vert_rate"] = Vr if frames['S_vr'] == 0 else Vr*-1
 
-            data['data'][i] = frames
 
     return data
 
@@ -381,6 +378,5 @@ def convert_position(data):
         if frames["latitude"] is not None and frames["longitude"] is not None and frames["altitude"] is not None:
             frames["x"], frames["y"], frames["z"] = get_cartesian_coordinates(frames["latitude"], frames["longitude"], frames["altitude"])
 
-        data['data'][i] = frames
 
     return data
