@@ -36,6 +36,26 @@ def get_TC(frame):
 def get_ICAO(frame):
     return frame[2:8]
 
+def get_gray2alt(codestr):
+    gc500 = codestr[:8]
+    n500 = gray2int(gc500)
+
+    # in 100-ft step must be converted first
+    gc100 = codestr[8:]
+    n100 = gray2int(gc100)
+
+    if n100 in [0, 5, 6]:
+        return None
+
+    if n100 == 7:
+        n100 = 5
+
+    if n500%2:
+        n100 = 6 - n100
+
+    alt = (n500*500 + n100*100) - 1300
+    return alt
+
 def crc(msg, encoding=False):
     ''' Mode-S Cyclic Redundancy Check
     Detect if bit error occurs in the Mode-S message
@@ -172,7 +192,6 @@ def get_Squawk(frame):
     A2 = msg_bin[22]
     C4 = msg_bin[23]
     A4 = msg_bin[24]
-    # _ = mbin[25]
     B1 = msg_bin[26]
     D1 = msg_bin[27]
     B2 = msg_bin[28]
@@ -196,10 +215,38 @@ def altitude(bin_alt):
     else:
         return altitude * 100 - 1000
 
+def get_altCode(frame):
+    msg_bin = hexToDec(frame)
+    mbit = msg_bin[25]
+    qbit = msg_bin[27]
 
+    if mbit == "0":
+        if qbit == "1":
+            vbin = msg_bin[19:25] + msg_bin[26] + msg_bin[28:32]
+            alt_code = int(vbin, 2) * 25 - 1000
+        else:
+            C1 = msg_bin[19]
+            A1 = msg_bin[20]
+            C2 = msg_bin[21]
+            A2 = msg_bin[22]
+            C4 = msg_bin[23]
+            A4 = msg_bin[24]
+            B1 = msg_bin[26]
+            B2 = msg_bin[28]
+            D2 = msg_bin[29]
+            B4 = msg_bin[30]
+            D4 = msg_bin[31]
+
+            graystr =  D2 + D4 + A1 + A2 + A4 + B1 + B2 + B4 + C1 + C2 + C4
+            alt_code = get_gray2alt(graystr)
+    else:
+        vbin = mbin[19:25] + mbin[26:31]
+        alt_code = int(bin2int(vbin) * 3.28084)
+
+    return alt_code
 
 def decode(data):
-    #for id in range(len(data["data"])):
+    #for id in range(lendata["data"])):
     for frames in data['data']:
 
         df = get_DF(frames['adsb_msg'])
@@ -321,6 +368,7 @@ def decode(data):
             bds1 = int(adsb_msg_bin[:4], 2)
             bds2 = int(adsb_msg_bin[4:8], 2)
             frames['parity'] = frames['adsb_msg'][-6:]
+            decode_id = 7
 
             if bds1 == 2 and bds2 == 0:
                 frames['callsign'] = get_Callsign(hexToDec(frames['adsb_msg'])[40:88])
@@ -348,7 +396,11 @@ def decode(data):
                 frames['mach'] = int(adsb_msg_bin[24:34], 2) * (2.048/512)
                 frames['baro_alt_rate'] = (int(adsb_msg_bin[36:45], 2) * (32) if adsb_msg_bin[35] == 0 else int(adsb_msg_bin[36:46], 2) - 512) * (32)
                 frames['inertial_alt_rate'] = (int(adsb_msg_bin[47:56], 2) * (32) if adsb_msg_bin[46] == 0 else int(adsb_msg_bin[47:56], 2) - 512) * (32)
-            decode_id = 7
+
+            if frames['df'] == 20:
+                frames['altitude'] = get_altCode(frames['adsb_msg'])
+                #exit(frames)
+
             if frames['df'] == 21:
 
                 frames['squawk'] = get_Squawk(frames['adsb_msg'])
