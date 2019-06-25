@@ -78,6 +78,15 @@ def get_gray2alt(codestr):
     alt = (n500*500 + n100*100) - 1300
     return alt
 
+def gray2int(graystr):
+    """Convert greycode to binary."""
+    num = int(graystr, 2)
+    num ^= (num >> 8)
+    num ^= (num >> 4)
+    num ^= (num >> 2)
+    num ^= (num >> 1)
+    return num
+
 def crc(msg, encoding=False):
     ''' Mode-S Cyclic Redundancy Check
     Detect if bit error occurs in the Mode-S message
@@ -319,8 +328,8 @@ def get_altCode(frame):
             graystr =  D2 + D4 + A1 + A2 + A4 + B1 + B2 + B4 + C1 + C2 + C4
             alt_code = get_gray2alt(graystr)
     else:
-        vbin = mbin[19:25] + mbin[26:31]
-        alt_code = int(bin2int(vbin) * 3.28084)
+        vbin = msg_bin[19:25] + msg_bin[26:31]
+        alt_code = int(int(vbin, 2) * 3.28084)
 
     return alt_code
 
