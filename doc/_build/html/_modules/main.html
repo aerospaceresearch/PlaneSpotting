@@ -1,0 +1,242 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>main &#8212; PlaneSpotting 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">PlaneSpotting 0.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for main</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">planespotting</span> <span class="k">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">planespotting.decoder</span> <span class="k">import</span> <span class="n">decode</span>
+
+
+<span class="n">samplerate</span> <span class="o">=</span> <span class="mi">2000000</span> <span class="c1"># of the recorded IQ date with 2MHz for each I and Q</span>
+<span class="n">samplerate_avrmlat</span> <span class="o">=</span> <span class="mi">12000000</span> <span class="c1"># AVR, freerunning 48-bit timestamp @ 12MHz</span>
+
+
+<div class="viewcode-block" id="load_dump1090_file"><a class="viewcode-back" href="../modules.html#main.load_dump1090_file">[docs]</a><span class="k">def</span> <span class="nf">load_dump1090_file</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    The json from the input file is loaded here.</span>
+
+<span class="sd">    A new empty json structure gets initialised here and the raw data from the</span>
+<span class="sd">    input file is plugged into this new json.</span>
+
+<span class="sd">    What is this new json structure: It contains all the keys to all possible data that</span>
+<span class="sd">                                    can be extracted using the decoder script. The decoder.py files</span>
+<span class="sd">                                    fills up the keys in them.</span>
+
+<span class="sd">    :param file: JSON input file</span>
+<span class="sd">    :type file: File Object</span>
+<span class="sd">    :return: JSON</span>
+<span class="sd">    :rtype: dictionary</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">dump1090_msg</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">json_data</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">const_frame</span><span class="p">()</span>
+    <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;file&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;mlat_mode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;avrmlat&quot;</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="ow">and</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_binary</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">infile</span><span class="p">:</span>
+
+            <span class="nb">id</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">payload</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">infile</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">):</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">const_frame_data</span><span class="p">()[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+
+                    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span>  <span class="nb">id</span>
+                    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;raw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span>
+                    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;SamplePos&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">13</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span> <span class="o">//</span> <span class="p">(</span><span class="n">samplerate_avrmlat</span> <span class="o">//</span> <span class="n">samplerate</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="mi">112</span> <span class="o">+</span> <span class="mi">8</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
+                    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;adsb_msg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">13</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">payload</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+                    <span class="nb">id</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">payload</span>
+
+    <span class="k">return</span> <span class="n">json_data</span></div>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../modules.html#main.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    The expected inputs to the filename parameter: Path to a file, path to a folder.</span>
+
+<span class="sd">    :param filename: The path to the folder/file which cotains the RAW ADS-B.</span>
+<span class="sd">    :param output: Output path</span>
+<span class="sd">    :param latitude: Latitude coordinate of the ground station</span>
+<span class="sd">    :param longitude: Longitude coordinate of the ground station</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">file</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;loading in all files in folder:&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+
+        <span class="n">processing_files</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_all_files</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">file</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;loading in this file:&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+
+        <span class="n">processing_files</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_one_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;neither file, nor folder. ending programme.&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">processing_files</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">exit</span><span class="p">(</span><span class="s2">&quot;No input files found in the directory. Quitting&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;processing&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">processing_files</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">processing_files</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;processing&quot;</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">load_dump1090_file</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;gs_lat&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;gs_lon&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># if the gs location is already set, we don&#39;t need the inputs.</span>
+            <span class="c1"># if they are set, we take them from the loaded data strcture.</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;gs_lat&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">latitude</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;gs_lon&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">longitude</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;gs_lat&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;gs_lon&quot;</span><span class="p">])</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">decode</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;convert raw adsb files&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;decode converted raw adsb files&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;decode again planes by icao address. #1&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;decode again planes by icao address. #n&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;storing adsb-data&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">output</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;data&quot;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="s2">&quot;adsb&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">output</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">output</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">output</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="s2">&quot;data&quot;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="s2">&quot;adsb&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">output</span> <span class="o">+</span> <span class="s2">&quot;data&quot;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="s2">&quot;adsb&quot;</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">store_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="getArgs"><a class="viewcode-back" href="../modules.html#main.getArgs">[docs]</a><span class="k">def</span> <span class="nf">getArgs</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    defining the input parameters by the arguments.</span>
+
+<span class="sd">    src: https://pymotw.com/2/argparse/</span>
+
+<span class="sd">    :return: args</span>
+<span class="sd">    :rtype: argparse.Namespace</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-f&#39;</span><span class="p">,</span> <span class="s1">&#39;--from&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;input&quot;</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">,</span>
+                        <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;file&#39;</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;load in the file or folder&#39;</span><span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--lat&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;latitude&#39;</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;sets the groundstation latitude&#39;</span><span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--lon&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;longitude&#39;</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;sets the groundstation longitude&#39;</span><span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="s1">&#39;--output&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;output&#39;</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Path to output file&#39;</span><span class="p">)</span>
+
+    <span class="c1">#parser.add_argument(&#39;--version&#39;, action=&#39;version&#39;, version=&#39;0.0&#39;) keeping this comment for future reminder</span>
+    <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">getArgs</span><span class="p">()</span>
+
+    <span class="n">main</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">output</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">longitude</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">PlaneSpotting 0.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Shoumik Dey and &amp; Andreas Hornig.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7.
+    </div>
+  </body>
+</html>

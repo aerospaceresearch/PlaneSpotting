@@ -19,6 +19,10 @@ def load_dump1090_file(file):
                                     can be extracted using the decoder script. The decoder.py files
                                     fills up the keys in them.
 
+    :param file: JSON input file
+    :type file: File Object
+    :return: JSON
+    :rtype: dictionary
     '''
 
     dump1090_msg = []
@@ -54,6 +58,12 @@ def load_dump1090_file(file):
 def main(filename, output, latitude, longitude):
     '''
     The expected inputs to the filename parameter: Path to a file, path to a folder.
+
+    :param filename: The path to the folder/file which cotains the RAW ADS-B.
+    :param output: Output path
+    :param latitude: Latitude coordinate of the ground station
+    :param longitude: Longitude coordinate of the ground station
+
     '''
     if os.path.isdir(args.file):
         print("loading in all files in folder:", filename)
@@ -114,6 +124,7 @@ def getArgs():
     src: https://pymotw.com/2/argparse/
 
     :return: args
+    :rtype: argparse.Namespace
     '''
 
     parser = argparse.ArgumentParser()
@@ -135,7 +146,6 @@ def getArgs():
                         help='Path to output file')
 
     #parser.add_argument('--version', action='version', version='0.0') keeping this comment for future reminder
-
     return parser.parse_args()
 
 
