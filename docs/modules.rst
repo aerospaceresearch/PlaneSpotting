@@ -10,7 +10,7 @@ PlaneSpotting main
 .. automodule:: main
    :members:
 
+Frame Identification and Decoding
+=================================
 .. automodule:: planespotting.identifiers
    :members:
-
-   .. automethod:: planespotting.identifiers.identifier1

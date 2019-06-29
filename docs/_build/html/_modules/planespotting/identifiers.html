@@ -1,0 +1,253 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>planespotting.identifiers &#8212; PlaneSpotting 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">PlaneSpotting 0.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for planespotting.identifiers</h1><div class="highlight"><pre>
+<span></span>
+
+<div class="viewcode-block" id="identifier1"><a class="viewcode-back" href="../../modules.html#planespotting.identifiers.identifier1">[docs]</a><span class="k">def</span> <span class="nf">identifier1</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">tc</span><span class="p">):</span> <span class="c1">#Aircraft identification</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    ADS-B type identifier function for Downlink Format 17 - 18 &amp; Type Code 1 - 4</span>
+<span class="sd">    These messages contain Aircraft identification data</span>
+
+<span class="sd">    :param df: Downlink Format</span>
+<span class="sd">    :type df: Integer</span>
+<span class="sd">    :param tc: Downlink Format</span>
+<span class="sd">    :type tc: identifier</span>
+<span class="sd">    :return: True/False</span>
+<span class="sd">    :rtype: Boolean</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="mi">17</span> <span class="o">&lt;=</span> <span class="n">df</span> <span class="o">&lt;=</span> <span class="mi">18</span> <span class="ow">and</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">tc</span> <span class="o">&lt;=</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="identifier2"><a class="viewcode-back" href="../../modules.html#planespotting.identifiers.identifier2">[docs]</a><span class="k">def</span> <span class="nf">identifier2</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">tc</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    ADS-B type identifier function for Downlink Format 17 - 18 &amp; Type Code 5 - 8</span>
+<span class="sd">    These messages contain Surface Position data</span>
+
+<span class="sd">    :param df: Downlink Format</span>
+<span class="sd">    :type df: Integer</span>
+<span class="sd">    :param tc: Downlink Format</span>
+<span class="sd">    :type tc: identifier</span>
+<span class="sd">    :return: True/False</span>
+<span class="sd">    :rtype: Boolean</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="mi">17</span> <span class="o">&lt;=</span> <span class="n">df</span> <span class="o">&lt;=</span> <span class="mi">18</span> <span class="ow">and</span> <span class="mi">5</span> <span class="o">&lt;=</span> <span class="n">tc</span> <span class="o">&lt;=</span> <span class="mi">8</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="identifier3"><a class="viewcode-back" href="../../modules.html#planespotting.identifiers.identifier3">[docs]</a><span class="k">def</span> <span class="nf">identifier3</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">tc</span><span class="p">):</span> <span class="c1">#airborne position with baro altitude</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    ADS-B type identifier function for Downlink Format 17 - 18 &amp; Type Code 9-18</span>
+<span class="sd">    These messages contain Airborne Position with Barometric Altitude data</span>
+
+<span class="sd">    :param df: Downlink Format</span>
+<span class="sd">    :type df: Integer</span>
+<span class="sd">    :param tc: Downlink Format</span>
+<span class="sd">    :type tc: identifier</span>
+<span class="sd">    :return: True/False</span>
+<span class="sd">    :rtype: Boolean</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="mi">17</span> <span class="o">&lt;=</span> <span class="n">df</span> <span class="o">&lt;=</span> <span class="mi">18</span> <span class="ow">and</span> <span class="mi">9</span> <span class="o">&lt;=</span> <span class="n">tc</span> <span class="o">&lt;=</span> <span class="mi">18</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="identifier4"><a class="viewcode-back" href="../../modules.html#planespotting.identifiers.identifier4">[docs]</a><span class="k">def</span> <span class="nf">identifier4</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">tc</span><span class="p">):</span> <span class="c1">#Airborne velocity</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    ADS-B type identifier function for Downlink Format 17 - 18 &amp; Type Code 19</span>
+<span class="sd">    These messages contain Airborne Velocity data</span>
+
+<span class="sd">    :param df: Downlink Format</span>
+<span class="sd">    :type df: Integer</span>
+<span class="sd">    :param tc: Downlink Format</span>
+<span class="sd">    :type tc: identifier</span>
+<span class="sd">    :return: True/False</span>
+<span class="sd">    :rtype: Boolean</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="mi">17</span> <span class="o">&lt;=</span> <span class="n">df</span> <span class="o">&lt;=</span> <span class="mi">18</span> <span class="ow">and</span> <span class="n">tc</span> <span class="o">==</span> <span class="mi">19</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="identifier5"><a class="viewcode-back" href="../../modules.html#planespotting.identifiers.identifier5">[docs]</a><span class="k">def</span> <span class="nf">identifier5</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">tc</span><span class="p">):</span> <span class="c1">#Airborne Position with GNSS altitude</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    ADS-B type identifier function for Downlink Format 17 - 18 &amp; Type Code 20-22</span>
+<span class="sd">    These messages contain Airborne Position with GNSS altitude data</span>
+
+<span class="sd">    :param df: Downlink Format</span>
+<span class="sd">    :type df: Integer</span>
+<span class="sd">    :param tc: Downlink Format</span>
+<span class="sd">    :type tc: identifier</span>
+<span class="sd">    :return: True/False</span>
+<span class="sd">    :rtype: Boolean</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="mi">17</span> <span class="o">&lt;=</span> <span class="n">df</span> <span class="o">&lt;=</span> <span class="mi">18</span> <span class="ow">and</span> <span class="mi">20</span> <span class="o">&lt;=</span> <span class="n">tc</span> <span class="o">&lt;=</span> <span class="mi">22</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="identifier6"><a class="viewcode-back" href="../../modules.html#planespotting.identifiers.identifier6">[docs]</a><span class="k">def</span> <span class="nf">identifier6</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">tc</span><span class="p">):</span> <span class="c1">#Operation status</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    ADS-B type identifier function for Downlink Format 17 - 18 &amp; Type Code 31</span>
+<span class="sd">    These messages contain Operation Status data</span>
+
+<span class="sd">    :param df: Downlink Format</span>
+<span class="sd">    :type df: Integer</span>
+<span class="sd">    :param tc: Downlink Format</span>
+<span class="sd">    :type tc: identifier</span>
+<span class="sd">    :return: True/False</span>
+<span class="sd">    :rtype: Boolean</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="mi">17</span> <span class="o">&lt;=</span> <span class="n">df</span> <span class="o">&lt;=</span> <span class="mi">18</span> <span class="ow">and</span> <span class="n">tc</span> <span class="o">==</span> <span class="mi">31</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="identifier7"><a class="viewcode-back" href="../../modules.html#planespotting.identifiers.identifier7">[docs]</a><span class="k">def</span> <span class="nf">identifier7</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">tc</span><span class="p">):</span> <span class="c1">#Enhanced Mode-S</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    ADS-B type identifier function for Downlink Format 20 - 21</span>
+<span class="sd">    These messages contain Enhanced Mode-S ADS-B data</span>
+
+<span class="sd">    :param df: Downlink Format</span>
+<span class="sd">    :type df: Integer</span>
+<span class="sd">    :param tc: Downlink Format</span>
+<span class="sd">    :type tc: identifier</span>
+<span class="sd">    :return: True/False</span>
+<span class="sd">    :rtype: Boolean</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="mi">20</span> <span class="o">&lt;=</span> <span class="n">df</span> <span class="o">&lt;=</span> <span class="mi">21</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="identifier8"><a class="viewcode-back" href="../../modules.html#planespotting.identifiers.identifier8">[docs]</a><span class="k">def</span> <span class="nf">identifier8</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">tc</span><span class="p">):</span> <span class="c1">#For squawk Ident msgs</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    ADS-B type identifier function for Downlink Format 5</span>
+<span class="sd">    These messages contain SQUAWK/IDENT data</span>
+
+<span class="sd">    :param df: Downlink Format</span>
+<span class="sd">    :type df: Integer</span>
+<span class="sd">    :param tc: Downlink Format</span>
+<span class="sd">    :type tc: identifier</span>
+<span class="sd">    :return: True/False</span>
+<span class="sd">    :rtype: Boolean</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">df</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="identifier9"><a class="viewcode-back" href="../../modules.html#planespotting.identifiers.identifier9">[docs]</a><span class="k">def</span> <span class="nf">identifier9</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">tc</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    ADS-B type identifier function for Downlink Format 0</span>
+<span class="sd">    These messages contain Short Air to Air ACAS messages</span>
+
+<span class="sd">    :param df: Downlink Format</span>
+<span class="sd">    :type df: Integer</span>
+<span class="sd">    :param tc: Downlink Format</span>
+<span class="sd">    :type tc: identifier</span>
+<span class="sd">    :return: True/False</span>
+<span class="sd">    :rtype: Boolean</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">df</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="identifier10"><a class="viewcode-back" href="../../modules.html#planespotting.identifiers.identifier10">[docs]</a><span class="k">def</span> <span class="nf">identifier10</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">tc</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    ADS-B type identifier function for Downlink Format 4</span>
+<span class="sd">    These messages contain Altitude data</span>
+
+<span class="sd">    :param df: Downlink Format</span>
+<span class="sd">    :type df: Integer</span>
+<span class="sd">    :param tc: Downlink Format</span>
+<span class="sd">    :type tc: identifier</span>
+<span class="sd">    :return: True/False</span>
+<span class="sd">    :rtype: Boolean</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">df</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="identifier11"><a class="viewcode-back" href="../../modules.html#planespotting.identifiers.identifier11">[docs]</a><span class="k">def</span> <span class="nf">identifier11</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">tc</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    ADS-B type identifier function for Downlink Format 5</span>
+<span class="sd">    These messages contain Long ACAS messages</span>
+
+<span class="sd">    :param df: Downlink Format</span>
+<span class="sd">    :type df: Integer</span>
+<span class="sd">    :param tc: Downlink Format</span>
+<span class="sd">    :type tc: identifier</span>
+<span class="sd">    :return: True/False</span>
+<span class="sd">    :rtype: Boolean</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">df</span> <span class="o">==</span> <span class="mi">16</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">PlaneSpotting 0.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Shoumik Dey and &amp; Andreas Hornig.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7.
+    </div>
+  </body>
+</html>
