@@ -8,7 +8,7 @@ def identifier1(df, tc): #Aircraft identification
     :param df: Downlink Format
     :type df: Integer
     :param tc: Downlink Format
-    :type tc: identifier
+    :type tc: Integer
     :return: True/False
     :rtype: Boolean
     '''
@@ -23,7 +23,7 @@ def identifier2(df, tc):
     :param df: Downlink Format
     :type df: Integer
     :param tc: Downlink Format
-    :type tc: identifier
+    :type tc: Integer
     :return: True/False
     :rtype: Boolean
     '''
@@ -38,7 +38,7 @@ def identifier3(df, tc): #airborne position with baro altitude
     :param df: Downlink Format
     :type df: Integer
     :param tc: Downlink Format
-    :type tc: identifier
+    :type tc: Integer
     :return: True/False
     :rtype: Boolean
     '''
@@ -53,7 +53,7 @@ def identifier4(df, tc): #Airborne velocity
     :param df: Downlink Format
     :type df: Integer
     :param tc: Downlink Format
-    :type tc: identifier
+    :type tc: Integer
     :return: True/False
     :rtype: Boolean
     '''
@@ -68,7 +68,7 @@ def identifier5(df, tc): #Airborne Position with GNSS altitude
     :param df: Downlink Format
     :type df: Integer
     :param tc: Downlink Format
-    :type tc: identifier
+    :type tc: Integer
     :return: True/False
     :rtype: Boolean
     '''
@@ -83,7 +83,7 @@ def identifier6(df, tc): #Operation status
     :param df: Downlink Format
     :type df: Integer
     :param tc: Downlink Format
-    :type tc: identifier
+    :type tc: Integer
     :return: True/False
     :rtype: Boolean
     '''
@@ -98,7 +98,7 @@ def identifier7(df, tc): #Enhanced Mode-S
     :param df: Downlink Format
     :type df: Integer
     :param tc: Downlink Format
-    :type tc: identifier
+    :type tc: Integer
     :return: True/False
     :rtype: Boolean
     '''
@@ -113,7 +113,7 @@ def identifier8(df, tc): #For squawk Ident msgs
     :param df: Downlink Format
     :type df: Integer
     :param tc: Downlink Format
-    :type tc: identifier
+    :type tc: Integer
     :return: True/False
     :rtype: Boolean
     '''
@@ -128,7 +128,7 @@ def identifier9(df, tc):
     :param df: Downlink Format
     :type df: Integer
     :param tc: Downlink Format
-    :type tc: identifier
+    :type tc: Integer
     :return: True/False
     :rtype: Boolean
     '''
@@ -143,7 +143,7 @@ def identifier10(df, tc):
     :param df: Downlink Format
     :type df: Integer
     :param tc: Downlink Format
-    :type tc: identifier
+    :type tc: Integer
     :return: True/False
     :rtype: Boolean
     '''
@@ -158,7 +158,7 @@ def identifier11(df, tc):
     :param df: Downlink Format
     :type df: Integer
     :param tc: Downlink Format
-    :type tc: identifier
+    :type tc: Integer
     :return: True/False
     :rtype: Boolean
     '''
