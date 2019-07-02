@@ -9,16 +9,24 @@ samplerate_avrmlat = 12000000 # AVR, freerunning 48-bit timestamp @ 12MHz
 
 
 def load_dump1090_file(file):
+    '''
+    The json from the input file is loaded here.
+
+    A new empty json structure gets initialised here and the raw data from the
+    input file is plugged into this new json.
+
+    What is this new json structure: It contains all the keys to all possible data that
+                                    can be extracted using the decoder script. The decoder.py files
+                                    fills up the keys in them.
+
+    :param file: JSON input file
+    :type file: File Object
+    :return: JSON
+    :rtype: dictionary
+    '''
 
     dump1090_msg = []
 
-    # json_data = {
-    #     "meta" : {
-    #         "file" : file.split(os.sep)[-1],
-    #         "mlat_mode" : ""
-    #     },
-    #     "data" : []
-    # }
     json_data = utils.const_frame()
     json_data["meta"]["file"] = file.split(os.sep)[-1]
     json_data["meta"]["mlat_mode"] = "avrmlat"
@@ -47,7 +55,17 @@ def load_dump1090_file(file):
     return json_data
 
 
-def main(filename, latitude, longitude, altitude):
+def main(filename, output, latitude, longitude, altitude):
+    '''
+    The expected inputs to the filename parameter: Path to a file, path to a folder.
+
+    :param filename: The path to the folder/file which cotains the RAW ADS-B.
+    :param output: Output path
+    :param latitude: Latitude coordinate of the ground station
+    :param longitude: Longitude coordinate of the ground station
+
+    '''
+
     if os.path.isdir(args.file):
         print("loading in all files in folder:", filename)
 
@@ -62,7 +80,8 @@ def main(filename, latitude, longitude, altitude):
         print("neither file, nor folder. ending programme.")
         return
 
-
+    if len(processing_files) == 0:
+        exit("No input files found in the directory. Quitting")
     print("processing", len(processing_files))
     print("")
     for file in processing_files:
@@ -91,7 +110,13 @@ def main(filename, latitude, longitude, altitude):
         print("")
 
         print("storing adsb-data")
-        path = "data" + os.sep + "adsb"
+        if output == None:
+            path = "data" + os.sep + "adsb"
+        else:
+            if output.find(os.sep, 0) != len(output)-1:
+                path = output + os.sep + "data" + os.sep + "adsb"
+            else:
+                path = output + "data" + os.sep + "adsb"
         utils.store_file(path, file, data)
 
 
@@ -102,11 +127,12 @@ def getArgs():
     src: https://pymotw.com/2/argparse/
 
     :return: args
+    :rtype: argparse.Namespace
     '''
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-f', '--from', action='store', default=os.sep,
+    parser.add_argument('-f', '--from', action='store', default="input"+os.sep,
                         dest='file',
                         help='load in the file or folder')
 
@@ -122,12 +148,16 @@ def getArgs():
                         dest='altitude',
                         help='sets the groundstation longitude')
 
-    #parser.add_argument('--version', action='version', version='0.0')
+    parser.add_argument('-o', '--output', action='store', default=None,
+                        dest='output',
+                        help='Path to output file')
 
+
+    #parser.add_argument('--version', action='version', version='0.0') keeping this comment for future reminder
     return parser.parse_args()
 
 
 if __name__ == '__main__':
     args = getArgs()
 
-    main(args.file, args.latitude, args.longitude, args.altitude)
+    main(args.file, args.output, args.latitude, args.longitude, args.altitude)

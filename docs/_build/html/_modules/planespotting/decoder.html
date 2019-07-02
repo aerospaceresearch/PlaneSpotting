@@ -1,0 +1,614 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>planespotting.decoder &#8212; PlaneSpotting 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">PlaneSpotting 0.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for planespotting.decoder</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">planespotting.calculator</span> <span class="k">import</span> <span class="p">(</span><span class="n">calculate_position</span><span class="p">,</span> <span class="n">convert_position</span><span class="p">,</span> <span class="n">calculate_velocity</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">planespotting.utils</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">planespotting.identifiers</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<span class="n">long_msg_bits</span> <span class="o">=</span> <span class="mi">112</span>
+<span class="n">short_msg_bits</span> <span class="o">=</span> <span class="mi">56</span>
+
+
+<span class="k">def</span> <span class="nf">get_MsgLength</span><span class="p">(</span><span class="n">df</span><span class="p">):</span> <span class="c1">#Returns the bit length of a message according to the type (df&gt;16)</span>
+    <span class="k">if</span> <span class="n">df</span> <span class="o">&gt;</span> <span class="mi">16</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">long_msg_bits</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">short_msg_bits</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">All messages above df 16 are long messages</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="get_DF"><a class="viewcode-back" href="../../index.html#planespotting.decoder.get_DF">[docs]</a><span class="k">def</span> <span class="nf">get_DF</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This function returns the Downlink Format of any ads-b message present in the stream</span>
+<span class="sd">    Args:</span>
+<span class="sd">        frame(string): The 56/112 bit ads-b message</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        df(integer): Downlink format of &#39;frame&#39;</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">bin_frame</span> <span class="o">=</span> <span class="n">hexToDec</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bin_frame</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span></div>
+
+
+<div class="viewcode-block" id="get_TC"><a class="viewcode-back" href="../../index.html#planespotting.decoder.get_TC">[docs]</a><span class="k">def</span> <span class="nf">get_TC</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Extraction of Type code from 112 bit ads-b messages</span>
+<span class="sd">    Args:</span>
+<span class="sd">        frame(string) : 112 bit ads-b message</span>
+<span class="sd">    Return:</span>
+<span class="sd">        (int)binary(adsb_dataBlock)[0-4]: It returns the integer part of the first 4 bit of the</span>
+<span class="sd">                                            ads-b message block</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">22</span><span class="p">]</span>
+    <span class="nb">bin</span> <span class="o">=</span> <span class="n">hexToDec</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">get_MsgLength</span><span class="p">(</span><span class="n">get_DF</span><span class="p">(</span><span class="n">frame</span><span class="p">))</span> <span class="o">==</span> <span class="mi">112</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nb">bin</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">],</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="get_ICAO"><a class="viewcode-back" href="../../index.html#planespotting.decoder.get_ICAO">[docs]</a><span class="k">def</span> <span class="nf">get_ICAO</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Extracts the ICAO of Downlink Format 11, 17 &amp; 18 messages only</span>
+<span class="sd">    Args:</span>
+<span class="sd">        frame(string): ADS-b message with DF 11, 17 or 18</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        frame[2-7](string): The icao 24-bit address in hexadecimal format</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">frame</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span></div>
+
+<span class="k">def</span> <span class="nf">get_gray2alt</span><span class="p">(</span><span class="n">codestr</span><span class="p">):</span>
+    <span class="n">gc500</span> <span class="o">=</span> <span class="n">codestr</span><span class="p">[:</span><span class="mi">8</span><span class="p">]</span>
+    <span class="n">n500</span> <span class="o">=</span> <span class="n">gray2int</span><span class="p">(</span><span class="n">gc500</span><span class="p">)</span>
+
+    <span class="c1"># in 100-ft step must be converted first</span>
+    <span class="n">gc100</span> <span class="o">=</span> <span class="n">codestr</span><span class="p">[</span><span class="mi">8</span><span class="p">:]</span>
+    <span class="n">n100</span> <span class="o">=</span> <span class="n">gray2int</span><span class="p">(</span><span class="n">gc100</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">n100</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">n100</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>
+        <span class="n">n100</span> <span class="o">=</span> <span class="mi">5</span>
+
+    <span class="k">if</span> <span class="n">n500</span><span class="o">%</span><span class="mi">2</span><span class="p">:</span>
+        <span class="n">n100</span> <span class="o">=</span> <span class="mi">6</span> <span class="o">-</span> <span class="n">n100</span>
+
+    <span class="n">alt</span> <span class="o">=</span> <span class="p">(</span><span class="n">n500</span><span class="o">*</span><span class="mi">500</span> <span class="o">+</span> <span class="n">n100</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1300</span>
+    <span class="k">return</span> <span class="n">alt</span>
+
+<div class="viewcode-block" id="gray2int"><a class="viewcode-back" href="../../index.html#planespotting.decoder.gray2int">[docs]</a><span class="k">def</span> <span class="nf">gray2int</span><span class="p">(</span><span class="n">graystr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert greycode to binary.&quot;&quot;&quot;</span>
+    <span class="n">num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">graystr</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">num</span> <span class="o">^=</span> <span class="p">(</span><span class="n">num</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span><span class="p">)</span>
+    <span class="n">num</span> <span class="o">^=</span> <span class="p">(</span><span class="n">num</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">num</span> <span class="o">^=</span> <span class="p">(</span><span class="n">num</span> <span class="o">&gt;&gt;</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">num</span> <span class="o">^=</span> <span class="p">(</span><span class="n">num</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">num</span></div>
+
+<div class="viewcode-block" id="crc"><a class="viewcode-back" href="../../index.html#planespotting.decoder.crc">[docs]</a><span class="k">def</span> <span class="nf">crc</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Mode-S Cyclic Redundancy Check</span>
+<span class="sd">    Detect if bit error occurs in the Mode-S message</span>
+<span class="sd">    Args:</span>
+<span class="sd">        msg (string): 28 bytes hexadecimal message string</span>
+<span class="sd">        encoding (bool): True to encode the date only and return the checksum</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        string: message checksum, or parity bits (encoder)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="c1"># the polynominal generattor code for CRC [1111111111111010000001001]</span>
+    <span class="n">generator_poly</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">generatornumber</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">generator_poly</span><span class="p">)</span>
+
+    <span class="n">msgnpbin</span> <span class="o">=</span> <span class="n">bin2np</span><span class="p">(</span><span class="n">hex2bin</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">encoding</span><span class="p">:</span>
+        <span class="n">msgnpbin</span><span class="p">[</span><span class="o">-</span><span class="mi">24</span><span class="p">:]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">24</span>
+
+    <span class="c1"># loop all bits, except last 24 parity bits</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">msgnpbin</span><span class="p">)</span> <span class="o">-</span> <span class="mi">24</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">msgnpbin</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># perform XOR logic operation, when 1</span>
+        <span class="n">msgnpbin</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span><span class="o">+</span><span class="n">generatornumber</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bitwise_xor</span><span class="p">(</span><span class="n">msgnpbin</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span><span class="o">+</span><span class="n">generatornumber</span><span class="p">],</span> <span class="n">generator_poly</span><span class="p">)</span>
+
+    <span class="c1"># last 24 parity bits</span>
+    <span class="n">rest</span> <span class="o">=</span> <span class="n">np2bin</span><span class="p">(</span><span class="n">msgnpbin</span><span class="p">[</span><span class="o">-</span><span class="mi">24</span><span class="p">:])</span>
+    <span class="k">return</span> <span class="n">rest</span></div>
+
+
+<div class="viewcode-block" id="get_crcICAO"><a class="viewcode-back" href="../../index.html#planespotting.decoder.get_crcICAO">[docs]</a><span class="k">def</span> <span class="nf">get_crcICAO</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Extracts the ICAO of Downlink Format 0, 4, 5, 16, 20 &amp; 21 messages only</span>
+<span class="sd">    Args:</span>
+<span class="sd">        frame(string): ADS-b message with DF 0, 4, 5, 16, 20 or 21</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        icao(string): The icao 24-bit address in hexadecimal format</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">c0</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">crc</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="kc">True</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">c1</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="o">-</span><span class="mi">6</span><span class="p">:],</span> <span class="mi">16</span><span class="p">)</span>
+    <span class="n">icao</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%06X</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">c0</span> <span class="o">^</span> <span class="n">c1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">icao</span></div>
+
+<div class="viewcode-block" id="get_AirbornePosition"><a class="viewcode-back" href="../../index.html#planespotting.decoder.get_AirbornePosition">[docs]</a><span class="k">def</span> <span class="nf">get_AirbornePosition</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span> <span class="c1">#Extraction of position oriented data</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This function cuts and converts the binary data into its equivalent integer.</span>
+<span class="sd">    The data cut consists of the variables required for position determination.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        frame(string): 112bit DF 17/18 and tc:9-18 ADS-B message</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        SS(integer): Surveillance status</span>
+<span class="sd">        NICsb(integer) : NIC supplement-B</span>
+<span class="sd">        ALT(integer):Altitude</span>
+<span class="sd">        T(integer):Time</span>
+<span class="sd">        F(integer):CPR odd/even frame flag</span>
+<span class="sd">        LAT_CPR(integer):Latitude in CPR format</span>
+<span class="sd">        LON_CPR(integer):Longitude in CPR format</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">22</span><span class="p">]</span>
+    <span class="nb">bin</span> <span class="o">=</span> <span class="n">hexToDec</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="n">SS</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">bin</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">7</span><span class="p">],</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">NICsb</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">bin</span><span class="p">[</span><span class="mi">7</span><span class="p">],</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">ALT</span> <span class="o">=</span> <span class="nb">bin</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">20</span><span class="p">]</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">bin</span><span class="p">[</span><span class="mi">20</span><span class="p">],</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">F</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">bin</span><span class="p">[</span><span class="mi">21</span><span class="p">],</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">LAT_CPR</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">bin</span><span class="p">[</span><span class="mi">22</span><span class="p">:</span><span class="mi">39</span><span class="p">],</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">LON_CPR</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">bin</span><span class="p">[</span><span class="mi">39</span><span class="p">:],</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">SS</span><span class="p">,</span> <span class="n">NICsb</span><span class="p">,</span> <span class="n">ALT</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">LAT_CPR</span><span class="p">,</span> <span class="n">LON_CPR</span></div>
+
+
+<div class="viewcode-block" id="get_VelocityData"><a class="viewcode-back" href="../../index.html#planespotting.decoder.get_VelocityData">[docs]</a><span class="k">def</span> <span class="nf">get_VelocityData</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">subtype</span><span class="p">):</span> <span class="c1">#Extraction of velocity oriented</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This function cuts and converts the binary data into its equivalent integer.</span>
+<span class="sd">    The data cut consists of the variables required for veocity and heading calculation.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        frame(string): 112bit DF 17/18 and tc:9-18 ADS-B message</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        IC(integer) : Intent change flag</span>
+<span class="sd">        RESV_A(integer) : Reserved-A</span>
+<span class="sd">        NAC(integer) : Velocity uncertainty (NAC)</span>
+<span class="sd">        S_ew(integer) : East-West velocity sign</span>
+<span class="sd">        V_ew(integer) : East-West velocity</span>
+<span class="sd">        S_ns(integer) : North-South velocity sign</span>
+<span class="sd">        V_ns(integer) : North-South velocity</span>
+<span class="sd">        VrSrc(integer) : Vertical rate source</span>
+<span class="sd">        S_vr(integer) : Vertical rate sign</span>
+<span class="sd">        Vr(integer) : Vertical rate</span>
+<span class="sd">        RESV_B(integer) : Reserved-B</span>
+<span class="sd">        S_Dif(integer) : Diff from baro alt, sign</span>
+<span class="sd">        Dif(integer) : Diff from baro alt</span>
+
+<span class="sd">    When subtype = 3</span>
+<span class="sd">    Returns:</span>
+<span class="sd">            IC(integer) : Intent change flag</span>
+<span class="sd">            RESV_A(integer) : Reserved-A</span>
+<span class="sd">            NAC(integer) : Velocity uncertainty (NAC)</span>
+<span class="sd">            S_hdg(integer) : Heading status</span>
+<span class="sd">            Hdg(integer) : Heading (proportion)</span>
+<span class="sd">            AS_t (integer) : Airspeed Type</span>
+<span class="sd">            AS (integer) : Airspeed</span>
+<span class="sd">            VrSrc (integer) : Vertical rate source</span>
+<span class="sd">            S_vr (integer) : Vertical rate sign</span>
+<span class="sd">            Vr(integer) : Vertical rate</span>
+<span class="sd">            RESV_B (integer) : Reserved-B</span>
+<span class="sd">            S_Dif (integer) : Difference from baro alt, sign</span>
+<span class="sd">            Dif(integer) : Difference from baro alt</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">msg_bin</span> <span class="o">=</span> <span class="n">hexToDec</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">22</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">subtype</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">IC</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">msg_bin</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">RESV_A</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">msg_bin</span><span class="p">[</span><span class="mi">9</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">NAC</span> <span class="o">=</span>  <span class="nb">int</span><span class="p">(</span><span class="n">msg_bin</span><span class="p">[</span><span class="mi">10</span><span class="p">:</span><span class="mi">13</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">S_ew</span> <span class="o">=</span>  <span class="nb">int</span><span class="p">(</span><span class="n">msg_bin</span><span class="p">[</span><span class="mi">13</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">V_ew</span> <span class="o">=</span>  <span class="nb">int</span><span class="p">(</span><span class="n">msg_bin</span><span class="p">[</span><span class="mi">14</span><span class="p">:</span><span class="mi">24</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">S_ns</span> <span class="o">=</span>  <span class="nb">int</span><span class="p">(</span><span class="n">msg_bin</span><span class="p">[</span><span class="mi">24</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">V_ns</span> <span class="o">=</span>  <span class="nb">int</span><span class="p">(</span><span class="n">msg_bin</span><span class="p">[</span><span class="mi">25</span><span class="p">:</span><span class="mi">35</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">VrSrc</span> <span class="o">=</span>  <span class="nb">int</span><span class="p">(</span><span class="n">msg_bin</span><span class="p">[</span><span class="mi">35</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">S_vr</span> <span class="o">=</span>  <span class="nb">int</span><span class="p">(</span><span class="n">msg_bin</span><span class="p">[</span><span class="mi">36</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">Vr</span> <span class="o">=</span>  <span class="nb">int</span><span class="p">(</span><span class="n">msg_bin</span><span class="p">[</span><span class="mi">37</span><span class="p">:</span><span class="mi">46</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">RESV_B</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">msg_bin</span><span class="p">[</span><span class="mi">46</span><span class="p">:</span><span class="mi">48</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">S_Dif</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">msg_bin</span><span class="p">[</span><span class="mi">48</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">Dif</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">msg_bin</span><span class="p">[</span><span class="mi">49</span><span class="p">:</span><span class="mi">56</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">IC</span><span class="p">,</span> <span class="n">RESV_A</span><span class="p">,</span> <span class="n">NAC</span><span class="p">,</span> <span class="n">S_ew</span><span class="p">,</span> <span class="n">V_ew</span><span class="p">,</span> <span class="n">S_ns</span><span class="p">,</span> <span class="n">V_ns</span><span class="p">,</span> <span class="n">VrSrc</span><span class="p">,</span> <span class="n">S_vr</span><span class="p">,</span> <span class="n">Vr</span><span class="p">,</span> <span class="n">RESV_B</span><span class="p">,</span> <span class="n">S_Dif</span><span class="p">,</span> <span class="n">Dif</span>
+
+    <span class="k">elif</span> <span class="n">subtype</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">IC</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">msg_bin</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">RESV_A</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">msg_bin</span><span class="p">[</span><span class="mi">9</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">NAC</span> <span class="o">=</span>  <span class="nb">int</span><span class="p">(</span><span class="n">msg_bin</span><span class="p">[</span><span class="mi">10</span><span class="p">:</span><span class="mi">13</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">S_hdg</span> <span class="o">=</span>  <span class="nb">int</span><span class="p">(</span><span class="n">msg_bin</span><span class="p">[</span><span class="mi">13</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">Hdg</span> <span class="o">=</span>  <span class="nb">int</span><span class="p">(</span><span class="n">msg_bin</span><span class="p">[</span><span class="mi">14</span><span class="p">:</span><span class="mi">24</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">AS_t</span> <span class="o">=</span>  <span class="nb">int</span><span class="p">(</span><span class="n">msg_bin</span><span class="p">[</span><span class="mi">24</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">AS</span> <span class="o">=</span>  <span class="nb">int</span><span class="p">(</span><span class="n">msg_bin</span><span class="p">[</span><span class="mi">25</span><span class="p">:</span><span class="mi">35</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">VrSrc</span> <span class="o">=</span>  <span class="nb">int</span><span class="p">(</span><span class="n">msg_bin</span><span class="p">[</span><span class="mi">35</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">S_vr</span> <span class="o">=</span>  <span class="nb">int</span><span class="p">(</span><span class="n">msg_bin</span><span class="p">[</span><span class="mi">36</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">Vr</span> <span class="o">=</span>  <span class="nb">int</span><span class="p">(</span><span class="n">msg_bin</span><span class="p">[</span><span class="mi">37</span><span class="p">:</span><span class="mi">46</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">RESV_B</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">msg_bin</span><span class="p">[</span><span class="mi">46</span><span class="p">:</span><span class="mi">48</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">S_Dif</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">msg_bin</span><span class="p">[</span><span class="mi">48</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">Dif</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">msg_bin</span><span class="p">[</span><span class="mi">49</span><span class="p">:</span><span class="mi">56</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">IC</span><span class="p">,</span> <span class="n">RESV_A</span><span class="p">,</span> <span class="n">NAC</span><span class="p">,</span> <span class="n">S_hdg</span><span class="p">,</span> <span class="n">Hdg</span><span class="p">,</span> <span class="n">AS_t</span><span class="p">,</span> <span class="n">AS</span><span class="p">,</span> <span class="n">VrSrc</span><span class="p">,</span> <span class="n">S_vr</span><span class="p">,</span> <span class="n">Vr</span><span class="p">,</span> <span class="n">RESV_B</span><span class="p">,</span> <span class="n">S_Dif</span><span class="p">,</span> <span class="n">Dif</span></div>
+
+
+<span class="k">def</span> <span class="nf">get_SeenPlanes</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+
+    <span class="n">all_seen_planes</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">frames</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]:</span>
+        <span class="n">seen</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">plane</span> <span class="ow">in</span> <span class="n">all_seen_planes</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;ICAO&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">plane</span><span class="p">:</span>
+                <span class="n">seen</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">seen</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">all_seen_planes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s2">&quot;ICAO&quot;</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">all_seen_planes</span>
+
+
+<span class="k">def</span> <span class="nf">get_Callsign</span><span class="p">(</span><span class="n">callsign_bin</span><span class="p">):</span>
+    <span class="n">lookup_table</span> <span class="o">=</span> <span class="s2">&quot;#ABCDEFGHIJKLMNOPQRSTUVWXYZ#####_###############0123456789######&quot;</span>
+    <span class="c1">#print(msg, &quot;Aircraft identifier&quot;, df, tc)</span>
+    <span class="c1">#dat = frames[&#39;callsign_bin&#39;]</span>
+    <span class="n">callsign</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">callsign_bin</span><span class="p">),</span> <span class="mi">6</span><span class="p">):</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">callsign_bin</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">6</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">callsign</span> <span class="o">+=</span> <span class="n">lookup_table</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">callsign</span>
+
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">The calculation of both latitude and longitude is done</span>
+<span class="sd">with respect to the newest frame received.</span>
+
+<span class="sd">But, two frames are considered for calculation in order to</span>
+<span class="sd">remove the ambiguity in the frames.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="k">def</span> <span class="nf">get_Squawk</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
+    <span class="n">msg_bin</span> <span class="o">=</span> <span class="n">hexToDec</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+    <span class="n">C1</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">19</span><span class="p">]</span>
+    <span class="n">A1</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">20</span><span class="p">]</span>
+    <span class="n">C2</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">21</span><span class="p">]</span>
+    <span class="n">A2</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">22</span><span class="p">]</span>
+    <span class="n">C4</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">23</span><span class="p">]</span>
+    <span class="n">A4</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">24</span><span class="p">]</span>
+    <span class="n">B1</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">26</span><span class="p">]</span>
+    <span class="n">D1</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">27</span><span class="p">]</span>
+    <span class="n">B2</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">28</span><span class="p">]</span>
+    <span class="n">D2</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">29</span><span class="p">]</span>
+    <span class="n">B4</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">30</span><span class="p">]</span>
+    <span class="n">D4</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">31</span><span class="p">]</span>
+
+    <span class="n">str1</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">A4</span><span class="o">+</span><span class="n">A2</span><span class="o">+</span><span class="n">A1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">str2</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">B4</span><span class="o">+</span><span class="n">B2</span><span class="o">+</span><span class="n">B1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">str3</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">C4</span><span class="o">+</span><span class="n">C2</span><span class="o">+</span><span class="n">C1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">str4</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">D4</span><span class="o">+</span><span class="n">D2</span><span class="o">+</span><span class="n">D1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">str1</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">str2</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">str3</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">str4</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">altitude</span><span class="p">(</span><span class="n">bin_alt</span><span class="p">):</span>
+    <span class="n">qBit</span> <span class="o">=</span> <span class="n">bin_alt</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span>
+    <span class="n">alt</span><span class="o">=</span><span class="n">bin_alt</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">7</span><span class="p">]</span><span class="o">+</span><span class="n">bin_alt</span><span class="p">[</span><span class="mi">8</span><span class="p">:]</span>
+    <span class="n">altitude</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">alt</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">qBit</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>  <span class="c1">#Checks for the altitude multiplication unit, 0 = 100ft, 1 = 25ft</span>
+        <span class="k">return</span> <span class="n">altitude</span> <span class="o">*</span> <span class="mi">25</span> <span class="o">-</span> <span class="mi">1000</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">altitude</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">-</span> <span class="mi">1000</span>
+
+<span class="k">def</span> <span class="nf">get_altCode</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
+    <span class="n">msg_bin</span> <span class="o">=</span> <span class="n">hexToDec</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+    <span class="n">mbit</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">25</span><span class="p">]</span>
+    <span class="n">qbit</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">27</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">mbit</span> <span class="o">==</span> <span class="s2">&quot;0&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">qbit</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+            <span class="n">vbin</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">19</span><span class="p">:</span><span class="mi">25</span><span class="p">]</span> <span class="o">+</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">26</span><span class="p">]</span> <span class="o">+</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">28</span><span class="p">:</span><span class="mi">32</span><span class="p">]</span>
+            <span class="n">alt_code</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">vbin</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">25</span> <span class="o">-</span> <span class="mi">1000</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">C1</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">19</span><span class="p">]</span>
+            <span class="n">A1</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">20</span><span class="p">]</span>
+            <span class="n">C2</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">21</span><span class="p">]</span>
+            <span class="n">A2</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">22</span><span class="p">]</span>
+            <span class="n">C4</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">23</span><span class="p">]</span>
+            <span class="n">A4</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">24</span><span class="p">]</span>
+            <span class="n">B1</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">26</span><span class="p">]</span>
+            <span class="n">B2</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">28</span><span class="p">]</span>
+            <span class="n">D2</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">29</span><span class="p">]</span>
+            <span class="n">B4</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">30</span><span class="p">]</span>
+            <span class="n">D4</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">31</span><span class="p">]</span>
+
+            <span class="n">graystr</span> <span class="o">=</span>  <span class="n">D2</span> <span class="o">+</span> <span class="n">D4</span> <span class="o">+</span> <span class="n">A1</span> <span class="o">+</span> <span class="n">A2</span> <span class="o">+</span> <span class="n">A4</span> <span class="o">+</span> <span class="n">B1</span> <span class="o">+</span> <span class="n">B2</span> <span class="o">+</span> <span class="n">B4</span> <span class="o">+</span> <span class="n">C1</span> <span class="o">+</span> <span class="n">C2</span> <span class="o">+</span> <span class="n">C4</span>
+            <span class="n">alt_code</span> <span class="o">=</span> <span class="n">get_gray2alt</span><span class="p">(</span><span class="n">graystr</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">vbin</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">19</span><span class="p">:</span><span class="mi">25</span><span class="p">]</span> <span class="o">+</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">26</span><span class="p">:</span><span class="mi">31</span><span class="p">]</span>
+        <span class="n">alt_code</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">vbin</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mf">3.28084</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">alt_code</span>
+
+<span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="c1">#for id in range(lendata[&quot;data&quot;])):</span>
+    <span class="k">for</span> <span class="n">frames</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]:</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">get_DF</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;adsb_msg&#39;</span><span class="p">])</span>
+        <span class="n">tc</span> <span class="o">=</span> <span class="n">get_TC</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;adsb_msg&#39;</span><span class="p">])</span>
+        <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;df&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span>
+        <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;tc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tc</span>
+        <span class="n">decode_id</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1">#print(frames[&#39;adsb_msg&#39;])</span>
+        <span class="c1"># grouping messages by df and tc, that can be decoded the same or share similar parts</span>
+        <span class="k">if</span> <span class="n">identifier1</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">tc</span><span class="p">):</span>
+            <span class="n">decode_id</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;callsign&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_Callsign</span><span class="p">(</span><span class="n">hexToDec</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;adsb_msg&#39;</span><span class="p">])[</span><span class="mi">40</span><span class="p">:</span><span class="mi">88</span><span class="p">])</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;parity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;adsb_msg&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">6</span><span class="p">:]</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="n">identifier2</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">tc</span><span class="p">):</span>
+            <span class="n">decode_id</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="n">identifier3</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">tc</span><span class="p">):</span>
+            <span class="n">decode_id</span> <span class="o">=</span> <span class="mi">3</span>
+
+            <span class="n">SS</span><span class="p">,</span> <span class="n">NICsb</span><span class="p">,</span> <span class="n">ALT</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">LAT_CPR</span><span class="p">,</span> <span class="n">LON_CPR</span> <span class="o">=</span> <span class="n">get_AirbornePosition</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;adsb_msg&#39;</span><span class="p">])</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;parity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;adsb_msg&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">6</span><span class="p">:]</span>
+            <span class="c1"># filling in the now known values</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;ICAO&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_ICAO</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;adsb_msg&#39;</span><span class="p">])</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;SS&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SS</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;NICsb&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">NICsb</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;ALT&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ALT</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;F&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">F</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;LAT_CPR&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">LAT_CPR</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;LON_CPR&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">LON_CPR</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;isBaroAlt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;altitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">altitude</span><span class="p">(</span><span class="n">ALT</span><span class="p">)</span>
+
+            <span class="c1">#print(frames)</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="n">identifier4</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">tc</span><span class="p">):</span>
+            <span class="n">decode_id</span> <span class="o">=</span> <span class="mi">4</span>
+            <span class="n">subtype</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">hexToDec</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;adsb_msg&#39;</span><span class="p">][</span><span class="mi">8</span><span class="p">:</span><span class="mi">22</span><span class="p">])[</span><span class="mi">5</span><span class="p">:</span><span class="mi">8</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;ICAO&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_ICAO</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;adsb_msg&#39;</span><span class="p">])</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;parity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;adsb_msg&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">6</span><span class="p">:]</span>
+            <span class="k">if</span> <span class="n">subtype</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">IC</span><span class="p">,</span> <span class="n">RESV_A</span><span class="p">,</span> <span class="n">NAC</span><span class="p">,</span> <span class="n">S_ew</span><span class="p">,</span> <span class="n">V_ew</span><span class="p">,</span> <span class="n">S_ns</span><span class="p">,</span> <span class="n">V_ns</span><span class="p">,</span> <span class="n">VrSrc</span><span class="p">,</span> <span class="n">S_vr</span><span class="p">,</span> <span class="n">Vr</span><span class="p">,</span> <span class="n">RESV_B</span><span class="p">,</span> <span class="n">S_Dif</span><span class="p">,</span> <span class="n">Dif</span> <span class="o">=</span> <span class="n">get_VelocityData</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;adsb_msg&#39;</span><span class="p">],</span> <span class="n">subtype</span><span class="p">)</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;Subtype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">subtype</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;IC&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">IC</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;RESV_A&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RESV_A</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;NAC&quot;</span><span class="p">]</span> <span class="o">=</span>  <span class="n">NAC</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;S_ew&quot;</span><span class="p">]</span> <span class="o">=</span>  <span class="n">S_ew</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;V_ew&quot;</span><span class="p">]</span> <span class="o">=</span>  <span class="n">V_ew</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;S_ns&quot;</span><span class="p">]</span> <span class="o">=</span>  <span class="n">S_ns</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;V_ns&quot;</span><span class="p">]</span> <span class="o">=</span>  <span class="n">V_ns</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;VrSrc&quot;</span><span class="p">]</span> <span class="o">=</span>  <span class="n">VrSrc</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;S_vr&quot;</span><span class="p">]</span> <span class="o">=</span>  <span class="n">S_vr</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;Vr&quot;</span><span class="p">]</span> <span class="o">=</span>  <span class="n">Vr</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;RESV_B&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RESV_B</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;S_Dif&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">S_Dif</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;Dif&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Dif</span>
+
+            <span class="k">elif</span> <span class="n">subtype</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">IC</span><span class="p">,</span> <span class="n">RESV_A</span><span class="p">,</span> <span class="n">NAC</span><span class="p">,</span> <span class="n">S_hdg</span><span class="p">,</span> <span class="n">Hdg</span><span class="p">,</span> <span class="n">AS_t</span><span class="p">,</span> <span class="n">AS</span><span class="p">,</span> <span class="n">VrSrc</span><span class="p">,</span> <span class="n">S_vr</span><span class="p">,</span> <span class="n">Vr</span><span class="p">,</span> <span class="n">RESV_B</span><span class="p">,</span> <span class="n">S_Dif</span><span class="p">,</span> <span class="n">Dif</span> <span class="o">=</span> <span class="n">get_VelocityData</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;adsb_msg&#39;</span><span class="p">],</span> <span class="n">subtype</span><span class="p">)</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;Subtype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">subtype</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;IC&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">IC</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;RESV_A&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RESV_A</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;NAC&quot;</span><span class="p">]</span> <span class="o">=</span>  <span class="n">NAC</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;S_hdg&quot;</span><span class="p">]</span> <span class="o">=</span>  <span class="n">S_hdg</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;Hdg&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Hdg</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;AS_t&quot;</span><span class="p">]</span> <span class="o">=</span>  <span class="n">AS_t</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;AS&quot;</span><span class="p">]</span> <span class="o">=</span>  <span class="n">AS</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;VrSrc&quot;</span><span class="p">]</span> <span class="o">=</span>  <span class="n">VrSrc</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;S_vr&quot;</span><span class="p">]</span> <span class="o">=</span>  <span class="n">S_vr</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;Vr&quot;</span><span class="p">]</span> <span class="o">=</span>  <span class="n">Vr</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;RESV_B&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RESV_B</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;S_Dif&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">S_Dif</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;Dif&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Dif</span>
+            <span class="c1">#print(frames)</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="n">identifier5</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">tc</span><span class="p">):</span>
+            <span class="n">decode_id</span> <span class="o">=</span> <span class="mi">5</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="n">identifier6</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">tc</span><span class="p">):</span>
+            <span class="n">decode_id</span> <span class="o">=</span> <span class="mi">6</span>
+            <span class="n">adsb_msg</span> <span class="o">=</span> <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;adsb_msg&#39;</span><span class="p">]</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;ICAO&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_ICAO</span><span class="p">(</span><span class="n">adsb_msg</span><span class="p">)</span>
+            <span class="n">adsb_msg_data</span> <span class="o">=</span> <span class="n">hexToDec</span><span class="p">(</span><span class="n">adsb_msg</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">22</span><span class="p">])</span>
+            <span class="n">ver</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_data</span><span class="p">[</span><span class="mi">40</span><span class="p">:</span><span class="mi">43</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;parity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;adsb_msg&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">6</span><span class="p">:]</span>
+
+
+            <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;stype_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_data</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">8</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;sccc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_data</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">20</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;lw_codes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_data</span><span class="p">[</span><span class="mi">20</span><span class="p">:</span><span class="mi">24</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;op_mc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_data</span><span class="p">[</span><span class="mi">24</span><span class="p">:</span><span class="mi">40</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;ver&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ver</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;NIC&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_data</span><span class="p">[</span><span class="mi">43</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;NACp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_data</span><span class="p">[</span><span class="mi">44</span><span class="p">:</span><span class="mi">48</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;SIL&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_data</span><span class="p">[</span><span class="mi">50</span><span class="p">:</span><span class="mi">52</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;NIC_bit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_data</span><span class="p">[</span><span class="mi">52</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;HRD&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_data</span><span class="p">[</span><span class="mi">53</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;resv_op&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_data</span><span class="p">[</span><span class="mi">54</span><span class="p">:</span><span class="mi">56</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">ver</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;BAQ&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_data</span><span class="p">[</span><span class="mi">48</span><span class="p">:</span><span class="mi">50</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">ver</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;GVA&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_data</span><span class="p">[</span><span class="mi">48</span><span class="p">:</span><span class="mi">50</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;SIL_bit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_data</span><span class="p">[</span><span class="mi">54</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="n">identifier7</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">tc</span><span class="p">):</span>
+            <span class="n">adsb_msg_bin</span> <span class="o">=</span> <span class="n">hexToDec</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;adsb_msg&#39;</span><span class="p">][</span><span class="mi">8</span><span class="p">:</span><span class="mi">22</span><span class="p">])</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;ICAO&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_crcICAO</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;adsb_msg&#39;</span><span class="p">])</span>
+            <span class="n">bds1</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_bin</span><span class="p">[:</span><span class="mi">4</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">bds2</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">8</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;parity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;adsb_msg&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">6</span><span class="p">:]</span>
+            <span class="n">decode_id</span> <span class="o">=</span> <span class="mi">7</span>
+
+            <span class="k">if</span> <span class="n">bds1</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">bds2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;callsign&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_Callsign</span><span class="p">(</span><span class="n">hexToDec</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;adsb_msg&#39;</span><span class="p">])[</span><span class="mi">40</span><span class="p">:</span><span class="mi">88</span><span class="p">])</span>
+                <span class="c1">#print(frames)</span>
+                <span class="c1">#exit(frames)</span>
+            <span class="k">if</span> <span class="n">bds1</span> <span class="o">==</span> <span class="mi">4</span> <span class="ow">and</span> <span class="n">bds2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c1">#Not tested due to lack of frames</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;mcp_alt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">13</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">16</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;fms_alt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">14</span><span class="p">:</span><span class="mi">26</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">16</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;baro_set&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">27</span><span class="p">:</span> <span class="mi">39</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.1</span> <span class="o">+</span> <span class="mi">800</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;VNAV_state&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">48</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;Alt_hold_state&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">49</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;Apr_state&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">50</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;tgt_alt_source&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">54</span><span class="p">:</span><span class="mi">56</span><span class="p">]</span> <span class="c1">#values are 00 01 10 11, so no conversion</span>
+                <span class="c1">#mcpalt always 32768 and baro 800mb</span>
+                <span class="c1">#got in file 1, 4 frames - only from light</span>
+
+            <span class="k">if</span> <span class="n">bds1</span> <span class="o">==</span> <span class="mi">5</span> <span class="ow">and</span> <span class="n">bds2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;roll_angle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">11</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">45.0</span><span class="o">/</span><span class="mf">256.0</span><span class="p">)</span> <span class="k">if</span> <span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;0&quot;</span> <span class="k">else</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">11</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="mi">512</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">45.0</span><span class="o">/</span><span class="mf">256.0</span><span class="p">)</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;true_track_angle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">13</span><span class="p">:</span><span class="mi">23</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">90.0</span><span class="o">/</span><span class="mf">512.0</span><span class="p">)</span> <span class="k">if</span> <span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;0&quot;</span> <span class="k">else</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">13</span><span class="p">:</span><span class="mi">23</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="mi">512</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">90.0</span><span class="o">/</span><span class="mf">512.0</span><span class="p">)</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;ground_speed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">24</span><span class="p">:</span><span class="mi">34</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;track_angle_rate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">36</span><span class="p">:</span><span class="mi">45</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">8.0</span><span class="o">/</span><span class="mf">256.0</span><span class="p">)</span> <span class="k">if</span> <span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">35</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;0&quot;</span> <span class="k">else</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">36</span><span class="p">:</span><span class="mi">45</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="mi">512</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">8.0</span><span class="o">/</span><span class="mf">256.0</span><span class="p">)</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;TAS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">46</span><span class="p">:</span><span class="mi">56</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
+                <span class="c1">#found in file 1, only 1 frame</span>
+            <span class="k">if</span> <span class="n">bds1</span> <span class="o">==</span> <span class="mi">6</span> <span class="ow">and</span> <span class="n">bds2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;mag_hdg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">12</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">90.0</span><span class="o">/</span><span class="mf">512.0</span><span class="p">)</span> <span class="k">if</span> <span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;0&quot;</span> <span class="k">else</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">12</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1024</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">90.0</span><span class="o">/</span><span class="mf">512.0</span><span class="p">)</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;IAS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">13</span><span class="p">:</span><span class="mi">23</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;mach&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">24</span><span class="p">:</span><span class="mi">34</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">2.048</span><span class="o">/</span><span class="mi">512</span><span class="p">)</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;baro_alt_rate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">36</span><span class="p">:</span><span class="mi">45</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">32</span><span class="p">)</span> <span class="k">if</span> <span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">35</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;0&quot;</span> <span class="k">else</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">36</span><span class="p">:</span><span class="mi">46</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="mi">512</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;inertial_alt_rate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">47</span><span class="p">:</span><span class="mi">56</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">32</span> <span class="k">if</span> <span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">46</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;0&quot;</span> <span class="k">else</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">adsb_msg_bin</span><span class="p">[</span><span class="mi">47</span><span class="p">:</span><span class="mi">56</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span><span class="o">-</span><span class="mi">512</span><span class="p">)</span><span class="o">*</span><span class="mi">32</span>
+                <span class="c1">#found lot of frames in 1</span>
+
+            <span class="k">if</span> <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;df&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">20</span><span class="p">:</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;altitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_altCode</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;adsb_msg&#39;</span><span class="p">])</span>
+                <span class="c1">#exit(frames)</span>
+
+            <span class="k">if</span> <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;df&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">21</span><span class="p">:</span>
+
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;squawk&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_Squawk</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;adsb_msg&#39;</span><span class="p">])</span>
+
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Decoding 56 bit msgs from here</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="n">identifier8</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;df&#39;</span><span class="p">],</span> <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;tc&#39;</span><span class="p">]):</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;ICAO&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_crcICAO</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;adsb_msg&#39;</span><span class="p">])</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;squawk&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_Squawk</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;adsb_msg&#39;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">identifier9</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;df&#39;</span><span class="p">],</span> <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;tc&#39;</span><span class="p">]):</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;ICAO&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_crcICAO</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;adsb_msg&#39;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">identifier10</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;df&#39;</span><span class="p">],</span> <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;tc&#39;</span><span class="p">]):</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;ICAO&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_crcICAO</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;adsb_msg&#39;</span><span class="p">])</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;altitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_altCode</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;adsb_msg&#39;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">identifier11</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;df&#39;</span><span class="p">],</span> <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;tc&#39;</span><span class="p">]):</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;ICAO&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_crcICAO</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;adsb_msg&#39;</span><span class="p">])</span>
+
+        <span class="c1">#Currently decoding only icao from DF0, 4, 5, 16, need more reading on what more can we decode</span>
+
+        <span class="c1"># todo more decoders needed, because many messages escape them!</span>
+
+
+    <span class="c1"># finding all the already available and seen ICAO addresses</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">calculate_position</span><span class="p">(</span><span class="n">get_SeenPlanes</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">data</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">convert_position</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">calculate_velocity</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">data</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">PlaneSpotting 0.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Shoumik Dey and &amp; Andreas Hornig.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7.
+    </div>
+  </body>
+</html>
