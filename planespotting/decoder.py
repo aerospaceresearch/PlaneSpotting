@@ -1,4 +1,5 @@
 from planespotting.calculator import *
+from planespotting.multilateration import *
 
 
 long_msg_bits = 112
@@ -289,6 +290,7 @@ def decode(data):
     # finding all the already available and seen ICAO addresses
     data = calculate_position(get_SeenPlanes(data), data)
     data = convert_position(data)
+    data = calculate_signalpropagationtime(data)
     data = calculate_velocity(data)
 
     return data

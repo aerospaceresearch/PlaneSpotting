@@ -48,7 +48,7 @@ def const_frame(): #Template for json structure for meta data
             "mlat_mode":None,
             "gs_lat":None,
             "gs_lon":None,
-            "gs_alt":None,
+            "gs_alt":None
         },
         "data":[]
     }
@@ -146,7 +146,8 @@ def const_frame_data(): #This serves as a template for the json structure. Consi
             "inertial_alt_rate":None,
             "x": None,
             "y": None,
-            "z": None
+            "z": None,
+            "time_propagation": None
         }
     }
     return json_frame

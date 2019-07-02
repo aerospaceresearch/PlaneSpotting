@@ -47,7 +47,7 @@ def load_dump1090_file(file):
     return json_data
 
 
-def main(filename, latitude, longitude):
+def main(filename, latitude, longitude, altitude):
     if os.path.isdir(args.file):
         print("loading in all files in folder:", filename)
 
@@ -70,11 +70,13 @@ def main(filename, latitude, longitude):
 
         data = load_dump1090_file(file)
 
-        if data["meta"]["gs_lat"] is None or data["meta"]["gs_lon"] is None:
+        if data["meta"]["gs_lat"] is None and data["meta"]["gs_lon"] is None and \
+                        latitude is not None and longitude is not None:
             # if the gs location is already set, we don't need the inputs.
-            # if they are set, we take them from the loaded data strcture.
-            data["meta"]["gs_lat"] = latitude
-            data["meta"]["gs_lon"] = longitude
+            # if they are set, we take them from the loaded data structure.
+            data["meta"]["gs_lat"] = float(latitude)
+            data["meta"]["gs_lon"] = float(longitude)
+            data["meta"]["gs_alt"] = float(altitude)
 
         print(data["meta"]["gs_lat"], data["meta"]["gs_lon"])
 
@@ -116,6 +118,10 @@ def getArgs():
                         dest='longitude',
                         help='sets the groundstation longitude')
 
+    parser.add_argument('--alt', action='store', default=0.0,
+                        dest='altitude',
+                        help='sets the groundstation longitude')
+
     #parser.add_argument('--version', action='version', version='0.0')
 
     return parser.parse_args()
@@ -124,4 +130,4 @@ def getArgs():
 if __name__ == '__main__':
     args = getArgs()
 
-    main(args.file, args.latitude, args.longitude)
+    main(args.file, args.latitude, args.longitude, args.altitude)
