@@ -1,10 +1,12 @@
 from planespotting.identifiers import *
 from planespotting.utils import *
-from planespotting.decoder import *
+import math
 import numpy as np
 
 #All imports end here
-
+'''
+Beginning of position calculation functions
+'''
 def lat_index(lat_cpr_even, lat_cpr_odd):
     return math.floor((59 * lat_cpr_even) - (60*lat_cpr_odd) + 0.5)
 
@@ -36,9 +38,7 @@ def latitude(lat_cpr_even, lat_cpr_odd, t_even, t_odd): #Calculation of the lati
         latOdd -= 360
 
     if(NL(latEven) != NL(latOdd)):  #Confirmation of the validation of the calculated latitude, checks if latitude from both odd and evven frame lies in the same zone
-        #exit("The positions are in different latitude zones")
         return 0
-        #exit()
     if(t_even >= t_odd):
         return latEven
 
@@ -46,8 +46,7 @@ def latitude(lat_cpr_even, lat_cpr_odd, t_even, t_odd): #Calculation of the lati
         return latOdd
 
 def longitude(long_cpr_even, long_cpr_odd, t_even, t_odd, nl_lat):  #Calculation of longitude coordinate of the aircraft
-    #if(NL(int(lat_even1, 2)) != NL(int(lat_odd1, 2))):
-    #print(NL(10.2157745361328), NL(10.2162144547802))
+
     if(t_even > t_odd):
         ni = max(NL(nl_lat),1)
         dLon = 360 / ni
@@ -70,6 +69,10 @@ def longitude(long_cpr_even, long_cpr_odd, t_even, t_odd, nl_lat):  #Calculation
 
     else:
         return lon
+
+'''
+functions for two frame methods ends here
+'''
 
 
 def pos_local(latRef, lonRef, F, lat_cpr, lon_cpr):
@@ -105,7 +108,17 @@ def pos_local(latRef, lonRef, F, lat_cpr, lon_cpr):
 
     return lat, lon
 
+'''
+all position calculation functions end here.
+'''
+
 def get_meanposition(data, relevant_planes_id, hit_counter_global, latitudeMean_global, longitudeMean_global):
+
+    '''
+    Calculation of the mean of all the decoded positions (lat, lon). Returns the mean (lat, lon)
+    This mean(lat, lon) is used as the reference position for the locally unambigous method
+    '''
+
     hit_counter = 0
     latitudeMean = 0
     longitudeMean = 0
@@ -114,7 +127,6 @@ def get_meanposition(data, relevant_planes_id, hit_counter_global, latitudeMean_
         frame = data['data'][relevant_planes_id[i]]
 
         if frame['latitude'] is not None:
-            # print(frame["ICAO"], frame["latitude"], frame["longitude"])
             hit_counter += 1
             latitudeMean += frame["latitude"]
             longitudeMean += frame["longitude"]
@@ -162,6 +174,9 @@ def calculate_position(all_seen_planes, data):
     print(len(all_seen_planes))
 
     for plane in all_seen_planes:
+        '''
+        Position decoding by the globally unambigous position (aka Two frame method)
+        '''
         #print(plane)
         relevant_planes_id = []
 
@@ -181,7 +196,6 @@ def calculate_position(all_seen_planes, data):
                 if frame_b4 != frame["F"]:
 
                     # do positioning here with one alternating even and odd frame
-                    # print(id_b4, frame["id"])
 
                     if frame["F"] == 0:
                         # frame is even
@@ -214,7 +228,7 @@ def calculate_position(all_seen_planes, data):
                     frame['longitude'] = nl_lon
 
 
-            data["data"][relevant_planes_id[i]] = frame
+            #data["data"][relevant_planes_id[i]] = frame
             frame_b4 = data["data"][relevant_planes_id[i]]["F"]
             id_b4 = frame["id"]
 
@@ -250,11 +264,10 @@ def calculate_position(all_seen_planes, data):
                 lat_ambigous, lon_ambigous = pos_local(latGlobal, lonGlobal, frame["F"], frame["LAT_CPR"], frame["LON_CPR"])
 
                 if frame['latitude'] != lat_ambigous or frame['longitude'] != lon_ambigous:
-                    # print(">>>", stray position detected)
                     frame['latitude'] = lat_ambigous
                     frame['longitude'] = lon_ambigous
 
-            data['data'][relevant_planes_id[i]] = frame
+            #data['data'][relevant_planes_id[i]] = frame
         hit_counter, latitudeMean, longitudeMean, hit_counter_global, latitudeMean_global, longitudeMean_global = \
                  get_meanposition(data, relevant_planes_id, hit_counter_global, latitudeMean_global, longitudeMean_global)
 
@@ -269,13 +282,14 @@ def calculate_position(all_seen_planes, data):
     latitudeMean_global = 0
     longitudeMean_global = 0
 
+    '''
+    Decoding the frames that had escaped the initial decoding run.
+    '''
     for plane in all_seen_planes:
-        #print(plane)
         relevant_planes_id = []
 
         for frame in data["data"]:
             if plane == frame["ICAO"] and identifier3(frame["df"], frame["tc"]):
-                #print(frame["ICAO"], frame["id"], frame["F"], frame["ALT"], frame["LAT_CPR"], frame['LON_CPR'])
                 relevant_planes_id.append(frame["id"])
 
 
@@ -287,8 +301,6 @@ def calculate_position(all_seen_planes, data):
 
                 frame['latitude'] = lat_ambigous
                 frame['longitude'] = lon_ambigous
-            data['data'][relevant_planes_id[i]] = frame
-
 
 
         # todo after the odd-even positioning, the average position can be used for latRef and lonRef
@@ -311,7 +323,6 @@ def calculate_velocity(data):
     for i in range(len(data['data'])):
         frames = data['data'][i]
         if identifier4(frames['df'], frames['tc']):
-            #print(frames['Subtype'])
             if frames['Subtype'] == 1:
                 frames['isGspeed'] = 1
                 #Horizontal velocity Calculation Below
@@ -330,9 +341,6 @@ def calculate_velocity(data):
                     hdg += 360
 
                 frames['heading'], frames['velocity'] = hdg, vel
-                # data['data'][i] = frames
-                # print(data['data'][i])
-
                 #Vertical Rate calculation Below
                 '''
                 To be taken care of: VrSrc : Baro-pressure change/geometric change
@@ -358,7 +366,6 @@ def calculate_velocity(data):
                 Vr = (frames['Vr'] -1) * 64
                 frames["vert_rate"] = Vr if frames['S_vr'] == 0 else Vr*-1
 
-            data['data'][i] = frames
 
     return data
 
@@ -371,6 +378,5 @@ def convert_position(data):
         if frames["latitude"] is not None and frames["longitude"] is not None and frames["altitude"] is not None:
             frames["x"], frames["y"], frames["z"] = get_cartesian_coordinates(frames["latitude"], frames["longitude"], frames["altitude"])
 
-        data['data'][i] = frames
 
     return data

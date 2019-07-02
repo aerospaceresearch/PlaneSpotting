@@ -1,4 +1,7 @@
-from planespotting.calculator import *
+from planespotting.calculator import (calculate_position, convert_position, calculate_velocity)
+from planespotting.utils import *
+from planespotting.identifiers import *
+import numpy as np
 
 
 long_msg_bits = 112
@@ -15,12 +18,27 @@ All messages above df 16 are long messages
 '''
 
 def get_DF(frame):
+    '''
+    This function returns the Downlink Format of any ads-b message present in the stream
+    Args:
+        frame(string): The 56/112 bit ads-b message
+    Returns:
+        df(integer): Downlink format of 'frame'
+    '''
     bin_frame = hexToDec(frame)
     df = int(bin_frame[0:5], 2)
     return df
 
 
 def get_TC(frame):
+    '''
+    Extraction of Type code from 112 bit ads-b messages
+    Args:
+        frame(string) : 112 bit ads-b message
+    Return:
+        (int)binary(adsb_dataBlock)[0-4]: It returns the integer part of the first 4 bit of the
+                                            ads-b message block
+    '''
     data = frame[8:22]
     bin = hexToDec(data)
 
@@ -31,11 +49,104 @@ def get_TC(frame):
 
 
 def get_ICAO(frame):
+    '''
+    Extracts the ICAO of Downlink Format 11, 17 & 18 messages only
+    Args:
+        frame(string): ADS-b message with DF 11, 17 or 18
+    Returns:
+        frame[2-7](string): The icao 24-bit address in hexadecimal format
+    '''
     return frame[2:8]
 
+def get_gray2alt(codestr):
+    gc500 = codestr[:8]
+    n500 = gray2int(gc500)
+
+    # in 100-ft step must be converted first
+    gc100 = codestr[8:]
+    n100 = gray2int(gc100)
+
+    if n100 in [0, 5, 6]:
+        return None
+
+    if n100 == 7:
+        n100 = 5
+
+    if n500%2:
+        n100 = 6 - n100
+
+    alt = (n500*500 + n100*100) - 1300
+    return alt
+
+def gray2int(graystr):
+    """Convert greycode to binary."""
+    num = int(graystr, 2)
+    num ^= (num >> 8)
+    num ^= (num >> 4)
+    num ^= (num >> 2)
+    num ^= (num >> 1)
+    return num
+
+def crc(msg, encoding=False):
+    ''' Mode-S Cyclic Redundancy Check
+    Detect if bit error occurs in the Mode-S message
+    Args:
+        msg (string): 28 bytes hexadecimal message string
+        encoding (bool): True to encode the date only and return the checksum
+    Returns:
+        string: message checksum, or parity bits (encoder)
+    '''
+
+    # the polynominal generattor code for CRC [1111111111111010000001001]
+    generator_poly = np.array([1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,0,0,0,0,0,1,0,0,1])
+    generatornumber = len(generator_poly)
+
+    msgnpbin = bin2np(hex2bin(msg))
+
+    if encoding:
+        msgnpbin[-24:] = [0] * 24
+
+    # loop all bits, except last 24 parity bits
+    for i in range(len(msgnpbin) - 24):
+        if msgnpbin[i] == 0:
+            continue
+
+        # perform XOR logic operation, when 1
+        msgnpbin[i : i+generatornumber] = np.bitwise_xor(msgnpbin[i : i+generatornumber], generator_poly)
+
+    # last 24 parity bits
+    rest = np2bin(msgnpbin[-24:])
+    return rest
+
+
+def get_crcICAO(frame):
+    '''
+    Extracts the ICAO of Downlink Format 0, 4, 5, 16, 20 & 21 messages only
+    Args:
+        frame(string): ADS-b message with DF 0, 4, 5, 16, 20 or 21
+    Returns:
+        icao(string): The icao 24-bit address in hexadecimal format
+    '''
+    c0 = int(crc(frame, encoding = True), 2)
+    c1 = int(frame[-6:], 16)
+    icao = '%06X' % (c0 ^ c1)
+    return icao
 
 def get_AirbornePosition(frame): #Extraction of position oriented data
-    #print(frame)
+    '''
+    This function cuts and converts the binary data into its equivalent integer.
+    The data cut consists of the variables required for position determination.
+    Args:
+        frame(string): 112bit DF 17/18 and tc:9-18 ADS-B message
+    Returns:
+        SS(integer): Surveillance status
+        NICsb(integer) : NIC supplement-B
+        ALT(integer):Altitude
+        T(integer):Time
+        F(integer):CPR odd/even frame flag
+        LAT_CPR(integer):Latitude in CPR format
+        LON_CPR(integer):Longitude in CPR format
+    '''
     data = frame[8:22]
     bin = hexToDec(data)
 
@@ -50,7 +161,44 @@ def get_AirbornePosition(frame): #Extraction of position oriented data
     return SS, NICsb, ALT, T, F, LAT_CPR, LON_CPR
 
 
-def get_VelocityData(frame, subtype): #Extraction of velocity oriented data
+def get_VelocityData(frame, subtype): #Extraction of velocity oriented
+    '''
+    This function cuts and converts the binary data into its equivalent integer.
+    The data cut consists of the variables required for veocity and heading calculation.
+    Args:
+        frame(string): 112bit DF 17/18 and tc:9-18 ADS-B message
+    Returns:
+        IC(integer) : Intent change flag
+        RESV_A(integer) : Reserved-A
+        NAC(integer) : Velocity uncertainty (NAC)
+        S_ew(integer) : East-West velocity sign
+        V_ew(integer) : East-West velocity
+        S_ns(integer) : North-South velocity sign
+        V_ns(integer) : North-South velocity
+        VrSrc(integer) : Vertical rate source
+        S_vr(integer) : Vertical rate sign
+        Vr(integer) : Vertical rate
+        RESV_B(integer) : Reserved-B
+        S_Dif(integer) : Diff from baro alt, sign
+        Dif(integer) : Diff from baro alt
+
+    When subtype = 3
+    Returns:
+            IC(integer) : Intent change flag
+            RESV_A(integer) : Reserved-A
+            NAC(integer) : Velocity uncertainty (NAC)
+            S_hdg(integer) : Heading status
+            Hdg(integer) : Heading (proportion)
+            AS_t (integer) : Airspeed Type
+            AS (integer) : Airspeed
+            VrSrc (integer) : Vertical rate source
+            S_vr (integer) : Vertical rate sign
+            Vr(integer) : Vertical rate
+            RESV_B (integer) : Reserved-B
+            S_Dif (integer) : Difference from baro alt, sign
+            Dif(integer) : Difference from baro alt
+
+    '''
     msg_bin = hexToDec(frame[8:22])
     if subtype == 1:
         IC = int(msg_bin[8], 2)
@@ -67,7 +215,7 @@ def get_VelocityData(frame, subtype): #Extraction of velocity oriented data
         S_Dif = int(msg_bin[48], 2)
         Dif = int(msg_bin[49:56], 2)
 
-        return IC, RESV_A, NAC, S_ew, V_ew, S_ns, V_ns, VrSrc, S_vr, Vr, RESV_B, S_Dif, S_Dif, Dif
+        return IC, RESV_A, NAC, S_ew, V_ew, S_ns, V_ns, VrSrc, S_vr, Vr, RESV_B, S_Dif, Dif
 
     elif subtype == 3:
         IC = int(msg_bin[8], 2)
@@ -124,6 +272,28 @@ But, two frames are considered for calculation in order to
 remove the ambiguity in the frames.
 '''
 
+def get_Squawk(frame):
+    msg_bin = hexToDec(frame)
+    C1 = msg_bin[19]
+    A1 = msg_bin[20]
+    C2 = msg_bin[21]
+    A2 = msg_bin[22]
+    C4 = msg_bin[23]
+    A4 = msg_bin[24]
+    B1 = msg_bin[26]
+    D1 = msg_bin[27]
+    B2 = msg_bin[28]
+    D2 = msg_bin[29]
+    B4 = msg_bin[30]
+    D4 = msg_bin[31]
+
+    str1 = int(A4+A2+A1, 2)
+    str2 = int(B4+B2+B1, 2)
+    str3 = int(C4+C2+C1, 2)
+    str4 = int(D4+D2+D1, 2)
+
+    return (str(str1) + str(str2) + str(str3) + str(str4))
+
 def altitude(bin_alt):
     qBit = bin_alt[7]
     alt=bin_alt[0:7]+bin_alt[8:]
@@ -133,10 +303,38 @@ def altitude(bin_alt):
     else:
         return altitude * 100 - 1000
 
+def get_altCode(frame):
+    msg_bin = hexToDec(frame)
+    mbit = msg_bin[25]
+    qbit = msg_bin[27]
 
+    if mbit == "0":
+        if qbit == "1":
+            vbin = msg_bin[19:25] + msg_bin[26] + msg_bin[28:32]
+            alt_code = int(vbin, 2) * 25 - 1000
+        else:
+            C1 = msg_bin[19]
+            A1 = msg_bin[20]
+            C2 = msg_bin[21]
+            A2 = msg_bin[22]
+            C4 = msg_bin[23]
+            A4 = msg_bin[24]
+            B1 = msg_bin[26]
+            B2 = msg_bin[28]
+            D2 = msg_bin[29]
+            B4 = msg_bin[30]
+            D4 = msg_bin[31]
+
+            graystr =  D2 + D4 + A1 + A2 + A4 + B1 + B2 + B4 + C1 + C2 + C4
+            alt_code = get_gray2alt(graystr)
+    else:
+        vbin = msg_bin[19:25] + msg_bin[26:31]
+        alt_code = int(int(vbin, 2) * 3.28084)
+
+    return alt_code
 
 def decode(data):
-    #for id in range(len(data["data"])):
+    #for id in range(lendata["data"])):
     for frames in data['data']:
 
         df = get_DF(frames['adsb_msg'])
@@ -150,6 +348,7 @@ def decode(data):
         if identifier1(df, tc):
             decode_id = 1
             frames['callsign'] = get_Callsign(hexToDec(frames['adsb_msg'])[40:88])
+            frames['parity'] = frames['adsb_msg'][-6:]
             continue
 
         if identifier2(df, tc):
@@ -160,7 +359,7 @@ def decode(data):
             decode_id = 3
 
             SS, NICsb, ALT, T, F, LAT_CPR, LON_CPR = get_AirbornePosition(frames['adsb_msg'])
-
+            frames['parity'] = frames['adsb_msg'][-6:]
             # filling in the now known values
             frames["ICAO"] = get_ICAO(frames['adsb_msg'])
             frames["SS"] = SS
@@ -180,9 +379,9 @@ def decode(data):
             decode_id = 4
             subtype = int(hexToDec(frames['adsb_msg'][8:22])[5:8], 2)
             frames["ICAO"] = get_ICAO(frames['adsb_msg'])
-
+            frames['parity'] = frames['adsb_msg'][-6:]
             if subtype == 1:
-                IC, RESV_A, NAC, S_ew, V_ew, S_ns, V_ns, VrSrc, S_vr, Vr, RESV_B, S_Dif, S_Dif, Dif = get_VelocityData(frames['adsb_msg'], subtype)
+                IC, RESV_A, NAC, S_ew, V_ew, S_ns, V_ns, VrSrc, S_vr, Vr, RESV_B, S_Dif, Dif = get_VelocityData(frames['adsb_msg'], subtype)
                 frames['Subtype'] = subtype
                 frames["IC"] = IC
                 frames["RESV_A"] = RESV_A
@@ -227,6 +426,7 @@ def decode(data):
             frames['ICAO'] = get_ICAO(adsb_msg)
             adsb_msg_data = hexToDec(adsb_msg[8:22])
             ver = int(adsb_msg_data[40:43], 2)
+            frames['parity'] = frames['adsb_msg'][-6:]
 
 
             frames['stype_code'] = int(adsb_msg_data[5:8], 2)
@@ -252,8 +452,11 @@ def decode(data):
 
         if identifier7(df, tc):
             adsb_msg_bin = hexToDec(frames['adsb_msg'][8:22])
+            frames['ICAO'] = get_crcICAO(frames['adsb_msg'])
             bds1 = int(adsb_msg_bin[:4], 2)
             bds2 = int(adsb_msg_bin[4:8], 2)
+            frames['parity'] = frames['adsb_msg'][-6:]
+            decode_id = 7
 
             if bds1 == 2 and bds2 == 0:
                 frames['callsign'] = get_Callsign(hexToDec(frames['adsb_msg'])[40:88])
@@ -267,21 +470,51 @@ def decode(data):
                 frames['Alt_hold_state'] = int(adsb_msg_bin[49], 2)
                 frames['Apr_state'] = int(adsb_msg_bin[50], 2)
                 frames['tgt_alt_source'] = adsb_msg_bin[54:56] #values are 00 01 10 11, so no conversion
+                #mcpalt always 32768 and baro 800mb
+                #got in file 1, 4 frames - only from light
 
             if bds1 == 5 and bds2 == 0:
-                frames['roll_angle'] = (int(adsb_msg_bin[2:11], 2) * (45.0/256.0) if adsb_msg_bin[1] == 0 else int(adsb_msg_bin[2:11], 2) - 512) * (45.0/256.0)
-                frames['true_track_angle'] = (int(adsb_msg_bin[13:23], 2) * (90.0/512.0) if adsb_msg_bin[12] == 0 else int(adsb_msg_bin[13:23], 2) - 512) * (90.0/512.0)
+                frames['roll_angle'] = int(adsb_msg_bin[2:11], 2) * (45.0/256.0) if adsb_msg_bin[1] == "0" else (int(adsb_msg_bin[2:11], 2) - 512) * (45.0/256.0)
+                frames['true_track_angle'] = int(adsb_msg_bin[13:23], 2) * (90.0/512.0) if adsb_msg_bin[12] == "0" else (int(adsb_msg_bin[13:23], 2) - 512) * (90.0/512.0)
                 frames['ground_speed'] = int(adsb_msg_bin[24:34], 2) * 2
-                frames['track_angle_rate'] = (int(adsb_msg_bin[36:45], 2) * (8.0/256.0) if adsb_msg_bin[35] == 0 else int(adsb_msg_bin[36:45], 2) - 512) * (8.0/256.0)
+                frames['track_angle_rate'] = int(adsb_msg_bin[36:45], 2) * (8.0/256.0) if adsb_msg_bin[35] == "0" else (int(adsb_msg_bin[36:45], 2) - 512) * (8.0/256.0)
                 frames['TAS'] = int(adsb_msg_bin[46:56], 2) * 2
-
+                #found in file 1, only 1 frame
             if bds1 == 6 and bds2 == 0:
-                frames['mag_hdg'] = (int(adsb_msg_bin[2:12], 2) * (90.0/512.0) if adsb_msg_bin[1] == 0 else int(adsb_msg_bin[2:12], 2) - 512) * (90.0/512.0)
+                frames['mag_hdg'] = int(adsb_msg_bin[2:12], 2) * (90.0/512.0) if adsb_msg_bin[1] == "0" else (int(adsb_msg_bin[2:12], 2) - 1024) * (90.0/512.0)
                 frames['IAS'] = int(adsb_msg_bin[13:23], 2) * 1
                 frames['mach'] = int(adsb_msg_bin[24:34], 2) * (2.048/512)
-                frames['baro_alt_rate'] = (int(adsb_msg_bin[36:45], 2) * (32) if adsb_msg_bin[35] == 0 else int(adsb_msg_bin[36:46], 2) - 512) * (32)
-                frames['inertial_alt_rate'] = (int(adsb_msg_bin[47:56], 2) * (32) if adsb_msg_bin[46] == 0 else int(adsb_msg_bin[47:56], 2) - 512) * (32)
-            decode_id = 7
+                frames['baro_alt_rate'] = int(adsb_msg_bin[36:45], 2) * (32) if adsb_msg_bin[35] == "0" else (int(adsb_msg_bin[36:46], 2) - 512) * (32)
+                frames['inertial_alt_rate'] = int(adsb_msg_bin[47:56], 2) * 32 if adsb_msg_bin[46] == "0" else (int(adsb_msg_bin[47:56], 2)-512)*32
+                #found lot of frames in 1
+
+            if frames['df'] == 20:
+                frames['altitude'] = get_altCode(frames['adsb_msg'])
+                #exit(frames)
+
+            if frames['df'] == 21:
+
+                frames['squawk'] = get_Squawk(frames['adsb_msg'])
+
+        '''
+        Decoding 56 bit msgs from here
+        '''
+
+        if identifier8(frames['df'], frames['tc']):
+            frames['ICAO'] = get_crcICAO(frames['adsb_msg'])
+            frames['squawk'] = get_Squawk(frames['adsb_msg'])
+
+        if identifier9(frames['df'], frames['tc']):
+            frames['ICAO'] = get_crcICAO(frames['adsb_msg'])
+
+        if identifier10(frames['df'], frames['tc']):
+            frames['ICAO'] = get_crcICAO(frames['adsb_msg'])
+            frames['altitude'] = get_altCode(frames['adsb_msg'])
+
+        if identifier11(frames['df'], frames['tc']):
+            frames['ICAO'] = get_crcICAO(frames['adsb_msg'])
+
+        #Currently decoding only icao from DF0, 4, 5, 16, need more reading on what more can we decode
 
         # todo more decoders needed, because many messages escape them!
 

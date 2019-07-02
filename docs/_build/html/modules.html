@@ -1,0 +1,443 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>PlaneSpotting: Technical Documentation &#8212; PlaneSpotting 0.0.1 documentation</title>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Getting Started" href="gettingstarted.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="gettingstarted.html" title="Getting Started"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">PlaneSpotting 0.0.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="planespotting-technical-documentation">
+<h1>PlaneSpotting: Technical Documentation<a class="headerlink" href="#planespotting-technical-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="file-loading-and-transfer">
+<h2>File loading and transfer<a class="headerlink" href="#file-loading-and-transfer" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-main">
+<span id="planespotting-main"></span><h3>PlaneSpotting main<a class="headerlink" href="#module-main" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="main.getArgs">
+<code class="descclassname">main.</code><code class="descname">getArgs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/main.html#getArgs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#main.getArgs" title="Permalink to this definition">¶</a></dt>
+<dd><p>defining the input parameters by the arguments.</p>
+<p>src: <a class="reference external" href="https://pymotw.com/2/argparse/">https://pymotw.com/2/argparse/</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">args</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">argparse.Namespace</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="main.load_dump1090_file">
+<code class="descclassname">main.</code><code class="descname">load_dump1090_file</code><span class="sig-paren">(</span><em>file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main.html#load_dump1090_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#main.load_dump1090_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>The json from the input file is loaded here.</p>
+<p>A new empty json structure gets initialised here and the raw data from the
+input file is plugged into this new json.</p>
+<dl class="docutils">
+<dt>What is this new json structure: It contains all the keys to all possible data that</dt>
+<dd>can be extracted using the decoder script. The decoder.py files
+fills up the keys in them.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file</strong> (<em>File Object</em>) – JSON input file</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">JSON</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="main.main">
+<code class="descclassname">main.</code><code class="descname">main</code><span class="sig-paren">(</span><em>filename</em>, <em>output</em>, <em>latitude</em>, <em>longitude</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#main.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>The expected inputs to the filename parameter: Path to a file, path to a folder.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filename</strong> – The path to the folder/file which cotains the RAW ADS-B.</li>
+<li><strong>output</strong> – Output path</li>
+<li><strong>latitude</strong> – Latitude coordinate of the ground station</li>
+<li><strong>longitude</strong> – Longitude coordinate of the ground station</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-planespotting.identifiers">
+<span id="frame-identification-and-decoding"></span><h2>Frame Identification and Decoding<a class="headerlink" href="#module-planespotting.identifiers" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="planespotting.identifiers.identifier1">
+<code class="descclassname">planespotting.identifiers.</code><code class="descname">identifier1</code><span class="sig-paren">(</span><em>df</em>, <em>tc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/identifiers.html#identifier1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.identifiers.identifier1" title="Permalink to this definition">¶</a></dt>
+<dd><p>ADS-B type identifier function for Downlink Format 17 - 18 &amp; Type Code 1 - 4
+These messages contain Aircraft identification data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>df</strong> (<em>Integer</em>) – Downlink Format</li>
+<li><strong>tc</strong> (<em>Integer</em>) – Downlink Format</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True/False</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Boolean</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.identifiers.identifier10">
+<code class="descclassname">planespotting.identifiers.</code><code class="descname">identifier10</code><span class="sig-paren">(</span><em>df</em>, <em>tc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/identifiers.html#identifier10"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.identifiers.identifier10" title="Permalink to this definition">¶</a></dt>
+<dd><p>ADS-B type identifier function for Downlink Format 4
+These messages contain Altitude data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>df</strong> (<em>Integer</em>) – Downlink Format</li>
+<li><strong>tc</strong> (<em>Integer</em>) – Downlink Format</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True/False</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Boolean</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.identifiers.identifier11">
+<code class="descclassname">planespotting.identifiers.</code><code class="descname">identifier11</code><span class="sig-paren">(</span><em>df</em>, <em>tc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/identifiers.html#identifier11"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.identifiers.identifier11" title="Permalink to this definition">¶</a></dt>
+<dd><p>ADS-B type identifier function for Downlink Format 5
+These messages contain Long ACAS messages</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>df</strong> (<em>Integer</em>) – Downlink Format</li>
+<li><strong>tc</strong> (<em>Integer</em>) – Downlink Format</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True/False</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Boolean</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.identifiers.identifier2">
+<code class="descclassname">planespotting.identifiers.</code><code class="descname">identifier2</code><span class="sig-paren">(</span><em>df</em>, <em>tc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/identifiers.html#identifier2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.identifiers.identifier2" title="Permalink to this definition">¶</a></dt>
+<dd><p>ADS-B type identifier function for Downlink Format 17 - 18 &amp; Type Code 5 - 8
+These messages contain Surface Position data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>df</strong> (<em>Integer</em>) – Downlink Format</li>
+<li><strong>tc</strong> (<em>Integer</em>) – Downlink Format</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True/False</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Boolean</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.identifiers.identifier3">
+<code class="descclassname">planespotting.identifiers.</code><code class="descname">identifier3</code><span class="sig-paren">(</span><em>df</em>, <em>tc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/identifiers.html#identifier3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.identifiers.identifier3" title="Permalink to this definition">¶</a></dt>
+<dd><p>ADS-B type identifier function for Downlink Format 17 - 18 &amp; Type Code 9-18
+These messages contain Airborne Position with Barometric Altitude data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>df</strong> (<em>Integer</em>) – Downlink Format</li>
+<li><strong>tc</strong> (<em>Integer</em>) – Downlink Format</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True/False</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Boolean</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.identifiers.identifier4">
+<code class="descclassname">planespotting.identifiers.</code><code class="descname">identifier4</code><span class="sig-paren">(</span><em>df</em>, <em>tc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/identifiers.html#identifier4"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.identifiers.identifier4" title="Permalink to this definition">¶</a></dt>
+<dd><p>ADS-B type identifier function for Downlink Format 17 - 18 &amp; Type Code 19
+These messages contain Airborne Velocity data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>df</strong> (<em>Integer</em>) – Downlink Format</li>
+<li><strong>tc</strong> (<em>Integer</em>) – Downlink Format</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True/False</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Boolean</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.identifiers.identifier5">
+<code class="descclassname">planespotting.identifiers.</code><code class="descname">identifier5</code><span class="sig-paren">(</span><em>df</em>, <em>tc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/identifiers.html#identifier5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.identifiers.identifier5" title="Permalink to this definition">¶</a></dt>
+<dd><p>ADS-B type identifier function for Downlink Format 17 - 18 &amp; Type Code 20-22
+These messages contain Airborne Position with GNSS altitude data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>df</strong> (<em>Integer</em>) – Downlink Format</li>
+<li><strong>tc</strong> (<em>Integer</em>) – Downlink Format</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True/False</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Boolean</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.identifiers.identifier6">
+<code class="descclassname">planespotting.identifiers.</code><code class="descname">identifier6</code><span class="sig-paren">(</span><em>df</em>, <em>tc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/identifiers.html#identifier6"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.identifiers.identifier6" title="Permalink to this definition">¶</a></dt>
+<dd><p>ADS-B type identifier function for Downlink Format 17 - 18 &amp; Type Code 31
+These messages contain Operation Status data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>df</strong> (<em>Integer</em>) – Downlink Format</li>
+<li><strong>tc</strong> (<em>Integer</em>) – Downlink Format</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True/False</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Boolean</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.identifiers.identifier7">
+<code class="descclassname">planespotting.identifiers.</code><code class="descname">identifier7</code><span class="sig-paren">(</span><em>df</em>, <em>tc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/identifiers.html#identifier7"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.identifiers.identifier7" title="Permalink to this definition">¶</a></dt>
+<dd><p>ADS-B type identifier function for Downlink Format 20 - 21
+These messages contain Enhanced Mode-S ADS-B data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>df</strong> (<em>Integer</em>) – Downlink Format</li>
+<li><strong>tc</strong> (<em>Integer</em>) – Downlink Format</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True/False</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Boolean</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.identifiers.identifier8">
+<code class="descclassname">planespotting.identifiers.</code><code class="descname">identifier8</code><span class="sig-paren">(</span><em>df</em>, <em>tc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/identifiers.html#identifier8"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.identifiers.identifier8" title="Permalink to this definition">¶</a></dt>
+<dd><p>ADS-B type identifier function for Downlink Format 5
+These messages contain SQUAWK/IDENT data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>df</strong> (<em>Integer</em>) – Downlink Format</li>
+<li><strong>tc</strong> (<em>Integer</em>) – Downlink Format</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True/False</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Boolean</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.identifiers.identifier9">
+<code class="descclassname">planespotting.identifiers.</code><code class="descname">identifier9</code><span class="sig-paren">(</span><em>df</em>, <em>tc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/identifiers.html#identifier9"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.identifiers.identifier9" title="Permalink to this definition">¶</a></dt>
+<dd><p>ADS-B type identifier function for Downlink Format 0
+These messages contain Short Air to Air ACAS messages</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>df</strong> (<em>Integer</em>) – Downlink Format</li>
+<li><strong>tc</strong> (<em>Integer</em>) – Downlink Format</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True/False</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Boolean</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="gettingstarted.html"
+                        title="previous chapter">Getting Started</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="gettingstarted.html" title="Getting Started"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">PlaneSpotting 0.0.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Shoumik Dey and &amp; Andreas Hornig.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7.
+    </div>
+  </body>
+</html>
