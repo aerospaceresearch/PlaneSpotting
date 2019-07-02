@@ -1,4 +1,4 @@
-from planespotting.decoder import *
+from planespotting.calculator import *
 
 def calculate_signalpropagationtime(data):
     c = 300000000.0 # speed of light
