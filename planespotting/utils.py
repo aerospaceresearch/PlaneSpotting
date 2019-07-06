@@ -2,6 +2,7 @@ import os
 import json
 import math
 import numpy as np
+import gzip
 
 def get_all_files(filename):
 
@@ -187,3 +188,22 @@ def store_file(path, file, data):
 
     with open(path + os.sep + filename, "w") as outfile:
         json.dump(data, outfile, indent=4)
+
+
+def store_file_jsonGzip(path, file, data):
+
+    filename = file.split(os.sep)[-1].split(".")[0] + ".json.gz"
+
+    # create the folder
+    create_folder(path)
+
+    with gzip.GzipFile(path + os.sep + filename, 'w') as fout:
+        fout.write(json.dumps(data).encode('utf-8'))
+
+
+def load_file_jsonGzip(filename):
+
+    with gzip.GzipFile(filename, 'r') as fin:
+        data = json.loads(fin.read().decode('utf-8'))
+
+    return data

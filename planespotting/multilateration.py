@@ -16,7 +16,6 @@ def calculate_signalpropagationtime(data):
                 frames["time_propagation"] = ((gs_x - frames["x"])**2 +
                                               (gs_y - frames["y"])**2 +
                                               (gs_z - frames["z"])**2)**0.5 / c
-                print(frames["id"], frames["time_propagation"])
 
             data['data'][i] = frames
 

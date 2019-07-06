@@ -117,7 +117,13 @@ def main(filename, output, latitude, longitude, altitude):
                 path = output + os.sep + "data" + os.sep + "adsb"
             else:
                 path = output + "data" + os.sep + "adsb"
-        utils.store_file(path, file, data)
+
+        if "gzip" == "gzip":
+            # standard output
+            utils.store_file_jsonGzip(path, file, data)
+        else:
+            utils.store_file(path, file, data)
+
 
 
 def getArgs():
