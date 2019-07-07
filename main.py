@@ -2,6 +2,7 @@ import argparse
 import os
 from planespotting import utils
 from planespotting.decoder import decode
+from planespotting import multilateration
 
 
 samplerate = 2000000 # of the recorded IQ date with 2MHz for each I and Q
@@ -55,7 +56,7 @@ def load_dump1090_file(file):
     return json_data
 
 
-def main(filename, output, latitude, longitude):
+def main(filename, output, latitude, longitude, altitude):
     '''
     The expected inputs to the filename parameter: Path to a file, path to a folder.
 
@@ -65,12 +66,23 @@ def main(filename, output, latitude, longitude):
     :param longitude: Longitude coordinate of the ground station
 
     '''
-    if os.path.isdir(args.file):
+
+
+    path = "data" + os.sep + "adsb"
+
+    if output is not None:
+        if output.find(os.sep, 0) != len(output) - 1:
+            path = output + os.sep + "data" + os.sep + "adsb"
+        else:
+            path = output + "data" + os.sep + "adsb"
+
+
+    if os.path.isdir(filename):
         print("loading in all files in folder:", filename)
 
         processing_files = utils.get_all_files(filename)
 
-    elif os.path.isfile(args.file):
+    elif os.path.isfile(filename):
         print("loading in this file:", filename)
 
         processing_files = utils.get_one_file(filename)
@@ -81,40 +93,38 @@ def main(filename, output, latitude, longitude):
 
     if len(processing_files) == 0:
         exit("No input files found in the directory. Quitting")
+
+
     print("processing", len(processing_files))
     print("")
+
     for file in processing_files:
         print("processing", file)
 
         data = load_dump1090_file(file)
 
-        if data["meta"]["gs_lat"] is None or data["meta"]["gs_lon"] is None:
+        if data["meta"]["gs_lat"] is None and data["meta"]["gs_lon"] is None and \
+                        latitude is not None and longitude is not None:
             # if the gs location is already set, we don't need the inputs.
-            # if they are set, we take them from the loaded data strcture.
-            data["meta"]["gs_lat"] = latitude
-            data["meta"]["gs_lon"] = longitude
+            # if they are set, we take them from the loaded data structure.
+            data["meta"]["gs_lat"] = float(latitude)
+            data["meta"]["gs_lon"] = float(longitude)
+            data["meta"]["gs_alt"] = float(altitude)
 
-        print(data["meta"]["gs_lat"], data["meta"]["gs_lon"])
+        print("input lat & long:", data["meta"]["gs_lat"], data["meta"]["gs_lon"])
 
         data = decode(data)
 
-        print("convert raw adsb files")
-
-        print("decode converted raw adsb files")
-
-        print("decode again planes by icao address. #1")
-        print("decode again planes by icao address. #n")
-        print("")
-
         print("storing adsb-data")
-        if output == None:
-            path = "data" + os.sep + "adsb"
+
+        if "gzip" == "gzip":
+            # standard output
+            utils.store_file_jsonGzip(path, file, data)
         else:
-            if output.find(os.sep, 0) != len(output)-1:
-                path = output + os.sep + "data" + os.sep + "adsb"
-            else:
-                path = output + "data" + os.sep + "adsb"
-        utils.store_file(path, file, data)
+            utils.store_file(path, file, data)
+
+    print("doing mlat stuff from here on...")
+    multilateration.main(path)
 
 
 def getArgs():
@@ -141,9 +151,14 @@ def getArgs():
                         dest='longitude',
                         help='sets the groundstation longitude')
 
+    parser.add_argument('--alt', action='store', default=0.0,
+                        dest='altitude',
+                        help='sets the groundstation longitude')
+
     parser.add_argument('-o', '--output', action='store', default=None,
                         dest='output',
                         help='Path to output file')
+
 
     #parser.add_argument('--version', action='version', version='0.0') keeping this comment for future reminder
     return parser.parse_args()
@@ -152,4 +167,4 @@ def getArgs():
 if __name__ == '__main__':
     args = getArgs()
 
-    main(args.file, args.output, args.latitude, args.longitude)
+    main(args.file, args.output, args.latitude, args.longitude, args.altitude)

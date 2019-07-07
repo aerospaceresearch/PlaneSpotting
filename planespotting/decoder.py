@@ -1,6 +1,7 @@
 from planespotting.calculator import (calculate_position, convert_position, calculate_velocity)
 from planespotting.utils import *
 from planespotting.identifiers import *
+from planespotting.multilateration import *
 import numpy as np
 
 
@@ -522,6 +523,7 @@ def decode(data):
     # finding all the already available and seen ICAO addresses
     data = calculate_position(get_SeenPlanes(data), data)
     data = convert_position(data)
+    data = calculate_signalpropagationtime(data)
     data = calculate_velocity(data)
 
     return data

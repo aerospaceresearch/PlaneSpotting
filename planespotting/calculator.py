@@ -138,10 +138,12 @@ def get_meanposition(data, relevant_planes_id, hit_counter_global, latitudeMean_
     return hit_counter, latitudeMean, longitudeMean, hit_counter_global, latitudeMean_global, longitudeMean_global
 
 
-def get_cartesian_coordinates(lat=0.0, lon=0.0, alt=0.0):
+def get_cartesian_coordinates(lat=0.0, lon=0.0, alt=0.0, meter = True):
     lat, lon = np.deg2rad(lat), np.deg2rad(lon)
     R_earth = 6371000.0 # radius of the earth in meters
-    altitude = alt * 0.3048 # from feet to meters
+    altitude = alt
+    if meter == False:
+        altitude = altitude * 0.3048 # from feet to meters
     R = R_earth + altitude
 
     x = R * np.cos(lat) * np.cos(lon)
@@ -171,7 +173,7 @@ def calculate_position(all_seen_planes, data):
     latitudeMean_global = 0
     longitudeMean_global = 0
 
-    print(len(all_seen_planes))
+    print("there are", len(all_seen_planes), "planes")
 
     for plane in all_seen_planes:
         '''
@@ -376,7 +378,10 @@ def convert_position(data):
         frames = data['data'][i]
 
         if frames["latitude"] is not None and frames["longitude"] is not None and frames["altitude"] is not None:
-            frames["x"], frames["y"], frames["z"] = get_cartesian_coordinates(frames["latitude"], frames["longitude"], frames["altitude"])
+            frames["x"], frames["y"], frames["z"] = get_cartesian_coordinates(frames["latitude"],
+                                                                              frames["longitude"],
+                                                                              frames["altitude"],
+                                                                              False)
 
 
     return data
