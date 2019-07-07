@@ -173,7 +173,7 @@ def calculate_position(all_seen_planes, data):
     latitudeMean_global = 0
     longitudeMean_global = 0
 
-    print(len(all_seen_planes))
+    print("there are", len(all_seen_planes), "planes")
 
     for plane in all_seen_planes:
         '''

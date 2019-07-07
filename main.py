@@ -2,6 +2,7 @@ import argparse
 import os
 from planespotting import utils
 from planespotting.decoder import decode
+from planespotting import multilateration
 
 
 samplerate = 2000000 # of the recorded IQ date with 2MHz for each I and Q
@@ -66,12 +67,22 @@ def main(filename, output, latitude, longitude, altitude):
 
     '''
 
-    if os.path.isdir(args.file):
+
+    path = "data" + os.sep + "adsb"
+
+    if output is not None:
+        if output.find(os.sep, 0) != len(output) - 1:
+            path = output + os.sep + "data" + os.sep + "adsb"
+        else:
+            path = output + "data" + os.sep + "adsb"
+
+
+    if os.path.isdir(filename):
         print("loading in all files in folder:", filename)
 
         processing_files = utils.get_all_files(filename)
 
-    elif os.path.isfile(args.file):
+    elif os.path.isfile(filename):
         print("loading in this file:", filename)
 
         processing_files = utils.get_one_file(filename)
@@ -82,8 +93,11 @@ def main(filename, output, latitude, longitude, altitude):
 
     if len(processing_files) == 0:
         exit("No input files found in the directory. Quitting")
+
+
     print("processing", len(processing_files))
     print("")
+
     for file in processing_files:
         print("processing", file)
 
@@ -97,26 +111,11 @@ def main(filename, output, latitude, longitude, altitude):
             data["meta"]["gs_lon"] = float(longitude)
             data["meta"]["gs_alt"] = float(altitude)
 
-        print(data["meta"]["gs_lat"], data["meta"]["gs_lon"])
+        print("input lat & long:", data["meta"]["gs_lat"], data["meta"]["gs_lon"])
 
         data = decode(data)
 
-        print("convert raw adsb files")
-
-        print("decode converted raw adsb files")
-
-        print("decode again planes by icao address. #1")
-        print("decode again planes by icao address. #n")
-        print("")
-
         print("storing adsb-data")
-        if output == None:
-            path = "data" + os.sep + "adsb"
-        else:
-            if output.find(os.sep, 0) != len(output)-1:
-                path = output + os.sep + "data" + os.sep + "adsb"
-            else:
-                path = output + "data" + os.sep + "adsb"
 
         if "gzip" == "gzip":
             # standard output
@@ -124,6 +123,8 @@ def main(filename, output, latitude, longitude, altitude):
         else:
             utils.store_file(path, file, data)
 
+    print("doing mlat stuff from here on...")
+    multilateration.main(path)
 
 
 def getArgs():
