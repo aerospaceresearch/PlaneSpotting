@@ -197,8 +197,8 @@ def store_file_jsonGzip(path, file, data):
     # create the folder
     create_folder(path)
 
-    with gzip.GzipFile(path + os.sep + filename, 'w') as fout:
-        fout.write(json.dumps(data).encode('utf-8'))
+    with gzip.open(path + os.sep + filename, 'wt', encoding="utf-8") as fout:
+        json.dump(data, fout, indent=2)
 
 
 def load_file_jsonGzip(filename):
