@@ -60,11 +60,14 @@ def main(path):
 
         #print(data)
         conn = sqlite3.connect('planespotting/test.db')
+        # records= []
         # for frame in data['data']:
-        #     conn.execute("INSERT INTO frames (id, raw, adsb_msg, timestamp, df, tc, x, y, z, time_propagation, file, mlat_mode, gs_lat, gs_lon, gs_alt) \
-        #     VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",(frame['id'], frame['raw'], frame['adsb_msg'], frame['timestamp'], frame['df'], frame['tc'], frame['x'], frame['y'], frame['z'], frame['time_propagation'], data['meta']['file'], data['meta']['mlat_mode'], data['meta']['gs_lat'], data['meta']['gs_lon'], data['meta']['gs_alt']))
-        #     conn.commit()
+        #     record = (frame['id'], frame['raw'], frame['adsb_msg'], frame['timestamp'], frame['SamplePos'], frame['df'], frame['tc'], frame['x'], frame['y'], frame['z'], frame['time_propagation'], data['meta']['file'], data['meta']['mlat_mode'], data['meta']['gs_lat'], data['meta']['gs_lon'], data['meta']['gs_alt'])
+        #     records.append(record)
+        # conn.executemany("INSERT INTO frames VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", records)
+        # conn.commit()
         data = conn.execute("SELECT * FROM frames WHERE df = 17 AND tc BETWEEN 10  AND 18") #"SELECT * FROM frames WHERE tc BETWEEN 9  AND 18" This query is not working
         for rows in data:
             print(rows)
+
         conn.close()
