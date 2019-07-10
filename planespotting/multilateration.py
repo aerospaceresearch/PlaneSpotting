@@ -1,7 +1,7 @@
 from planespotting.calculator import *
 from planespotting import utils
 from pathlib import Path
-
+import sqlite3
 
 def calculate_signalpropagationtime(data):
     c = 300000000.0 # speed of light
@@ -58,4 +58,13 @@ def main(path):
             with open(file, 'r') as f:
                 data = json.load(f)
 
-        print(data["meta"])
+        #print(data)
+        conn = sqlite3.connect('planespotting/test.db')
+        # for frame in data['data']:
+        #     conn.execute("INSERT INTO frames (id, raw, adsb_msg, timestamp, df, tc, x, y, z, time_propagation, file, mlat_mode, gs_lat, gs_lon, gs_alt) \
+        #     VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",(frame['id'], frame['raw'], frame['adsb_msg'], frame['timestamp'], frame['df'], frame['tc'], frame['x'], frame['y'], frame['z'], frame['time_propagation'], data['meta']['file'], data['meta']['mlat_mode'], data['meta']['gs_lat'], data['meta']['gs_lon'], data['meta']['gs_alt']))
+        #     conn.commit()
+        data = conn.execute("SELECT * FROM frames WHERE df = 17 AND tc BETWEEN 10  AND 18") #"SELECT * FROM frames WHERE tc BETWEEN 9  AND 18" This query is not working
+        for rows in data:
+            print(rows)
+        conn.close()
