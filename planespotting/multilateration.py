@@ -66,7 +66,7 @@ def main(path):
         #     records.append(record)
         # conn.executemany("INSERT INTO frames VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", records)
         # conn.commit()
-        data = conn.execute("SELECT * FROM frames WHERE df = 17 AND tc BETWEEN 10  AND 18") #"SELECT * FROM frames WHERE tc BETWEEN 9  AND 18" This query is not working
+        data = conn.execute("SELECT * FROM frames WHERE df = 17 AND tc BETWEEN 9  AND 18")
         for rows in data:
             print(rows)
 
