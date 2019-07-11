@@ -33,7 +33,7 @@ def correct_samplePos(data):
 
         frames["SamplePos"] = frames["SamplePos"] - (frames["time_propagation"] * samplerate)
 
-    return data 
+    return data
 
 
 
@@ -72,12 +72,12 @@ def main(path):
 
         #print(data)
         conn = sqlite3.connect('planespotting/test.db')
-        # records= []
+
         # for frame in data['data']:
         #     record = (frame['id'], frame['raw'], frame['adsb_msg'], frame['timestamp'], frame['SamplePos'], frame['df'], frame['tc'], frame['x'], frame['y'], frame['z'], frame['time_propagation'], data['meta']['file'], data['meta']['mlat_mode'], data['meta']['gs_lat'], data['meta']['gs_lon'], data['meta']['gs_alt'])
-        #     records.append(record)
-        # conn.executemany("INSERT INTO frames VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", records)
+        #     conn.execute("INSERT INTO frames VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", record)
         # conn.commit()
+
         data = conn.execute("SELECT * FROM frames WHERE df = 17 AND tc BETWEEN 9  AND 18")
         for rows in data:
             print(rows)
