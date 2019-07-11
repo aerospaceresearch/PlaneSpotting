@@ -24,6 +24,18 @@ def calculate_signalpropagationtime(data):
 
     return data
 
+def correct_samplePos(data):
+
+    samplerate = 2000000 #MHz
+
+    for i in range (len(data["data"])):
+        frames = data['data'][i]
+
+        frames["SamplePos"] = frames["SamplePos"] - (frames["time_propagation"] * samplerate)
+
+    return data 
+
+
 
 def main(path):
 
