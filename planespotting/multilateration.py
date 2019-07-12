@@ -1,6 +1,8 @@
 from planespotting.calculator import *
 from planespotting import utils
+from planespotting import create_table
 from pathlib import Path
+import os
 import sqlite3
 
 def calculate_signalpropagationtime(data):
@@ -60,6 +62,10 @@ def main(path):
     print("processing mlat")
     print("")
 
+    i = 0
+    create_table.create()
+    conn = sqlite3.connect('planespotting/test2.db')
+
     for file in processing_files:
         print("processing", file)
 
@@ -71,15 +77,29 @@ def main(path):
                 data = json.load(f)
 
         #print(data)
-        conn = sqlite3.connect('planespotting/test.db')
 
-        # for frame in data['data']:
-        #     record = (frame['id'], frame['raw'], frame['adsb_msg'], frame['timestamp'], frame['SamplePos'], frame['df'], frame['tc'], frame['x'], frame['y'], frame['z'], frame['time_propagation'], data['meta']['file'], data['meta']['mlat_mode'], data['meta']['gs_lat'], data['meta']['gs_lon'], data['meta']['gs_alt'])
-        #     conn.execute("INSERT INTO frames VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", record)
-        # conn.commit()
 
-        data = conn.execute("SELECT * FROM frames WHERE df = 17 AND tc BETWEEN 9  AND 18")
-        for rows in data:
-            print(rows)
 
-        conn.close()
+        for frame in data['data']:
+            record = (i, frame['raw'], frame['adsb_msg'], frame['timestamp'], frame['SamplePos'], frame['df'], frame['tc'], frame['x'], frame['y'], frame['z'], frame['time_propagation'], data['meta']['file'], data['meta']['mlat_mode'], data['meta']['file'], data['meta']['gs_lat'], data['meta']['gs_lon'], data['meta']['gs_alt'])
+            conn.execute("INSERT INTO frames VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", record)
+            i += 1
+        conn.commit()
+
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM frames WHERE df = 17 AND tc BETWEEN 9 AND 18")
+    data = cur.fetchall()
+    uniq_frames = [] #This list will contain df17 and tc9-18 msgs, and each msgs will occur only once in this list, to be used for querying
+    #print(data)
+    for rows in data:
+        if rows[2] not in uniq_frames:
+            uniq_frames.append(rows[2])
+
+    for frames in uniq_frames:
+        cur.execute("SELECT * FROM frames WHERE adsb_msg = ?", (frames,))
+        finding = cur.fetchall()
+        print(finding)
+        print("")
+
+    os.remove("planespotting/test2.db") #Throwing away the db
+    conn.close()

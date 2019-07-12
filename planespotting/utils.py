@@ -65,6 +65,7 @@ def const_frame(): #Template for json structure for meta data
         "meta":{
             "file":None,
             "mlat_mode":None,
+            "recording_start":None,
             "gs_lat":None,
             "gs_lon":None,
             "gs_alt":None
