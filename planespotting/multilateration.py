@@ -76,7 +76,7 @@ def main(path):
         data = load_file_jsonGzip(file)
         chunk_read += int(data['meta']['rec_end']-data['meta']['rec_start'])
 
-        if chunk_read == chunk_length:
+        if chunk_read >= chunk_length:
             load_file.append(file)
             files.append(load_file)
             load_file = []
@@ -85,6 +85,9 @@ def main(path):
             load_file.append(file)
             print(load_file)
             print()
+
+    if len(load_file) != 0:
+        files.append(load_file)
     exit(files)
 
     exit()
