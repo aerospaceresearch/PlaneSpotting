@@ -3,7 +3,6 @@ from planespotting import utils
 from planespotting import create_table
 from pathlib import Path
 import os
-from datetime import datetime, timedelta
 import sqlite3
 
 def calculate_signalpropagationtime(data):
@@ -79,7 +78,7 @@ def main(path):
 
         #print(data)
 
-        exit(datetime.striptime(data['meta']['rec_start'])-datetime.striptime(data['meta']['rec_end']))
+        exit(data['meta']['rec_end']-data['meta']['rec_start'])
 
         for frame in data['data']:
             record = (i, frame['raw'], frame['adsb_msg'], frame['timestamp'], frame['SamplePos'], frame['df'], frame['tc'], frame['x'], frame['y'], frame['z'], frame['time_propagation'], data['meta']['file'], data['meta']['mlat_mode'], data['meta']['file'], data['meta']['gs_lat'], data['meta']['gs_lon'], data['meta']['gs_alt'])

@@ -3,7 +3,7 @@ import os
 from planespotting import utils
 from planespotting.decoder import decode
 from planespotting import multilateration
-from datetime import datetime, timedelta
+import time
 
 
 samplerate = 2000000 # of the recorded IQ date with 2MHz for each I and Q
@@ -110,8 +110,8 @@ def main(filename, output, latitude, longitude, altitude):
             data["meta"]["gs_lat"] = float(latitude)
             data["meta"]["gs_lon"] = float(longitude)
             data["meta"]["gs_alt"] = float(altitude)
-            data["meta"]["rec_start"] = str(datetime.now())
-            data["meta"]["rec_end"] = str(datetime.now() + timedelta(seconds = 120))
+            data["meta"]["rec_start"] = time.time()
+            data["meta"]["rec_end"] = time.time() + 120
         print("input lat & long:", data["meta"]["gs_lat"], data["meta"]["gs_lon"])
 
         data = decode(data)
