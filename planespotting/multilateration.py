@@ -99,9 +99,9 @@ def main(path):
     for frames in uniq_frames:
         cur.execute("SELECT * FROM frames WHERE adsb_msg = ?", (frames,))
         finding = cur.fetchall()
-        if len(finding) != 5:
-            print(finding)
-            print("")
+        # if len(finding) != 5:
+        print(finding)
+        print("")
 
     conn.close()
     os.remove("planespotting/test2.db") #Throwing away the db
