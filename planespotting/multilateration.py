@@ -84,13 +84,14 @@ def main(path):
             record = (i, frame['raw'], frame['adsb_msg'], frame['timestamp'], frame['SamplePos'], frame['df'], frame['tc'], frame['x'], frame['y'], frame['z'], frame['time_propagation'], data['meta']['file'], data['meta']['mlat_mode'], data['meta']['file'], data['meta']['gs_lat'], data['meta']['gs_lon'], data['meta']['gs_alt'])
             conn.execute("INSERT INTO frames VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", record)
             i += 1
-        conn.commit()
+    conn.commit()
 
     cur = conn.cursor()
     cur.execute("SELECT * FROM frames WHERE df = 17 AND tc BETWEEN 9 AND 18")
     data = cur.fetchall()
     uniq_frames = [] #This list will contain df17 and tc9-18 msgs, and each msgs will occur only once in this list, to be used for querying
     #print(data)
+
     for rows in data:
         if rows[2] not in uniq_frames:
             uniq_frames.append(rows[2])
@@ -98,8 +99,9 @@ def main(path):
     for frames in uniq_frames:
         cur.execute("SELECT * FROM frames WHERE adsb_msg = ?", (frames,))
         finding = cur.fetchall()
-        print(finding)
-        print("")
+        if len(finding) != 5:
+            print(finding)
+            print("")
 
-    os.remove("planespotting/test2.db") #Throwing away the db
     conn.close()
+    os.remove("planespotting/test2.db") #Throwing away the db
