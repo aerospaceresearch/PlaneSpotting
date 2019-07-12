@@ -3,6 +3,7 @@ import os
 from planespotting import utils
 from planespotting.decoder import decode
 from planespotting import multilateration
+from datetime import datetime, timedelta
 
 
 samplerate = 2000000 # of the recorded IQ date with 2MHz for each I and Q
@@ -97,7 +98,6 @@ def main(filename, output, latitude, longitude, altitude):
 
     print("processing", len(processing_files))
     print("")
-
     for file in processing_files:
         print("processing", file)
 
@@ -110,14 +110,15 @@ def main(filename, output, latitude, longitude, altitude):
             data["meta"]["gs_lat"] = float(latitude)
             data["meta"]["gs_lon"] = float(longitude)
             data["meta"]["gs_alt"] = float(altitude)
-
+            data["meta"]["rec_start"] = str(datetime.now())
+            data["meta"]["rec_end"] = str(datetime.now() + timedelta(seconds = 120))
         print("input lat & long:", data["meta"]["gs_lat"], data["meta"]["gs_lon"])
 
         data = decode(data)
 
         print("storing adsb-data")
 
-        if "gzip" == "gzip":
+        if "gzip" != "gzip":
             # standard output
             utils.store_file_jsonGzip(path, file, data)
         else:
