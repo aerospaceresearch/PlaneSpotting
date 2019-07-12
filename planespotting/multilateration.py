@@ -63,6 +63,19 @@ def main(path):
     print("")
 
     i = 0
+
+
+    files = []
+
+    for file in processing_files:
+        load_file = []
+        chunk_length = 240
+        gs = 5
+        file_prefix = "data/adsb/test11"
+        exit(processing_files)
+
+    exit()
+
     create_table.create()
     conn = sqlite3.connect('planespotting/test2.db')
 

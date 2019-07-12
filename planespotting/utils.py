@@ -69,7 +69,8 @@ def const_frame(): #Template for json structure for meta data
             "rec_end":None,
             "gs_lat":None,
             "gs_lon":None,
-            "gs_alt":None
+            "gs_alt":None,
+            "is_decoded":None
         },
         "data":[]
     }

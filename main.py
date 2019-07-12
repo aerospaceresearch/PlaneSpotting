@@ -118,7 +118,7 @@ def main(filename, output, latitude, longitude, altitude):
 
         print("storing adsb-data")
 
-        if "gzip" != "gzip":
+        if "gzip" == "gzip":
             # standard output
             utils.store_file_jsonGzip(path, file, data)
         else:
