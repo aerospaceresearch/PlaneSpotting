@@ -28,7 +28,7 @@ def calculate_signalpropagationtime(data):
 
 def correct_samplePos(data):
 
-    samplerate = 2000000 #MHz
+    samplerate = 2000000 #Hz
 
     for i in range (len(data["data"])):
         frames = data['data'][i]
@@ -66,13 +66,26 @@ def main(path):
 
 
     files = []
-
+    load_file = []
+    chunk_read = 0
     for file in processing_files:
-        load_file = []
-        chunk_length = 240
+
+        chunk_length = 240 #seconds
         gs = 5
         file_prefix = "data/adsb/test11"
-        exit(processing_files)
+        data = load_file_jsonGzip(file)
+        chunk_read += int(data['meta']['rec_end']-data['meta']['rec_start'])
+
+        if chunk_read == chunk_length:
+            load_file.append(file)
+            files.append(load_file)
+            load_file = []
+            chunk_read = 0
+        else:
+            load_file.append(file)
+            print(load_file)
+            print()
+    exit(files)
 
     exit()
 
