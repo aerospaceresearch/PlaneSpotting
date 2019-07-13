@@ -47,7 +47,12 @@ def main(path):
 
     for i in range(1, 6):
         print(load_station_wise(i, path))
-    exit()
+
+    chunk_files = []
+    c = 0
+    for _, dir, _ in os.walk(path):
+        c += len(dir)
+    exit(c)
 
     if os.path.isdir(path):
         print("loading in all files in folder:", path)
