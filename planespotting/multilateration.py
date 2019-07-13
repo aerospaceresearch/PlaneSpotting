@@ -3,6 +3,7 @@ from planespotting import utils
 from planespotting import create_table
 from pathlib import Path
 import os
+import time
 import sqlite3
 
 def calculate_signalpropagationtime(data):
@@ -72,7 +73,7 @@ def main(path):
             data = load_file_jsonGzip(path+os.sep+stations+os.sep+file)
             chunk_size = int(data['meta']['rec_end']-data['meta']['rec_start'])
             chunk_read += chunk_size
-            print(chunk_read)
+            #print(chunk_read)
             if chunk_read > chunk:
                 chunk_read = chunk - chunk_size
                 batch += 1
@@ -83,14 +84,14 @@ def main(path):
                 #list = []
                 #break
                 try:
-                    reader[batch].append(file)
-                    print(reader)
-                    print()
-                    print()
+                    reader[batch].append(path+os.sep+stations+os.sep+file)
+                    #print(reader)
+                    #print()
+                    #print()
                 except:
                     reader.append([])
-                    reader[batch].append(file)
-                    print(reader)
+                    reader[batch].append(path+os.sep+stations+os.sep+file)
+                    #print(reader)
                     #print()
                     #batch += 1
             # else:
@@ -109,8 +110,8 @@ def main(path):
                 #break
     #reader.append(list)
 
-    print(reader)
-    exit()
+    # print(reader)
+    # exit()
     # chunk_read = 0
     # for i in range(1, gs_no+1):
     #     files = load_station_wise(i, path)
@@ -130,25 +131,25 @@ def main(path):
         #         lst.append(file)
 
 
-    print(chunk_files)
-    exit()
+    # print(chunk_files)
+    # exit()
 
-    if os.path.isdir(path):
-        print("loading in all files in folder:", path)
-
-        processing_files = utils.get_all_files(path)
-
-    elif os.path.isfile(path):
-        print("loading in this file:", path)
-
-        processing_files = utils.get_one_file(path)
-
-    else:
-        print("neither file, nor folder. ending programme.")
-        return
-
-    if len(processing_files) == 0:
-        exit("No input files found in the directory. Quitting")
+    # if os.path.isdir(path):
+    #     print("loading in all files in folder:", path)
+    #
+    #     #processing_files = utils.get_all_files(path)
+    #
+    # elif os.path.isfile(path):
+    #     print("loading in this file:", path)
+    #
+    #     #processing_files = utils.get_one_file(path)
+    #
+    # else:
+    #     print("neither file, nor folder. ending programme.")
+    #     return
+    #
+    # if len(processing_files) == 0:
+    #     exit("No input files found in the directory. Quitting")
 
 
     print("processing mlat")
@@ -160,69 +161,71 @@ def main(path):
     files = []
     load_file = []
     chunk_read = 0
-    for file in processing_files:
+    for processing_files in reader:
+        print()
+#        for file in processing_files:
+            # print(file)
+            # continue
 
-        chunk_length = 240 #seconds
-        gs = 5
-        file_prefix = "data/adsb/test11"
-        data = load_file_jsonGzip(file)
-        chunk_read += int(data['meta']['rec_end']-data['meta']['rec_start'])
 
-        if chunk_read >= chunk_length:
-            load_file.append(file)
-            files.append(load_file)
-            load_file = []
-            chunk_read = 0
-        else:
-            load_file.append(file)
-            print(load_file)
-            print()
+        #     chunk_length = 240 #seconds
+        #     gs = 5
+        #     file_prefix = "data/adsb/test11"
+        #     data = load_file_jsonGzip(file)
+        #     chunk_read += int(data['meta']['rec_end']-data['meta']['rec_start'])
+        #
+        #     if chunk_read >= chunk_length:
+        #         load_file.append(file)
+        #         files.append(load_file)
+        #         load_file = []
+        #         chunk_read = 0
+        #     else:
+        #         load_file.append(file)
+        #         print(load_file)
+        #         print()
+        #
+        # if len(load_file) != 0:
+        #     files.append(load_file)
 
-    if len(load_file) != 0:
-        files.append(load_file)
-    exit(files)
+        create_table.create()
+        conn = sqlite3.connect('planespotting/test2.db')
 
-    exit()
+        for file in processing_files:
+            print("processing", file)
 
-    create_table.create()
-    conn = sqlite3.connect('planespotting/test2.db')
+            if Path(file).suffix == ".gz":
+                data = load_file_jsonGzip(file)
 
-    for file in processing_files:
-        print("processing", file)
+            else:
+                with open(file, 'r') as f:
+                    data = json.load(f)
 
-        if Path(file).suffix == ".gz":
-            data = load_file_jsonGzip(file)
+                #print(data)
 
-        else:
-            with open(file, 'r') as f:
-                data = json.load(f)
+                #exit(data['meta']['rec_end']-data['meta']['rec_start']) this is time difference
 
-        #print(data)
+            for frame in data['data']:
+                record = (i, frame['raw'], frame['adsb_msg'], frame['timestamp'], frame['SamplePos'], frame['df'], frame['tc'], frame['x'], frame['y'], frame['z'], frame['time_propagation'], data['meta']['file'], data['meta']['mlat_mode'], data['meta']['file'], data['meta']['gs_lat'], data['meta']['gs_lon'], data['meta']['gs_alt'])
+                conn.execute("INSERT INTO frames VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", record)
+                i += 1
+        conn.commit()
 
-        #exit(data['meta']['rec_end']-data['meta']['rec_start']) this is time difference
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM frames WHERE df = 17 AND tc BETWEEN 9 AND 18")
+        data = cur.fetchall()
+        uniq_frames = [] #This list will contain df17 and tc9-18 msgs, and each msgs will occur only once in this list, to be used for querying
+            #print(data)
 
-        for frame in data['data']:
-            record = (i, frame['raw'], frame['adsb_msg'], frame['timestamp'], frame['SamplePos'], frame['df'], frame['tc'], frame['x'], frame['y'], frame['z'], frame['time_propagation'], data['meta']['file'], data['meta']['mlat_mode'], data['meta']['file'], data['meta']['gs_lat'], data['meta']['gs_lon'], data['meta']['gs_alt'])
-            conn.execute("INSERT INTO frames VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", record)
-            i += 1
-    conn.commit()
+        for rows in data:
+            if rows[2] not in uniq_frames:
+                uniq_frames.append(rows[2])
 
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM frames WHERE df = 17 AND tc BETWEEN 9 AND 18")
-    data = cur.fetchall()
-    uniq_frames = [] #This list will contain df17 and tc9-18 msgs, and each msgs will occur only once in this list, to be used for querying
-    #print(data)
+        for frames in uniq_frames:
+            cur.execute("SELECT * FROM frames WHERE adsb_msg = ?", (frames,))
+            finding = cur.fetchall()
+                # if len(finding) != 5:
+            print(finding)
+            print("")
 
-    for rows in data:
-        if rows[2] not in uniq_frames:
-            uniq_frames.append(rows[2])
-
-    for frames in uniq_frames:
-        cur.execute("SELECT * FROM frames WHERE adsb_msg = ?", (frames,))
-        finding = cur.fetchall()
-        # if len(finding) != 5:
-        print(finding)
-        print("")
-
-    conn.close()
-    os.remove("planespotting/test2.db") #Throwing away the db
+        conn.close()
+        os.remove("planespotting/test2.db") #Throwing away the db
