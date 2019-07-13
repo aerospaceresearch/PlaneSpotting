@@ -37,9 +37,9 @@ def correct_samplePos(data):
 
     return data
 
-def load_station_wise(gs_id, path):
+def load_station_wise(path):
 
-    path = path + os.sep+"station_"+str(gs_id)+os.sep #looking for all recorded files in respective station folder
+    #path = path + os.sep+"station_"+str(gs_id)+os.sep #looking for all recorded files in respective station folder
 
     return utils.get_all_files(path)
 
@@ -50,26 +50,49 @@ def main(path):
 
     chunk_files = []
     gs_no = 0
-    for _, dirs, _ in os.walk(path):
-        gs_no += len(dirs)
-
+    print(os.listdir(path))
+    # exit()
+    # for _, dirs, _ in os.walk(path):
+    #     gs_no += len(dirs)
+    reader = []
+    list = []
     chunk_read = 0
-    for i in range(1, gs_no+1):
-        files = load_station_wise(i, path)
-        lst = []
-        for file in files:
+    for stations in os.listdir(path):
+        for _, _, files in os.walk(path+os.sep+stations+os.sep):
+            for file in files:
+                data = load_file_jsonGzip(path+os.sep+stations+os.sep+file)
+                chunk_size = int(data['meta']['rec_end']-data['meta']['rec_start'])
+                chunk_read += chunk_size
+                if chunk_read >= 240:
+                    list.append(file)
+                    reader.append(list)
+                    list = []
+                    chunk_read = 0
+                    break
+                else:
+                    list.append(file)
 
-            data = load_file_jsonGzip(file)
-            chunk_read += int(data['meta']['rec_end']-data['meta']['rec_start'])
 
-            if chunk_read >= 240:
-                lst.append(file)
-                chunk_files.append(lst)
-                lst = []
-                chunk_read = 0
+    print(reader)
+    exit()
+    # chunk_read = 0
+    # for i in range(1, gs_no+1):
+    #     files = load_station_wise(i, path)
+        # lst = []
+        # for file in files:
+        #
+        #     data = load_file_jsonGzip(file)
+        #     chunk_read += int(data['meta']['rec_end']-data['meta']['rec_start'])
+        #
+        #     if chunk_read >= 240:
+        #         lst.append(file)
+        #         chunk_files.append(lst)
+        #         lst = []
+        #         chunk_read = 0
+        #
+        #     else:
+        #         lst.append(file)
 
-            else:
-                lst.append(file)
 
     print(chunk_files)
     exit()
