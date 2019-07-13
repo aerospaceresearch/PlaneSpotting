@@ -62,6 +62,7 @@ def main(path):
     reader = []
     list = []
 
+    chunk = 240
     for stations in os.listdir(path):
         chunk_read = 0
         batch = 0
@@ -72,11 +73,11 @@ def main(path):
             chunk_size = int(data['meta']['rec_end']-data['meta']['rec_start'])
             chunk_read += chunk_size
             print(chunk_read)
-            if chunk_read > 240:
-                chunk_read = 0
+            if chunk_read > chunk:
+                chunk_read = chunk - chunk_size
                 batch += 1
 
-            if chunk_read <= 240:
+            if chunk_read <= chunk:
                 #list.append(file)
                 #reader.append(list)
                 #list = []
