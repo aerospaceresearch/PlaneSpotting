@@ -56,8 +56,9 @@ def main(path):
     chunk_read = 0
     for i in range(1, gs_no+1):
         files = load_station_wise(i, path)
+        lst = []
         for file in files:
-            lst = []
+
             data = load_file_jsonGzip(file)
             chunk_read += int(data['meta']['rec_end']-data['meta']['rec_start'])
 
