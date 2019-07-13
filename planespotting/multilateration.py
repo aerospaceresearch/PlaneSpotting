@@ -38,13 +38,17 @@ def correct_samplePos(data):
     return data
 
 def load_station_wise(gs_id, path):
-    path = path + os.sep+"station_"+str(gs_id)+os.sep
-    exit(utils.get_all_files(path))
+
+    path = path + os.sep+"station_"+str(gs_id)+os.sep #looking for all recorded files in respective station folder
+
     return utils.get_all_files(path)
 
 def main(path):
-    st = load_station_wise(1, path)
-    exit(st)
+
+    for i in range(1, 6):
+        print(load_station_wise(i, path))
+    exit()
+
     if os.path.isdir(path):
         print("loading in all files in folder:", path)
 
