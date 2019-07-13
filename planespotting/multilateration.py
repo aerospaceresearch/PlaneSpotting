@@ -65,13 +65,13 @@ def main(path):
                 chunk_read += chunk_size
                 if chunk_read >= 240:
                     list.append(file)
-                    reader.append(list)
-                    list = []
+                    #reader.append(list)
+                    #list = []
                     chunk_read = 0
                     break
                 else:
                     list.append(file)
-
+    reader.append(list)
 
     print(reader)
     exit()
