@@ -198,6 +198,7 @@ def store_file_jsonGzip(path, file, data):
     filename = file.split(os.sep)[-1].split(".")[0] + ".json.gz"
 
     # create the folder
+    path = path+os.sep+file.split(os.sep)[1]
     create_folder(path)
 
     with gzip.open(path + os.sep + filename, 'wt', encoding="utf-8") as fout:
