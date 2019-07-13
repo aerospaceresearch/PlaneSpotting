@@ -45,14 +45,33 @@ def load_station_wise(gs_id, path):
 
 def main(path):
 
-    for i in range(1, 6):
-        print(load_station_wise(i, path))
+    # for i in range(1, 6):
+    #     print(load_station_wise(i, path))
 
     chunk_files = []
-    c = 0
-    for _, dir, _ in os.walk(path):
-        c += len(dir)
-    exit(c)
+    gs_no = 0
+    for _, dirs, _ in os.walk(path):
+        gs_no += len(dirs)
+
+    chunk_read = 0
+    for i in range(1, gs_no+1):
+        files = load_station_wise(i, path)
+        for file in files:
+            lst = []
+            data = load_file_jsonGzip(file)
+            chunk_read += int(data['meta']['rec_end']-data['meta']['rec_start'])
+
+            if chunk_read >= 240:
+                lst.append(file)
+                chunk_files.append(lst)
+                lst = []
+                chunk_read = 0
+
+            else:
+                lst.append(file)
+
+    print(chunk_files)
+    exit()
 
     if os.path.isdir(path):
         print("loading in all files in folder:", path)
