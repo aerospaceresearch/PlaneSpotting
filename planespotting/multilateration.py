@@ -40,7 +40,6 @@ def correct_samplePos(data):
 
 def load_station_wise(path):
 
-    #path = path + os.sep+"station_"+str(gs_id)+os.sep #looking for all recorded files in respective station folder
 
     return utils.get_all_files(path)
 
@@ -51,15 +50,12 @@ def get_files(path):
 
 def main(path):
 
-    # for i in range(1, 6):
-    #     print(load_station_wise(i, path))
+
 
     chunk_files = []
     gs_no = 0
     print(os.listdir(path))
-    # exit()
-    # for _, dirs, _ in os.walk(path):
-    #     gs_no += len(dirs)
+
     reader = []
     list = []
 
@@ -79,60 +75,14 @@ def main(path):
                 batch += 1
 
             if chunk_read <= chunk:
-                #list.append(file)
-                #reader.append(list)
-                #list = []
-                #break
+
                 try:
                     reader[batch].append(path+os.sep+stations+os.sep+file)
-                    #print(reader)
-                    #print()
-                    #print()
+
                 except:
                     reader.append([])
                     reader[batch].append(path+os.sep+stations+os.sep+file)
-                    #print(reader)
-                    #print()
-                    #batch += 1
-            # else:
-            #     #list.append(file)
-            #     chunk_read = 0
-            #     batch += 1
-            #     try:
-            #         reader[batch].append(file)
-            #         print(reader)
-            #         print()
-            #         print()
-            #     except:
-            #         reader.append([])
-            #         reader[batch].append(file)
-            #         print(reader)
-                #break
-    #reader.append(list)
 
-    # print(reader)
-    # exit()
-    # chunk_read = 0
-    # for i in range(1, gs_no+1):
-    #     files = load_station_wise(i, path)
-        # lst = []
-        # for file in files:
-        #
-        #     data = load_file_jsonGzip(file)
-        #     chunk_read += int(data['meta']['rec_end']-data['meta']['rec_start'])
-        #
-        #     if chunk_read >= 240:
-        #         lst.append(file)
-        #         chunk_files.append(lst)
-        #         lst = []
-        #         chunk_read = 0
-        #
-        #     else:
-        #         lst.append(file)
-
-
-    # print(chunk_files)
-    # exit()
 
     # if os.path.isdir(path):
     #     print("loading in all files in folder:", path)
@@ -158,34 +108,11 @@ def main(path):
     i = 0
 
 
-    files = []
-    load_file = []
-    chunk_read = 0
+    # files = []
+    # load_file = []
+    # chunk_read = 0
     for processing_files in reader:
         print()
-#        for file in processing_files:
-            # print(file)
-            # continue
-
-
-        #     chunk_length = 240 #seconds
-        #     gs = 5
-        #     file_prefix = "data/adsb/test11"
-        #     data = load_file_jsonGzip(file)
-        #     chunk_read += int(data['meta']['rec_end']-data['meta']['rec_start'])
-        #
-        #     if chunk_read >= chunk_length:
-        #         load_file.append(file)
-        #         files.append(load_file)
-        #         load_file = []
-        #         chunk_read = 0
-        #     else:
-        #         load_file.append(file)
-        #         print(load_file)
-        #         print()
-        #
-        # if len(load_file) != 0:
-        #     files.append(load_file)
 
         create_table.create()
         conn = sqlite3.connect('planespotting/test2.db')
@@ -200,9 +127,6 @@ def main(path):
                 with open(file, 'r') as f:
                     data = json.load(f)
 
-                #print(data)
-
-                #exit(data['meta']['rec_end']-data['meta']['rec_start']) this is time difference
 
             for frame in data['data']:
                 record = (i, frame['raw'], frame['adsb_msg'], frame['timestamp'], frame['SamplePos'], frame['df'], frame['tc'], frame['x'], frame['y'], frame['z'], frame['time_propagation'], data['meta']['file'], data['meta']['mlat_mode'], data['meta']['file'], data['meta']['gs_lat'], data['meta']['gs_lon'], data['meta']['gs_alt'])
