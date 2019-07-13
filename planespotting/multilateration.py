@@ -39,7 +39,7 @@ def correct_samplePos(data):
 
 def load_station_wise(gs_id, path):
     path = path + "/station_"+str(gs_id)
-
+    exit(path)
     return utils.get_all_files(path)
 
 def main(path):
