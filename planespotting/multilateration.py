@@ -43,6 +43,11 @@ def load_station_wise(path):
 
     return utils.get_all_files(path)
 
+def get_files(path):
+    for _, _, files in os.walk(path):
+        file = files
+    return file
+
 def main(path):
 
     # for i in range(1, 6):
@@ -56,22 +61,52 @@ def main(path):
     #     gs_no += len(dirs)
     reader = []
     list = []
-    chunk_read = 0
+
     for stations in os.listdir(path):
-        for _, _, files in os.walk(path+os.sep+stations+os.sep):
-            for file in files:
-                data = load_file_jsonGzip(path+os.sep+stations+os.sep+file)
-                chunk_size = int(data['meta']['rec_end']-data['meta']['rec_start'])
-                chunk_read += chunk_size
-                if chunk_read >= 240:
-                    list.append(file)
-                    #reader.append(list)
-                    #list = []
-                    chunk_read = 0
-                    break
-                else:
-                    list.append(file)
-    reader.append(list)
+        chunk_read = 0
+        batch = 0
+        #for _, _, files in os.walk(path+os.sep+stations+os.sep):
+        files = get_files(path+os.sep+stations+os.sep)
+        for file in files:
+            data = load_file_jsonGzip(path+os.sep+stations+os.sep+file)
+            chunk_size = int(data['meta']['rec_end']-data['meta']['rec_start'])
+            chunk_read += chunk_size
+            print(chunk_read)
+            if chunk_read > 240:
+                chunk_read = 0
+                batch += 1
+
+            if chunk_read <= 240:
+                #list.append(file)
+                #reader.append(list)
+                #list = []
+                #break
+                try:
+                    reader[batch].append(file)
+                    print(reader)
+                    print()
+                    print()
+                except:
+                    reader.append([])
+                    reader[batch].append(file)
+                    print(reader)
+                    #print()
+                    #batch += 1
+            # else:
+            #     #list.append(file)
+            #     chunk_read = 0
+            #     batch += 1
+            #     try:
+            #         reader[batch].append(file)
+            #         print(reader)
+            #         print()
+            #         print()
+            #     except:
+            #         reader.append([])
+            #         reader[batch].append(file)
+            #         print(reader)
+                #break
+    #reader.append(list)
 
     print(reader)
     exit()
