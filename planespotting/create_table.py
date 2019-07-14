@@ -20,6 +20,7 @@ def create():
              gs_id TEXT,
              gs_lat TEXT,
              gs_lon TEXT,
-             gs_alt TEXT);''')
+             gs_alt TEXT), UNIQUE(adsb_msg, gs_id);''')
 
+    #conn.execute('''CREATE UNIQUE INDEX check ON frames (adsb_msg, gs_id);''')
     conn.close()
