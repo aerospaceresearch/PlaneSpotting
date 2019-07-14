@@ -336,7 +336,14 @@ def get_altCode(frame):
 
 def decode(data):
     #for id in range(lendata["data"])):
+    frame_check = []
     for frames in data['data']:
+
+        if frames['adsb_msg'] not in frame_check:
+            frame_check.append(frames['adsb_msg'])
+        else:
+            frames['is_repeated'] = 1
+            #continue
 
         df = get_DF(frames['adsb_msg'])
         tc = get_TC(frames['adsb_msg'])

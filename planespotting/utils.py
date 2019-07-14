@@ -69,8 +69,7 @@ def const_frame(): #Template for json structure for meta data
             "rec_end":None,
             "gs_lat":None,
             "gs_lon":None,
-            "gs_alt":None,
-            "is_decoded":None
+            "gs_alt":None
         },
         "data":[]
     }
@@ -82,6 +81,7 @@ def const_frame_data(): #This serves as a template for the json structure. Consi
     json_frame = {
         "data":{
             "id":None,
+            "is_repeated":None,
             "raw":None,
             "adsb_msg":None,
             "timestamp":None,

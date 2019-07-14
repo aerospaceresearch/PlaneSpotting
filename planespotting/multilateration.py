@@ -126,9 +126,12 @@ def main(path):
 
 
             for frame in data['data']:
-                record = (i, frame['raw'], frame['adsb_msg'], frame['timestamp'], frame['SamplePos'], frame['df'], frame['tc'], frame['x'], frame['y'], frame['z'], frame['time_propagation'], data['meta']['file'], data['meta']['mlat_mode'], data['meta']['file'], data['meta']['gs_lat'], data['meta']['gs_lon'], data['meta']['gs_alt'])
-                conn.execute("INSERT INTO frames VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", record)
-                i += 1
+                if frame['is_repeated'] != int(1):
+                    record = (i, frame['raw'], frame['adsb_msg'], frame['timestamp'], frame['SamplePos'], frame['df'], frame['tc'], frame['x'], frame['y'], frame['z'], frame['time_propagation'], data['meta']['file'], data['meta']['mlat_mode'], data['meta']['file'], data['meta']['gs_lat'], data['meta']['gs_lon'], data['meta']['gs_alt'])
+                    conn.execute("INSERT INTO frames VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", record)
+                    i += 1
+                else:
+                    continue
         conn.commit()
 
         cur = conn.cursor()
@@ -145,9 +148,9 @@ def main(path):
             cur.execute("SELECT * FROM frames WHERE adsb_msg = ?", (frames,))
             finding = cur.fetchall()
                 # if len(finding) != 5:
-            if len(finding) != 10:
-                print(finding)
-                print("")
+            #if len(finding) != 10:
+            print(finding)
+            print("")
 
         conn.close()
         os.remove("planespotting/test2.db") #Throwing away the db
