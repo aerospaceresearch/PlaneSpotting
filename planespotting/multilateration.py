@@ -38,10 +38,7 @@ def correct_samplePos(data):
 
     return data
 
-def load_station_wise(path):
 
-
-    return utils.get_all_files(path)
 
 def get_files(path):
     for _, _, files in os.walk(path):
@@ -145,11 +142,12 @@ def main(path):
                 uniq_frames.append(rows[2])
 
         for frames in uniq_frames:
-            cur.execute("SELECT * FROM frames WHERE adsb_msg = ?", (frames,))
+            cur.execute("SELECT COUNT(*) FROM frames WHERE adsb_msg = ?", (frames,))
             finding = cur.fetchall()
                 # if len(finding) != 5:
-            print(finding)
-            print("")
+            if finding[0][0] != 10:
+                print(finding[0][0])
+                print("")
 
         conn.close()
         os.remove("planespotting/test2.db") #Throwing away the db
