@@ -18,7 +18,7 @@ def calculate_signalpropagationtime(data):
         for i in range (len(data["data"])):
             frames = data['data'][i]
 
-            if frames["x"] is not None and frames["x"] is not None and frames["x"] is not None:
+            if frames["x"] is not None:
                 frames["time_propagation"] = ((gs_x - frames["x"])**2 +
                                               (gs_y - frames["y"])**2 +
                                               (gs_z - frames["z"])**2)**0.5 / c
