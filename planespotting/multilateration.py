@@ -142,11 +142,11 @@ def main(path):
                 uniq_frames.append(rows[2])
 
         for frames in uniq_frames:
-            cur.execute("SELECT COUNT(*) FROM frames WHERE adsb_msg = ?", (frames,))
+            cur.execute("SELECT * FROM frames WHERE adsb_msg = ?", (frames,))
             finding = cur.fetchall()
                 # if len(finding) != 5:
-            if finding[0][0] != 10:
-                print(finding[0][0])
+            if len(finding) != 10:
+                print(finding)
                 print("")
 
         conn.close()
