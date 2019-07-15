@@ -1,27 +1,32 @@
 "gs":{
   "gs_1":{
-    "lat":null,
-    "lon":null,
+    "lat":50.9271,
+    "lon":11.5892,
     "alt":null
   }
   "gs_1":{
-    "lat":null,
-    "lon":null,
+    "lat":50.9271,
+    "lon":11.5892,
     "alt":null
   }
-  "gs_1":{
-    "lat":null,
-    "lon":null,
+  "gs_2":{
+    "lat":50.9271,
+    "lon":11.5892,
     "alt":null
   }
-  "gs_1":{
-    "lat":null,
-    "lon":null,
+  "gs_3":{
+    "lat":50.9271,
+    "lon":11.5892,
     "alt":null
     }
-  "gs_1":{
-    "lat":null,
-    "lon":null,
+  "gs_4":{
+    "lat":50.9271,
+    "lon":11.5892,
+    "alt":null
+  }
+  "gs_5":{
+    "lat":50.9271,
+    "lon":11.5892,
     "alt":null
   }
 }
