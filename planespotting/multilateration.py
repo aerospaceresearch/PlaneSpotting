@@ -43,7 +43,7 @@ def correct_samplePos(data):
 def get_files(path):
     for _, _, files in os.walk(path):
         file = files
-    return file
+    return file #This function is used to get all the files present in a station directory
 
 def main(path):
 
@@ -60,19 +60,22 @@ def main(path):
     for stations in os.listdir(path):
         chunk_read = 0
         batch = 0
-        #for _, _, files in os.walk(path+os.sep+stations+os.sep):
+
         files = get_files(path+os.sep+stations+os.sep)
+
+
         for file in files:
             data = load_file_jsonGzip(path+os.sep+stations+os.sep+file)
             chunk_size = int(data['meta']['rec_end']-data['meta']['rec_start'])
             chunk_read += chunk_size
-            #print(chunk_read)
+
+
+
             if chunk_read > chunk:
                 chunk_read = chunk - chunk_size
                 batch += 1
 
-            if chunk_read <= chunk:
-
+            if chunk_read <= chunk: #Creates a nested list for clumped files recorded at the same time at different stations
                 try:
                     reader[batch].append(path+os.sep+stations+os.sep+file)
 
@@ -118,7 +121,7 @@ def main(path):
             print("processing", file)
 
             if Path(file).suffix == ".gz":
-                data = load_file_jsonGzip(file)
+                data = load_file_jsonGzip(file) #ungzipping
 
             else:
                 with open(file, 'r') as f:
@@ -126,7 +129,7 @@ def main(path):
 
 
             for frame in data['data']:
-                if frame['is_repeated'] != int(1):
+                if frame['is_repeated'] != int(1):  #skipping the repeated frames in the same file, no idea why they even exist
                     record = (i, frame['raw'], frame['adsb_msg'], frame['timestamp'], frame['SamplePos'], frame['df'], frame['tc'], frame['x'], frame['y'], frame['z'], frame['time_propagation'], data['meta']['file'], data['meta']['mlat_mode'], data['meta']['file'], data['meta']['gs_lat'], data['meta']['gs_lon'], data['meta']['gs_alt'])
                     conn.execute("INSERT INTO frames VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", record)
                     i += 1
@@ -135,7 +138,7 @@ def main(path):
         conn.commit()
 
         cur = conn.cursor()
-        cur.execute("SELECT * FROM frames WHERE df = 17 AND tc BETWEEN 9 AND 18")
+        cur.execute("SELECT * FROM frames WHERE df = 17 AND tc BETWEEN 9 AND 18") #filtering the position report messages
         data = cur.fetchall()
         uniq_frames = [] #This list will contain df17 and tc9-18 msgs, and each msgs will occur only once in this list, to be used for querying
             #print(data)
@@ -144,7 +147,7 @@ def main(path):
             if rows[2] not in uniq_frames:
                 uniq_frames.append(rows[2])
 
-        for frames in uniq_frames:
+        for frames in uniq_frames: #Looking for the same message in different station file
             cur.execute("SELECT * FROM frames WHERE adsb_msg = ?", (frames,))
             finding = cur.fetchall()
                 # if len(finding) != 5:
