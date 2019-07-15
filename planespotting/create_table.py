@@ -1,7 +1,7 @@
 
 import sqlite3
 def create():
-    conn = sqlite3.connect('planespotting/test2.db')
+    conn = sqlite3.connect('planespotting/data.db')
 
     conn.execute('''CREATE TABLE frames
              (id INT PRIMARY KEY,

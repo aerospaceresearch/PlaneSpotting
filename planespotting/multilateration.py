@@ -112,7 +112,7 @@ def main(path):
         print()
 
         create_table.create()
-        conn = sqlite3.connect('planespotting/test2.db')
+        conn = sqlite3.connect('planespotting/data.db')
 
         for file in processing_files:
             print("processing", file)
@@ -153,4 +153,4 @@ def main(path):
             print("")
 
         conn.close()
-        os.remove("planespotting/test2.db") #Throwing away the db
+        os.remove("planespotting/data.db") #Throwing away the db
