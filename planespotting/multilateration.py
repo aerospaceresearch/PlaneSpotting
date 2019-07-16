@@ -9,10 +9,7 @@ def calculate_signalpropagationtime(data):
     c = 300000000.0 # speed of light
 
     if data["meta"]["gs_lat"] is not None and data["meta"]["gs_lon"] is not None and data["meta"]["gs_alt"] is not None:
-        gs_x, gs_y, gs_z = get_cartesian_coordinates(data["meta"]["gs_lat"],
-                                                     data["meta"]["gs_lon"],
-                                                     data["meta"]["gs_alt"],
-                                                     True)
+        gs_x, gs_y, gs_z = data["meta"]["gs_lat"], data["meta"]["gs_lon"], data["meta"]["gs_alt"]
 
         for i in range (len(data["data"])):
             frames = data['data'][i]

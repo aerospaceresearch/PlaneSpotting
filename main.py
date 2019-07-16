@@ -1,6 +1,6 @@
 import argparse
 import os
-from planespotting import utils
+from planespotting import utils, calculator
 from planespotting.decoder import decode
 from planespotting import multilateration
 import time
@@ -111,7 +111,7 @@ def main(filename, output, latitude, longitude, altitude):
 
         data = load_dump1090_file(file)
         gs_data = get_gs_data(file.split(os.sep)[1], "planespotting"+os.sep+"gs_data.json")
-        latitude, longitude, altitude = gs_data['lat'], gs_data['lon'], gs_data['alt']
+        latitude, longitude, altitude = calculator.get_cartesian_coordinates(gs_data['lat'], gs_data['lon'], gs_data['alt'], True)
 
         # print(latitude, longitude, altitude)
         # exit()
