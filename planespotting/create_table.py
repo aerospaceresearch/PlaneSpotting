@@ -18,9 +18,9 @@ def create():
              file TEXT,
              mlat_mode TEXT,
              gs_id TEXT,
-             gs_lat TEXT,
-             gs_lon TEXT,
-             gs_alt TEXT);''')
+             gs_lat FLOAT,
+             gs_lon FLOAT,
+             gs_alt FLOAT);''')
 
     #conn.execute('''CREATE UNIQUE INDEX check ON frames (adsb_msg, gs_id);''')
     conn.close()
