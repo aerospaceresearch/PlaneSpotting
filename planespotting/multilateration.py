@@ -9,7 +9,7 @@ def calculate_signalpropagationtime(data):
     c = 300000000.0 # speed of light
 
     if data["meta"]["gs_lat"] is not None and data["meta"]["gs_lon"] is not None and data["meta"]["gs_alt"] is not None:
-        gs_x, gs_y, gs_z = data["meta"]["gs_lat"], data["meta"]["gs_lon"], data["meta"]["gs_alt"]
+        gs_x, gs_y, gs_z = get_cartesian_coordinates(data["meta"]["gs_lat"], data["meta"]["gs_lon"], data["meta"]["gs_alt"], True)
 
         for i in range (len(data["data"])):
             frames = data['data'][i]
@@ -52,7 +52,7 @@ def main(path):
     reader = []
     list = []
 
-    chunk = 120
+    chunk = 240
     for stations in os.listdir(path):
         chunk_read = 0
         batch = 0
@@ -78,7 +78,8 @@ def main(path):
                 except:
                     reader.append([])
                     reader[batch].append(path+os.sep+stations+os.sep+file)
-
+    print(reader)
+    print()
     # if os.path.isdir(path):
     #     print("loading in all files in folder:", path)
     #
