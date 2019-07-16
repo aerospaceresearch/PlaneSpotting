@@ -68,8 +68,9 @@ def main(path):
             chunk_size = int(data['meta']['rec_end']-data['meta']['rec_start'])
             chunk_read += chunk_size
 
-
-
+            print(reader)
+            print()
+            print(chunk_read)
             if chunk_read > chunk:
                 chunk_read = chunk - chunk_size
                 batch += 1
@@ -82,7 +83,7 @@ def main(path):
                     reader.append([])
                     reader[batch].append(path+os.sep+stations+os.sep+file)
 
-
+    exit()
     # if os.path.isdir(path):
     #     print("loading in all files in folder:", path)
     #
