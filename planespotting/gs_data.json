@@ -1,24 +1,24 @@
-"gs":{
+{
   "station_1":{
     "lat":50.9271,
     "lon":11.5892,
     "alt":null
-  }
+  },
   "station_2":{
     "lat":50.9271,
     "lon":11.5892,
     "alt":null
-  }
+  },
   "station_3":{
     "lat":50.9271,
     "lon":11.5892,
     "alt":null
-  }
+  },
   "station_4":{
     "lat":50.9271,
-    "lon":11.58923
+    "lon":11.58923,
     "alt":null
-    }
+  },
   "station_5":{
     "lat":50.9271,
     "lon":11.5892,

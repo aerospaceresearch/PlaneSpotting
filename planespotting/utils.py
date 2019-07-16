@@ -211,3 +211,10 @@ def load_file_jsonGzip(filename):
         data = json.loads(fin.read().decode('utf-8'))
 
     return data
+
+def load_json(filename):
+
+    with open(filename, 'r') as fh:
+        data = json.loads(fh.read())
+
+    return data

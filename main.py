@@ -57,6 +57,10 @@ def load_dump1090_file(file):
     return json_data
 
 def get_gs_data(station):
+    data = utils.load_json(station)
+
+    return data[station]
+
 
 
 
@@ -106,6 +110,7 @@ def main(filename, output, latitude, longitude, altitude):
         print(file.split(os.sep)[1])
 
         data = load_dump1090_file(file)
+        get_gs_data("planespotting/gs_data.json")
 
         if data["meta"]["gs_lat"] is None and data["meta"]["gs_lon"] is None and \
                         latitude is not None and longitude is not None:
