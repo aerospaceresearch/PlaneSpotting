@@ -2,26 +2,26 @@
   "station_1":{
     "lat":50.9271,
     "lon":11.5892,
-    "alt":null
+    "alt":0.0
   },
   "station_2":{
     "lat":50.9271,
     "lon":11.5892,
-    "alt":null
+    "alt":0.0
   },
   "station_3":{
     "lat":50.9271,
     "lon":11.5892,
-    "alt":null
+    "alt":0.0
   },
   "station_4":{
     "lat":50.9271,
     "lon":11.58923,
-    "alt":null
+    "alt":0.0
   },
   "station_5":{
     "lat":50.9271,
     "lon":11.5892,
-    "alt":null
+    "alt":0.0
   }
 }

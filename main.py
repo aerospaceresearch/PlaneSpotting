@@ -56,8 +56,8 @@ def load_dump1090_file(file):
 
     return json_data
 
-def get_gs_data(station):
-    data = utils.load_json(station)
+def get_gs_data(station, path):
+    data = utils.load_json(path)
 
     return data[station]
 
@@ -110,7 +110,11 @@ def main(filename, output, latitude, longitude, altitude):
         print(file.split(os.sep)[1])
 
         data = load_dump1090_file(file)
-        get_gs_data("planespotting/gs_data.json")
+        gs_data = get_gs_data(file.split(os.sep)[1], "planespotting"+os.sep+"gs_data.json")
+        latitude, longitude, altitude = gs_data['lat'], gs_data['lon'], gs_data['alt']
+        
+        # print(latitude, longitude, altitude)
+        # exit()
 
         if data["meta"]["gs_lat"] is None and data["meta"]["gs_lon"] is None and \
                         latitude is not None and longitude is not None:
@@ -123,15 +127,15 @@ def main(filename, output, latitude, longitude, altitude):
             data["meta"]["rec_end"] = time.time() + 120
         print("input lat & long:", data["meta"]["gs_lat"], data["meta"]["gs_lon"])
 
-        data = decode(data)
-
-        print("storing adsb-data")
-
-        if "gzip" == "gzip":
-            # standard output
-            utils.store_file_jsonGzip(path, file, data)
-        else:
-            utils.store_file(path, file, data)
+        # data = decode(data)
+        #
+        # print("storing adsb-data")
+        #
+        # if "gzip" == "gzip":
+        #     # standard output
+        #     utils.store_file_jsonGzip(path, file, data)
+        # else:
+        #     utils.store_file(path, file, data)
 
     print("doing mlat stuff from here on...")
     multilateration.main(path)
