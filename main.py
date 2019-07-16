@@ -56,6 +56,9 @@ def load_dump1090_file(file):
 
     return json_data
 
+def get_gs_data(station):
+
+
 
 def main(filename, output, latitude, longitude, altitude):
     '''
@@ -100,6 +103,7 @@ def main(filename, output, latitude, longitude, altitude):
     print("")
     for file in processing_files:
         print("processing", file)
+        print(file.split(os.sep)[1])
 
         data = load_dump1090_file(file)
 
@@ -154,7 +158,7 @@ def getArgs():
 
     parser.add_argument('--alt', action='store', default=0.0,
                         dest='altitude',
-                        help='sets the groundstation longitude')
+                        help='sets the groundstation altitude')
 
     parser.add_argument('-o', '--output', action='store', default=None,
                         dest='output',
