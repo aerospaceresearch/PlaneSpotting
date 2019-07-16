@@ -65,34 +65,23 @@ def main(path):
 
         for file in files:
 
-            print()
             data = load_file_jsonGzip(path+os.sep+stations+os.sep+file)
             chunk_size = int(data['meta']['rec_end']-data['meta']['rec_start'])
             chunk_read += chunk_size
 
-            print(reader)
-            print()
-            print(chunk_read, batch)
             if chunk_read > chunk:
                 chunk_read = chunk_read - chunk
                 batch += 1
 
             if chunk_read <= chunk: #Creates a nested list for clumped files recorded at the same time at different stations
                 try:
-                    print(file, batch)
                     reader[batch].append(path+os.sep+stations+os.sep+file)
-                    print(reader[batch])
 
 
                 except:
                     reader.append([])
                     reader[batch].append(path+os.sep+stations+os.sep+file)
 
-            print()
-
-            print(chunk_read, batch)
-    print(len(reader))
-    exit()
     # if os.path.isdir(path):
     #     print("loading in all files in folder:", path)
     #
