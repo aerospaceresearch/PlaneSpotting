@@ -3,7 +3,6 @@ from planespotting import utils
 from planespotting import create_table
 from pathlib import Path
 import os
-import time
 import sqlite3
 
 def calculate_signalpropagationtime(data):
@@ -56,7 +55,7 @@ def main(path):
     reader = []
     list = []
 
-    chunk = 240
+    chunk = 120
     for stations in os.listdir(path):
         chunk_read = 0
         batch = 0
