@@ -112,7 +112,7 @@ def main(filename, output, latitude, longitude, altitude):
         data = load_dump1090_file(file)
         gs_data = get_gs_data(file.split(os.sep)[1], "planespotting"+os.sep+"gs_data.json")
         latitude, longitude, altitude = gs_data['lat'], gs_data['lon'], gs_data['alt']
-        
+
         # print(latitude, longitude, altitude)
         # exit()
 
@@ -127,15 +127,15 @@ def main(filename, output, latitude, longitude, altitude):
             data["meta"]["rec_end"] = time.time() + 120
         print("input lat & long:", data["meta"]["gs_lat"], data["meta"]["gs_lon"])
 
-        # data = decode(data)
-        #
-        # print("storing adsb-data")
-        #
-        # if "gzip" == "gzip":
-        #     # standard output
-        #     utils.store_file_jsonGzip(path, file, data)
-        # else:
-        #     utils.store_file(path, file, data)
+        data = decode(data)
+
+        print("storing adsb-data")
+
+        if "gzip" == "gzip":
+            # standard output
+            utils.store_file_jsonGzip(path, file, data)
+        else:
+            utils.store_file(path, file, data)
 
     print("doing mlat stuff from here on...")
     multilateration.main(path)
