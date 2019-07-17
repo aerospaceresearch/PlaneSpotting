@@ -80,6 +80,13 @@ def main(path):
                     reader[batch].append(path+os.sep+stations+os.sep+file)
     print(reader)
     print()
+
+    stations = os.listdir(path)
+    for i in range(len(stations)):
+        print(get_files(path+os.sep+stations[i]+os.sep))
+        print()
+    exit()
+
     # if os.path.isdir(path):
     #     print("loading in all files in folder:", path)
     #
@@ -126,7 +133,8 @@ def main(path):
 
             for frame in data['data']:
                 if frame['is_repeated'] != int(1):  #skipping the repeated frames in the same file, no idea why they even exist
-                    record = (i, frame['raw'], frame['adsb_msg'], frame['timestamp'], frame['SamplePos'], frame['df'], frame['tc'], frame['x'], frame['y'], frame['z'], frame['time_propagation'], data['meta']['file'], data['meta']['mlat_mode'], data['meta']['file'], data['meta']['gs_lat'], data['meta']['gs_lon'], data['meta']['gs_alt'])
+                    gs_x, gs_y, gs_z = get_cartesian_coordinates(data["meta"]["gs_lat"], data["meta"]["gs_lon"], data["meta"]["gs_alt"], True)
+                    record = (i, frame['raw'], frame['adsb_msg'], frame['timestamp'], frame['SamplePos'], frame['df'], frame['tc'], frame['x'], frame['y'], frame['z'], frame['time_propagation'], data['meta']['file'], data['meta']['mlat_mode'], data['meta']['file'], data["meta"]["gs_lat"], data["meta"]["gs_lon"], data["meta"]["gs_alt"])#gs_x, gs_y, gs_z)
                     conn.execute("INSERT INTO frames VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", record)
                     i += 1
                 else:
@@ -149,6 +157,7 @@ def main(path):
                 # if len(finding) != 5:
             #if len(finding) != 10:
             print(finding)
+            exit()
             print("")
 
         conn.close()
