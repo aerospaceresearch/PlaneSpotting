@@ -49,7 +49,11 @@ def check_file_overlap(file1, file2):
     data1_rec_end = data1['meta']['rec_end']
     data2_rec_start = data2['meta']['rec_start']
     data2_rec_end = data2['meta']['rec_end']
-    print(file1, file2, data1_rec_start, data1_rec_end, data2_rec_start, data2_rec_end)
+    if (data1_rec_start <= data2_rec_start and data2_rec_end >= data1_rec_start) or (data2_rec_start <= data1_rec_start and data2_rec_end <= data1_rec_end):
+        return True
+    else:
+        return False
+    #print(file1, file2, data1_rec_start, data1_rec_end, data2_rec_start, data2_rec_end)
 
 def main(path):
 
