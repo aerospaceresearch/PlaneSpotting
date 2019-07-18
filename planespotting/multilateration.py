@@ -83,10 +83,10 @@ def main(path):
 
     stations = os.listdir(path)
     for i in range(len(stations)):
-        for j in range(i, len(stations)):
+        for j in range(i+1, len(stations)):
             files = get_files(path+os.sep+stations[j]+os.sep)
             print(files)
-            print()
+        print()
             # print(get_files(path+os.sep+stations[i]+os.sep))
             # print()
 
