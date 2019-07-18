@@ -41,6 +41,9 @@ def get_files(path):
         file = files
     return file #This function is used to get all the files present in a station directory
 
+def check_file_overlap(file1, file2):
+    print(file1, file2)
+
 def main(path):
 
 
@@ -80,16 +83,18 @@ def main(path):
                     reader[batch].append(path+os.sep+stations+os.sep+file)
     print(reader)
     print()
-
+    list = []
     stations = os.listdir(path)
     for i in range(len(stations)):
         mother_file = get_files(path+os.sep+stations[i]+os.sep)
+
         for m_file in mother_file:
             for j in range(i+1, len(stations)):
+
                 files = get_files(path+os.sep+stations[j]+os.sep)
                 #print(files)
                 for file in files:
-                    print(m_file, file)
+                    check_file_overlap(m_file, file)
             print()
             # print(get_files(path+os.sep+stations[i]+os.sep))
             # print()
