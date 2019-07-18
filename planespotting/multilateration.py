@@ -83,8 +83,13 @@ def main(path):
 
     stations = os.listdir(path)
     for i in range(len(stations)):
-        print(get_files(path+os.sep+stations[i]+os.sep))
-        print()
+        for j in range(i, len(stations)):
+            files = get_files(path+os.sep+stations[j]+os.sep)
+            print(files)
+            print()
+            # print(get_files(path+os.sep+stations[i]+os.sep))
+            # print()
+
     exit()
 
     # if os.path.isdir(path):
@@ -102,7 +107,7 @@ def main(path):
     #     return
     #
     # if len(processing_files) == 0:
-    #     exit("No input files found in the directory. Quitting")
+    #     exit("No input files found in the directory. Quitting"
 
 
     print("processing mlat")
