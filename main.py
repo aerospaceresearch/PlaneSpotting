@@ -56,7 +56,7 @@ def load_dump1090_file(file):
     return json_data
 
 
-def main(filename, output, latitude, longitude, altitude):
+def main(filename, output, latitude, longitude, altitude, timestart, timeend, gs_id):
     '''
     The expected inputs to the filename parameter: Path to a file, path to a folder.
 
@@ -103,6 +103,12 @@ def main(filename, output, latitude, longitude, altitude):
 
         data = load_dump1090_file(file)
 
+
+        # storing meta data
+        data["meta"]["gs_rec_timestamp_start"] = timestart
+        data["meta"]["gs_rec_timestamp_end"] = timeend
+        data["meta"]["gs_id"] = gs_id
+
         if data["meta"]["gs_lat"] is None and data["meta"]["gs_lon"] is None and \
                         latitude is not None and longitude is not None:
             # if the gs location is already set, we don't need the inputs.
@@ -116,6 +122,7 @@ def main(filename, output, latitude, longitude, altitude):
         data = decode(data)
 
         print("storing adsb-data")
+
 
         if "gzip" == "gzip":
             # standard output
@@ -159,6 +166,18 @@ def getArgs():
                         dest='output',
                         help='Path to output file')
 
+    parser.add_argument('--timestart', action='store', default=None,
+                        dest='timestart',
+                        help='timestamp of start of the recoding')
+
+    parser.add_argument('--timeend', action='store', default=None,
+                        dest='timeend',
+                        help='timestamp of end of the recoding')
+
+    parser.add_argument('--gsid', action='store', default=None,
+                        dest='gs_id',
+                        help='groundstation id')
+
 
     #parser.add_argument('--version', action='version', version='0.0') keeping this comment for future reminder
     return parser.parse_args()
@@ -167,4 +186,4 @@ def getArgs():
 if __name__ == '__main__':
     args = getArgs()
 
-    main(args.file, args.output, args.latitude, args.longitude, args.altitude)
+    main(args.file, args.output, args.latitude, args.longitude, args.altitude, args.timestart, args.timeend, args.gs_id)
