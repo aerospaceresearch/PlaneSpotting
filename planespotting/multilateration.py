@@ -83,10 +83,14 @@ def main(path):
 
     stations = os.listdir(path)
     for i in range(len(stations)):
-        for j in range(i+1, len(stations)):
-            files = get_files(path+os.sep+stations[j]+os.sep)
-            print(files)
-        print()
+        mother_file = get_files(path+os.sep+stations[i]+os.sep)
+        for m_file in mother_file:
+            for j in range(i+1, len(stations)):
+                files = get_files(path+os.sep+stations[j]+os.sep)
+                #print(files)
+                for file in files:
+                    print(m_file, file)
+            print()
             # print(get_files(path+os.sep+stations[i]+os.sep))
             # print()
 
