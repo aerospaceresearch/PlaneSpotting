@@ -3,6 +3,7 @@ import json
 import math
 import numpy as np
 import gzip
+from pathlib import Path
 
 def get_all_files(filename):
 
@@ -72,7 +73,7 @@ def const_frame(): #Template for json structure for meta data
             "gs_x" : None,
             "gs_y" : None,
             "gs_z" : None,
-            "gs_rec_timestamp_start" : None,
+            "gs_rec_timestamp_start" : 0.0,
             "gs_rec_timestamp_end" : None,
             "gs_rec_samplingrate" : 2000000
         },
@@ -212,5 +213,17 @@ def load_file_jsonGzip(filename):
 
     with gzip.GzipFile(filename, 'r') as fin:
         data = json.loads(fin.read().decode('utf-8'))
+
+    return data
+
+
+def load_file_json(filename):
+
+    if Path(filename).suffix == ".gz":
+        data = load_file_jsonGzip(filename)
+
+    else:
+        with open(filename, 'r') as f:
+            data = json.load(f)
 
     return data

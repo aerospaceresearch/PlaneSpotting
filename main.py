@@ -166,7 +166,7 @@ def getArgs():
                         dest='output',
                         help='Path to output file')
 
-    parser.add_argument('--timestart', action='store', default=None,
+    parser.add_argument('--timestart', action='store', default=0.0,
                         dest='timestart',
                         help='timestamp of start of the recoding')
 

@@ -1,6 +1,5 @@
 from planespotting.calculator import *
 from planespotting import utils
-from pathlib import Path
 
 
 def calculate_signalpropagationtime(data):
@@ -48,14 +47,59 @@ def main(path):
     print("processing mlat")
     print("")
 
-    for file in processing_files:
-        print("processing", file)
+    # sorting the files for overlapping time spans
+    for file_base in processing_files:
+        print("processing", file_base)
 
-        if Path(file).suffix == ".gz":
-            data = load_file_jsonGzip(file)
+        data_base = load_file_json(file_base)
+
+        start_base = float(data_base["meta"]["gs_rec_timestamp_start"])
+
+        if data_base["meta"]["gs_rec_timestamp_end"] is not None:
+            end_base = float(data_base["meta"]["gs_rec_timestamp_end"])
 
         else:
-            with open(file, 'r') as f:
-                data = json.load(f)
+            end_base = float(data_base["meta"]["gs_rec_timestamp_start"]) + \
+                  float(data_base["data"][-1]["SamplePos"]) / float(data_base["meta"]["gs_rec_samplingrate"])
 
-        print(data["meta"])
+
+        # in this, we will store the overlapping files we will later process further
+        load_files = []
+
+        for file_compare in processing_files:
+
+            data_compare = load_file_json(file_compare)
+
+            start_compare = float(data_compare["meta"]["gs_rec_timestamp_start"])
+
+            if data_compare["meta"]["gs_rec_timestamp_end"] is not None:
+                end_compare = float(data_compare["meta"]["gs_rec_timestamp_end"])
+
+            else:
+                end_compare = float(data_compare["meta"]["gs_rec_timestamp_start"]) + \
+                              float(data_compare["data"][-1]["SamplePos"]) / float(data_compare["meta"]["gs_rec_samplingrate"])
+
+
+
+            if start_compare <= start_base <= end_compare and start_compare <= end_base <= end_compare:
+                print("file is fully inside basefile")
+
+            if start_compare <= start_base <= end_compare is True and \
+                                            start_compare <= end_base <= end_compare is False:
+                print("file is starting in basefile and ends later")
+
+            if start_compare <= start_base <= end_compare is False and \
+                                            start_compare <= end_base <= end_compare is True:
+                print("file is ending in basefile and starts earlier")
+
+            if start_compare <= start_base <= end_compare is False and \
+                                            start_compare <= end_base <= end_compare is False:
+                print("file is not overlapping with basefile")
+
+
+            if start_compare <= start_base <= end_compare or start_compare <= end_base <= end_compare:
+                #storing all overlapping files
+                load_files.append(file_compare)
+
+
+        print("these", len(load_files), "files overlap:", load_files)
