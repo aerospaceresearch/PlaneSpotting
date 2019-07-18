@@ -42,7 +42,14 @@ def get_files(path):
     return file #This function is used to get all the files present in a station directory
 
 def check_file_overlap(file1, file2):
-    print(file1, file2)
+
+    data1 = load_file_jsonGzip(file1)
+    data2 = load_file_jsonGzip(file2)
+    data1_rec_start = data1['meta']['rec_start']
+    data1_rec_end = data1['meta']['rec_end']
+    data2_rec_start = data2['meta']['rec_start']
+    data2_rec_end = data2['meta']['rec_end']
+    print(file1, file2, data1_rec_start, data1_rec_end, data2_rec_start, data2_rec_end)
 
 def main(path):
 
@@ -94,7 +101,7 @@ def main(path):
                 files = get_files(path+os.sep+stations[j]+os.sep)
                 #print(files)
                 for file in files:
-                    check_file_overlap(m_file, file)
+                    check_file_overlap(path+os.sep+stations[i]+os.sep+m_file, path+os.sep+stations[j]+os.sep+file)
             print()
             # print(get_files(path+os.sep+stations[i]+os.sep))
             # print()
