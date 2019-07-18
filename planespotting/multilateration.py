@@ -111,7 +111,7 @@ def main(path):
             print()
             # print(get_files(path+os.sep+stations[i]+os.sep))
             # print()
-
+        break
     exit()
 
     # if os.path.isdir(path):
