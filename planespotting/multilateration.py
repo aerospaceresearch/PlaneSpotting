@@ -64,37 +64,37 @@ def main(path):
     gs_no = 0
     print(os.listdir(path))
 
-    reader = []
-    list = []
-
-    chunk = 240
-    for stations in os.listdir(path):
-        chunk_read = 0
-        batch = 0
-
-        files = get_files(path+os.sep+stations+os.sep)
-
-
-        for file in files:
-
-            data = load_file_jsonGzip(path+os.sep+stations+os.sep+file)
-            chunk_size = int(data['meta']['rec_end']-data['meta']['rec_start'])
-            chunk_read += chunk_size
-
-            if chunk_read > chunk:
-                chunk_read = chunk_read - chunk
-                batch += 1
-
-            if chunk_read <= chunk: #Creates a nested list for clumped files recorded at the same time at different stations
-                try:
-                    reader[batch].append(path+os.sep+stations+os.sep+file)
-
-
-                except:
-                    reader.append([])
-                    reader[batch].append(path+os.sep+stations+os.sep+file)
-    print(reader)
-    print()
+    # reader = []
+    # list = []
+    #
+    # chunk = 240
+    # for stations in os.listdir(path):
+    #     chunk_read = 0
+    #     batch = 0
+    #
+    #     files = get_files(path+os.sep+stations+os.sep)
+    #
+    #
+    #     for file in files:
+    #
+    #         data = load_file_jsonGzip(path+os.sep+stations+os.sep+file)
+    #         chunk_size = int(data['meta']['rec_end']-data['meta']['rec_start'])
+    #         chunk_read += chunk_size
+    #
+    #         if chunk_read > chunk:
+    #             chunk_read = chunk_read - chunk
+    #             batch += 1
+    #
+    #         if chunk_read <= chunk: #Creates a nested list for clumped files recorded at the same time at different stations
+    #             try:
+    #                 reader[batch].append(path+os.sep+stations+os.sep+file)
+    #
+    #
+    #             except:
+    #                 reader.append([])
+    #                 reader[batch].append(path+os.sep+stations+os.sep+file)
+    # print(reader)
+    # print()
     list = []
     stations = os.listdir(path)
     batch = -1
