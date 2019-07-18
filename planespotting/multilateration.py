@@ -105,7 +105,8 @@ def main(path):
                 files = get_files(path+os.sep+stations[j]+os.sep)
                 #print(files)
                 for file in files:
-                    check_file_overlap(path+os.sep+stations[i]+os.sep+m_file, path+os.sep+stations[j]+os.sep+file)
+                    if check_file_overlap(path+os.sep+stations[i]+os.sep+m_file, path+os.sep+stations[j]+os.sep+file):
+                        print(path+os.sep+stations[i]+os.sep+m_file, path+os.sep+stations[j]+os.sep+file)
             print()
             # print(get_files(path+os.sep+stations[i]+os.sep))
             # print()
