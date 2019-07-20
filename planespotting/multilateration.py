@@ -197,7 +197,7 @@ def main(path):
                 # if len(finding) != 5:
             #if len(finding) != 10:
             print(finding)
-            exit()
+            #exit()
             print("")
 
         conn.close()
