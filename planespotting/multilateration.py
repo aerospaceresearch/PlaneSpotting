@@ -52,6 +52,8 @@ def check_file_overlap(file1, file2):
     print(data1_rec_start, data1_rec_end, data2_rec_start, data2_rec_end)
     if (data2_rec_start >= data1_rec_start and data2_rec_end >= data1_rec_end and data1_rec_end > data2_rec_start) or (data2_rec_start <= data1_rec_start and data2_rec_end <= data1_rec_end and data2_rec_end > data1_rec_start):
         return True
+    elif (data2_rec_start == data1_rec_start and data2_rec_end == data1_rec_end):
+        return True
     else:
         return False
     #print(file1, file2, data1_rec_start, data1_rec_end, data2_rec_start, data2_rec_end)
