@@ -125,7 +125,7 @@ def main(path):
             # print()
         break
     print(list)
-    exit()
+    #exit()
 
     # if os.path.isdir(path):
     #     print("loading in all files in folder:", path)
@@ -154,7 +154,7 @@ def main(path):
     # files = []
     # load_file = []
     # chunk_read = 0
-    for processing_files in reader:
+    for processing_files in list:
         print()
 
         create_table.create()
