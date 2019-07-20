@@ -50,25 +50,24 @@ def check_file_overlap(file1, file2):
     data2_rec_start = data2['meta']['rec_start']
     data2_rec_end = data2['meta']['rec_end']
     print(data1_rec_start, data1_rec_end, data2_rec_start, data2_rec_end)
+
     if (data2_rec_start >= data1_rec_start and data2_rec_end >= data1_rec_end and data1_rec_end > data2_rec_start) or (data2_rec_start <= data1_rec_start and data2_rec_end <= data1_rec_end and data2_rec_end > data1_rec_start):
         return True
+
     elif (data2_rec_start == data1_rec_start and data2_rec_end == data1_rec_end):
         return True
+
     elif (data2_rec_start >= data1_rec_start and data2_rec_end <= data1_rec_end):
         return True
+
     elif (data1_rec_start >= data2_rec_start and data1_rec_end <= data2_rec_end and data1_rec_start < data2_rec_end and data1_rec_end > data2_rec_start):
         return True
+        
     else:
         return False
     #print(file1, file2, data1_rec_start, data1_rec_end, data2_rec_start, data2_rec_end)
 
 def main(path):
-
-
-
-    chunk_files = []
-    gs_no = 0
-    print(os.listdir(path))
 
     # reader = []
     # list = []
@@ -111,21 +110,20 @@ def main(path):
             batch += 1
             list.append([])
             list[batch].append(path+os.sep+stations[i]+os.sep+m_file)
+
             for j in range(i+1, len(stations)):
 
                 files = get_files(path+os.sep+stations[j]+os.sep)
-                #print(files)
                 for file in files:
                     if check_file_overlap(path+os.sep+stations[i]+os.sep+m_file, path+os.sep+stations[j]+os.sep+file):
                         print(path+os.sep+stations[i]+os.sep+m_file, path+os.sep+stations[j]+os.sep+file)
 
                         list[batch].append(path+os.sep+stations[j]+os.sep+file)
+
             print()
-            # print(get_files(path+os.sep+stations[i]+os.sep))
-            # print()
         break
     print(list)
-    #exit()
+
 
     # if os.path.isdir(path):
     #     print("loading in all files in folder:", path)
@@ -148,12 +146,6 @@ def main(path):
     print("processing mlat")
     print("")
 
-    i = 0
-
-
-    # files = []
-    # load_file = []
-    # chunk_read = 0
     for processing_files in list:
         print()
 
@@ -172,20 +164,23 @@ def main(path):
 
 
             for frame in data['data']:
+
                 if frame['is_repeated'] != int(1):  #skipping the repeated frames in the same file, no idea why they even exist
                     gs_x, gs_y, gs_z = get_cartesian_coordinates(data["meta"]["gs_lat"], data["meta"]["gs_lon"], data["meta"]["gs_alt"], True)
                     record = (i, frame['raw'], frame['adsb_msg'], frame['timestamp'], frame['SamplePos'], frame['df'], frame['tc'], frame['x'], frame['y'], frame['z'], frame['time_propagation'], data['meta']['file'], data['meta']['mlat_mode'], data['meta']['file'], data["meta"]["gs_lat"], data["meta"]["gs_lon"], data["meta"]["gs_alt"])#gs_x, gs_y, gs_z)
                     conn.execute("INSERT INTO frames VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", record)
                     i += 1
+
                 else:
                     continue
+
         conn.commit()
 
         cur = conn.cursor()
         cur.execute("SELECT * FROM frames WHERE df = 17 AND tc BETWEEN 9 AND 18") #filtering the position report messages
         data = cur.fetchall()
         uniq_frames = [] #This list will contain df17 and tc9-18 msgs, and each msgs will occur only once in this list, to be used for querying
-            #print(data)
+
 
         for rows in data:
             if rows[2] not in uniq_frames:
@@ -194,10 +189,8 @@ def main(path):
         for frames in uniq_frames: #Looking for the same message in different station file
             cur.execute("SELECT * FROM frames WHERE adsb_msg = ?", (frames,))
             finding = cur.fetchall()
-                # if len(finding) != 5:
-            #if len(finding) != 10:
+
             print(finding)
-            #exit()
             print("")
 
         conn.close()
