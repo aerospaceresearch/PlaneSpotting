@@ -110,7 +110,7 @@ def main(path):
         for m_file in mother_file:
             batch += 1
             list.append([])
-            list[batch].append(m_file)
+            list[batch].append(path+os.sep+stations[i]+os.sep+m_file)
             for j in range(i+1, len(stations)):
 
                 files = get_files(path+os.sep+stations[j]+os.sep)
@@ -119,7 +119,7 @@ def main(path):
                     if check_file_overlap(path+os.sep+stations[i]+os.sep+m_file, path+os.sep+stations[j]+os.sep+file):
                         print(path+os.sep+stations[i]+os.sep+m_file, path+os.sep+stations[j]+os.sep+file)
 
-                        list[batch].append(file)
+                        list[batch].append(path+os.sep+stations[j]+os.sep+file)
             print()
             # print(get_files(path+os.sep+stations[i]+os.sep))
             # print()
