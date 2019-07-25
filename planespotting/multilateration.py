@@ -53,10 +53,12 @@ def check_file_overlap(file1, file2):
         data2_rec_end = float(data1['meta']['rec_start']) + float(data1['data'][-1]['SamplePos']) / float(data1['meta']['gs_sampling_rate'])
 
     data2_rec_start = data2['meta']['rec_start']
+
     if data2['meta']['rec_end'] is not None:
         data2_rec_end = data2['meta']['rec_end']
     else:
-        data2_rec_end = data2['data'][-1]['SamplePos']
+        data2_rec_end = data1['meta']['rec_start'] + data1['data'][-1]['SamplePos'] / data1['meta']['gs_sampling_rate']
+
     print(data1_rec_start, data1_rec_end, data2_rec_start, data2_rec_end)
 
     if (data2_rec_start >= data1_rec_start and data2_rec_end >= data1_rec_end and data1_rec_end > data2_rec_start) or (data2_rec_start <= data1_rec_start and data2_rec_end <= data1_rec_end and data2_rec_end > data1_rec_start):
