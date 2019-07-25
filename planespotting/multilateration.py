@@ -47,7 +47,7 @@ def check_file_overlap(file1, file2):
     data2 = load_file_jsonGzip(file2)
     data1_rec_start = data1['meta']['rec_start']
 
-    if data1_rec_end is not None:
+    if data1['meta']['rec_end'] is not None:
         data1_rec_end = float(data1['meta']['rec_end'])
     else:
         data2_rec_end = float(data1['meta']['rec_start']) + float(data1['data'][-1]['SamplePos']) / float(data1['meta']['gs_sampling_rate'])
