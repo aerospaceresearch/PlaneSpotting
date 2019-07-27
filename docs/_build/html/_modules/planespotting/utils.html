@@ -84,14 +84,23 @@
     <span class="k">return</span> <span class="p">[</span><span class="n">filename</span><span class="p">]</span></div>
 
 
-<span class="k">def</span> <span class="nf">is_binary</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+<div class="viewcode-block" id="is_binary"><a class="viewcode-back" href="../../modules.html#planespotting.utils.is_binary">[docs]</a><span class="k">def</span> <span class="nf">is_binary</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Checks if the file type is binary or text. It opens the file in text mode initially and and handles if an exception is thrown.</span>
+<span class="sd">    If an exception occurs, then the file is non-binary and vice-versa.</span>
+
+<span class="sd">    :param file: The file of which the type is to be checked.</span>
+<span class="sd">    :type file: string</span>
+<span class="sd">    :return: File type (text/binary)</span>
+<span class="sd">    :rtype: Boolean</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;tr&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">check_file</span><span class="p">:</span>  <span class="c1"># try opening file in text mode</span>
             <span class="n">check_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
             <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">except</span><span class="p">:</span>  <span class="c1"># if false then file is non-binary</span>
-        <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
 
 
 <span class="k">def</span> <span class="nf">hexToDec</span><span class="p">(</span><span class="n">hexdec</span><span class="p">):</span>

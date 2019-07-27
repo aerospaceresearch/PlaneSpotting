@@ -38,6 +38,15 @@ def get_one_file(filename):
 
 
 def is_binary(file):
+    '''
+    Checks if the file type is binary or text. It opens the file in text mode initially and and handles if an exception is thrown.
+    If an exception occurs, then the file is non-binary and vice-versa.
+
+    :param file: The file of which the type is to be checked.
+    :type file: string
+    :return: File type (text/binary)
+    :rtype: Boolean
+    '''
     try:
         with open(file, 'tr') as check_file:  # try opening file in text mode
             check_file.read()
