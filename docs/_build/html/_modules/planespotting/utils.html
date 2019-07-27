@@ -72,8 +72,16 @@
     <span class="k">return</span> <span class="n">processing_files</span></div>
 
 
-<span class="k">def</span> <span class="nf">get_one_file</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">filename</span><span class="p">]</span>
+<div class="viewcode-block" id="get_one_file"><a class="viewcode-back" href="../../modules.html#planespotting.utils.get_one_file">[docs]</a><span class="k">def</span> <span class="nf">get_one_file</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    To open a specific file for a code segment, this returns the single file path in an unit list.</span>
+
+<span class="sd">    :param filename: Path to the specific file</span>
+<span class="sd">    :type filename: String (path)</span>
+<span class="sd">    :return: File path (singular)</span>
+<span class="sd">    :rtype: Python list</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">filename</span><span class="p">]</span></div>
 
 
 <span class="k">def</span> <span class="nf">is_binary</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
@@ -96,20 +104,20 @@
     <span class="n">dec</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">hexdec</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">bin</span><span class="p">(</span><span class="n">dec</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">56</span><span class="p">)</span>
 
-<div class="viewcode-block" id="hex2bin"><a class="viewcode-back" href="../../modules.html#planespotting.utils.hex2bin">[docs]</a><span class="k">def</span> <span class="nf">hex2bin</span><span class="p">(</span><span class="n">hexstr</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">hex2bin</span><span class="p">(</span><span class="n">hexstr</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39; Convert a hexdecimal string to binary string, with zero fillings. &#39;&#39;&#39;</span>
     <span class="n">scale</span> <span class="o">=</span> <span class="mi">16</span>
     <span class="n">num_of_bits</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">hexstr</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">binstr</span> <span class="o">=</span> <span class="nb">bin</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">hexstr</span><span class="p">,</span> <span class="n">scale</span><span class="p">))[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">num_of_bits</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">binstr</span></div>
+    <span class="k">return</span> <span class="n">binstr</span>
 
-<div class="viewcode-block" id="bin2np"><a class="viewcode-back" href="../../modules.html#planespotting.utils.bin2np">[docs]</a><span class="k">def</span> <span class="nf">bin2np</span><span class="p">(</span><span class="n">binarystr</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">bin2np</span><span class="p">(</span><span class="n">binarystr</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39; Convert binary string to numpy array. &#39;&#39;&#39;</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">binarystr</span><span class="p">])</span></div>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">binarystr</span><span class="p">])</span>
 
-<div class="viewcode-block" id="np2bin"><a class="viewcode-back" href="../../modules.html#planespotting.utils.np2bin">[docs]</a><span class="k">def</span> <span class="nf">np2bin</span><span class="p">(</span><span class="n">npbin</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">np2bin</span><span class="p">(</span><span class="n">npbin</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Convert a binary numpy array to string.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array2string</span><span class="p">(</span><span class="n">npbin</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array2string</span><span class="p">(</span><span class="n">npbin</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Small type utility functions ends here</span>

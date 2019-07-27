@@ -26,6 +26,14 @@ def get_all_files(filename):
 
 
 def get_one_file(filename):
+    '''
+    To open a specific file for a code segment, this returns the single file path in an unit list.
+
+    :param filename: Path to the specific file
+    :type filename: String (path)
+    :return: File path (singular)
+    :rtype: Python list
+    '''
     return [filename]
 
 
