@@ -5,6 +5,14 @@ import numpy as np
 import gzip
 
 def get_all_files(filename):
+    '''
+    This function returns the path to all the files present in a directory/folder.
+
+    :param filename: Path to the directory/folder
+    :type file: String (path)
+    :return: File paths
+    :rtype: Python list
+    '''
 
     processing_files = []
     for root, dirs, files in os.walk(filename):
