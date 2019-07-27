@@ -143,7 +143,12 @@ def const_frame(): #Template for json structure for meta data
     return json_frame
 
 def const_frame_data(): #This serves as a template for the json structure. Consists of only the data part
+    '''
+    This function, when called, returns a blank template of the data segment of the entire JSON structure
 
+    :return: JSON
+    :rtype: Python String
+    '''
     json_frame = {
         "data":{
             "id":None,
@@ -243,12 +248,28 @@ def const_frame_data(): #This serves as a template for the json structure. Consi
     return json_frame
 
 def create_folder(path):
+    '''
+    Creates a folder/directory at a given path. Often required when a directory which does not exist and is required for dumping the output
+
+    :param path: Path to the location where the folder/directory is to be created.
+    :path type: String.
+    '''
 
     if not os.path.exists(path):
         os.makedirs(path)
 
 
 def store_file(path, file, data):
+    '''
+    Used to store a file and put the data in that file at a particular location. If the file does not exist, then the file is created and stored.
+
+    :param path: Location where the file is to be stored
+    :param file: The name of the file
+    :param data: The contents of the file that is to be saved
+    :type path: String
+    :type file: String
+    :type data: JSON (Python dictionary)
+    '''
 
     filename = file.split(os.sep)[-1].split(".")[0] + ".json"
 
