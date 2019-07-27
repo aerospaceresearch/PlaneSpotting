@@ -57,6 +57,14 @@ def is_binary(file):
 
 
 def hexToDec(hexdec):
+    '''
+    Converts hexadecimal code to binary of the length 4x of the hexadecimal string.
+
+    :param hexdec: Hexadecimal String
+    :type hexdec: string
+    :return: Decimal string
+    :rtype: String
+    '''
     dec = int(hexdec, 16)
     bits = len(hexdec) * 4
     return bin(dec)[2:].zfill(bits)
