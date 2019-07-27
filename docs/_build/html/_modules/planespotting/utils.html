@@ -1,0 +1,320 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>planespotting.utils &#8212; PlaneSpotting 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">PlaneSpotting 0.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for planespotting.utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">gzip</span>
+
+<div class="viewcode-block" id="get_all_files"><a class="viewcode-back" href="../../modules.html#planespotting.utils.get_all_files">[docs]</a><span class="k">def</span> <span class="nf">get_all_files</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This function returns the path to all the files present in a directory/folder.</span>
+
+<span class="sd">    :param filename: Path to the directory/folder</span>
+<span class="sd">    :type file: String (path)</span>
+<span class="sd">    :return: File paths</span>
+<span class="sd">    :rtype: Python list</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">processing_files</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+            <span class="n">filepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+                <span class="c1">#print(&quot;file&quot;, filepath)</span>
+                <span class="n">processing_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">processing_files</span></div>
+
+
+<span class="k">def</span> <span class="nf">get_one_file</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">filename</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">is_binary</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;tr&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">check_file</span><span class="p">:</span>  <span class="c1"># try opening file in text mode</span>
+            <span class="n">check_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">except</span><span class="p">:</span>  <span class="c1"># if false then file is non-binary</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+
+<span class="k">def</span> <span class="nf">hexToDec</span><span class="p">(</span><span class="n">hexdec</span><span class="p">):</span>
+    <span class="n">dec</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">hexdec</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+    <span class="n">bits</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">hexdec</span><span class="p">)</span> <span class="o">*</span> <span class="mi">4</span>
+    <span class="k">return</span> <span class="nb">bin</span><span class="p">(</span><span class="n">dec</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">hexToBin</span><span class="p">(</span><span class="n">hexdec</span><span class="p">):</span>
+    <span class="n">dec</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">hexdec</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">bin</span><span class="p">(</span><span class="n">dec</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">56</span><span class="p">)</span>
+
+<div class="viewcode-block" id="hex2bin"><a class="viewcode-back" href="../../modules.html#planespotting.utils.hex2bin">[docs]</a><span class="k">def</span> <span class="nf">hex2bin</span><span class="p">(</span><span class="n">hexstr</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Convert a hexdecimal string to binary string, with zero fillings. &#39;&#39;&#39;</span>
+    <span class="n">scale</span> <span class="o">=</span> <span class="mi">16</span>
+    <span class="n">num_of_bits</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">hexstr</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">binstr</span> <span class="o">=</span> <span class="nb">bin</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">hexstr</span><span class="p">,</span> <span class="n">scale</span><span class="p">))[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">num_of_bits</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">binstr</span></div>
+
+<div class="viewcode-block" id="bin2np"><a class="viewcode-back" href="../../modules.html#planespotting.utils.bin2np">[docs]</a><span class="k">def</span> <span class="nf">bin2np</span><span class="p">(</span><span class="n">binarystr</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Convert binary string to numpy array. &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">binarystr</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="np2bin"><a class="viewcode-back" href="../../modules.html#planespotting.utils.np2bin">[docs]</a><span class="k">def</span> <span class="nf">np2bin</span><span class="p">(</span><span class="n">npbin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert a binary numpy array to string.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array2string</span><span class="p">(</span><span class="n">npbin</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Small type utility functions ends here</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="k">def</span> <span class="nf">const_frame</span><span class="p">():</span> <span class="c1">#Template for json structure for meta data</span>
+
+    <span class="n">json_frame</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;meta&quot;</span><span class="p">:{</span>
+            <span class="s2">&quot;file&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;mlat_mode&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;rec_start&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;rec_end&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;gs_lat&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;gs_lon&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;gs_alt&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;gs_id&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;gs_x&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;gs_y&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;gs_z&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;gs_sampling_rate&quot;</span><span class="p">:</span><span class="kc">None</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;data&quot;</span><span class="p">:[]</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">json_frame</span>
+
+<span class="k">def</span> <span class="nf">const_frame_data</span><span class="p">():</span> <span class="c1">#This serves as a template for the json structure. Consists of only the data part</span>
+
+    <span class="n">json_frame</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;data&quot;</span><span class="p">:{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;is_repeated&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;raw&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;adsb_msg&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;SamplePos&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;df&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;tc&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="c1">#&quot;callsign_bin&quot;:None,</span>
+            <span class="s2">&quot;capability&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;ICAO&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;parity&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;SS&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;NICsb&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;ALT&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;T&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;F&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;LAT_CPR&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;LON_CPR&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;latitude&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;longitude&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;altitude&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;isBaroAlt&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;callsign&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="c1">#Airborne velocity Subtype 1data</span>
+            <span class="s2">&quot;Subtype&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;IC&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;RESV_A&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;NAC&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;S_ew&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;V_ew&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;S_ns&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;V_ns&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;VrSrc&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;S_vr&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;Vr&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;RESV_B&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;S_Dif&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;Dif&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;isGspeed&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;velocity&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> <span class="c1">#result</span>
+            <span class="s2">&quot;vert_rate&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span> <span class="c1">#result</span>
+            <span class="s2">&quot;heading&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>    <span class="c1">#result</span>
+            <span class="c1">#Subtype 3</span>
+            <span class="s2">&quot;S_hdg&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;Hdg&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;AS_t&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;AS&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="c1">#Operation status</span>
+            <span class="s2">&quot;stype_code&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;sccc&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;lw_codes&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;op_mc&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;ver&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;NIC&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;NACp&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;BAQ&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;SIL&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;NIC_bit&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;HRD&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;resv_op&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="c1">#version 2</span>
+            <span class="s2">&quot;GVA&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;SIL_bit&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="c1">#Enhanced MODE-S</span>
+            <span class="s2">&quot;bds_1&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;bds_2&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;mcp_alt&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;fms_alt&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;baro_set&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;VNAV_state&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;Alt_hold_state&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;Apr_state&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;tgt_alt_source&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="c1">#BDS5, 0</span>
+            <span class="s2">&quot;roll_angle&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;true_track_angle&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;ground_speed&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;track_angle_rate&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;TAS&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="c1"># BDS 6, 0</span>
+            <span class="s2">&quot;mag_hdg&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;IAS&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;mach&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;baro_alt_rate&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;inertial_alt_rate&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="c1">#DF 21 &amp; 5</span>
+            <span class="s2">&quot;squawk&quot;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;time_propagation&quot;</span><span class="p">:</span> <span class="kc">None</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">json_frame</span>
+
+<span class="k">def</span> <span class="nf">create_folder</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">store_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;.json&quot;</span>
+
+    <span class="c1"># create the folder</span>
+    <span class="n">create_folder</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">store_file_jsonGzip</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;.json.gz&quot;</span>
+
+    <span class="c1"># create the folder</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">+</span><span class="n">file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">create_folder</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;wt&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fout</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fout</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">load_file_jsonGzip</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+
+    <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">GzipFile</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fin</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">fin</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">data</span>
+
+<span class="k">def</span> <span class="nf">load_json</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="n">data</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">PlaneSpotting 0.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Shoumik Dey and &amp; Andreas Hornig.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7.
+    </div>
+  </body>
+</html>
