@@ -281,6 +281,16 @@ def store_file(path, file, data):
 
 
 def store_file_jsonGzip(path, file, data):
+    '''
+    It stores the files by gzipping it to save memory. The file, if it does not exist at the specific location, then it is created and the data is saved in it.
+
+    :param path: Location where the file is to be stored
+    :param file: The name of the file
+    :param data: The contents of the file that is to be saved
+    :type path: String
+    :type file: String
+    :type data: JSON (Python dictionary)
+    '''
 
     filename = file.split(os.sep)[-1].split(".")[0] + ".json.gz"
 
@@ -293,6 +303,12 @@ def store_file_jsonGzip(path, file, data):
 
 
 def load_file_jsonGzip(filename):
+    '''
+    Used to load and read a gzipped JSON file present a particular location.
+
+    :param filename: Name of the .gz file to be opened along with it's path
+    :type filename: String
+    '''
 
     with gzip.GzipFile(filename, 'r') as fin:
         data = json.loads(fin.read().decode('utf-8'))
@@ -300,6 +316,12 @@ def load_file_jsonGzip(filename):
     return data
 
 def load_json(filename):
+    '''
+    Used to load and read a JSON file present a particular location.
+
+    :param filename: Name of the .json file to be opened along with it's path
+    :type filename: String
+    '''
 
     with open(filename, 'r') as fh:
         data = json.loads(fh.read())
