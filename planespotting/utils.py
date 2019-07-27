@@ -252,7 +252,7 @@ def create_folder(path):
     Creates a folder/directory at a given path. Often required when a directory which does not exist and is required for dumping the output
 
     :param path: Path to the location where the folder/directory is to be created.
-    :path type: String.
+    :type path: String
     '''
 
     if not os.path.exists(path):

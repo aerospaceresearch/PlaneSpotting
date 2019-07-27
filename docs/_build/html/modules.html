@@ -194,6 +194,55 @@ If an exception occurs, then the file is non-binary and vice-versa.</p>
 </table>
 </dd></dl>
 
+<dl class="function">
+<dt id="planespotting.utils.const_frame_data">
+<code class="descclassname">planespotting.utils.</code><code class="descname">const_frame_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/utils.html#const_frame_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.utils.const_frame_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function, when called, returns a blank template of the data segment of the entire JSON structure</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">JSON</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">Python String</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.utils.create_folder">
+<code class="descclassname">planespotting.utils.</code><code class="descname">create_folder</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/utils.html#create_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.utils.create_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a folder/directory at a given path. Often required when a directory which does not exist and is required for dumping the output</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<em>String</em>) – Path to the location where the folder/directory is to be created.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.utils.store_file">
+<code class="descclassname">planespotting.utils.</code><code class="descname">store_file</code><span class="sig-paren">(</span><em>path</em>, <em>file</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/utils.html#store_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.utils.store_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to store a file and put the data in that file at a particular location. If the file does not exist, then the file is created and stored.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>path</strong> (<em>String</em>) – Location where the file is to be stored</li>
+<li><strong>file</strong> (<em>String</em>) – The name of the file</li>
+<li><strong>data</strong> (<em>JSON</em><em> (</em><em>Python dictionary</em><em>)</em>) – The contents of the file that is to be saved</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 <div class="section" id="file-loading-and-transfer">
 <h2>File loading and transfer<a class="headerlink" href="#file-loading-and-transfer" title="Permalink to this headline">¶</a></h2>
