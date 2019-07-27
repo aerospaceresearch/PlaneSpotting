@@ -4,9 +4,6 @@ PlaneSpotting: Technical Documentation
 
 Utility functions
 =================
-
-File loaders and unloaders
-++++++++++++++++++++++++++
 .. automodule:: planespotting.utils
    :members: get_all_files, get_one_file, is_binary, hexToDec, hexToBin, bin2np, np2bin
 
