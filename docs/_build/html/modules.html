@@ -52,97 +52,6 @@
 <div class="section" id="module-planespotting.utils">
 <span id="utility-functions"></span><h2>Utility functions<a class="headerlink" href="#module-planespotting.utils" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="planespotting.utils.get_all_files">
-<code class="descclassname">planespotting.utils.</code><code class="descname">get_all_files</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/utils.html#get_all_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.utils.get_all_files" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function returns the path to all the files present in a directory/folder.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> – Path to the directory/folder</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">File paths</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Python list</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="planespotting.utils.get_one_file">
-<code class="descclassname">planespotting.utils.</code><code class="descname">get_one_file</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/utils.html#get_one_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.utils.get_one_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>To open a specific file for a code segment, this returns the single file path in an unit list.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>String</em><em> (</em><em>path</em><em>)</em>) – Path to the specific file</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">File path (singular)</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Python list</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="planespotting.utils.is_binary">
-<code class="descclassname">planespotting.utils.</code><code class="descname">is_binary</code><span class="sig-paren">(</span><em>file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/utils.html#is_binary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.utils.is_binary" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks if the file type is binary or text. It opens the file in text mode initially and and handles if an exception is thrown.
-If an exception occurs, then the file is non-binary and vice-versa.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file</strong> (<em>string</em>) – The file of which the type is to be checked.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">File type (text/binary)</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Boolean</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="planespotting.utils.hexToDec">
-<code class="descclassname">planespotting.utils.</code><code class="descname">hexToDec</code><span class="sig-paren">(</span><em>hexdec</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/utils.html#hexToDec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.utils.hexToDec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts hexadecimal code to binary of the length 4x of the hexadecimal string.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hexdec</strong> (<em>string</em>) – Hexadecimal String</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Decimal string</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">String</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="planespotting.utils.hexToBin">
-<code class="descclassname">planespotting.utils.</code><code class="descname">hexToBin</code><span class="sig-paren">(</span><em>hexdec</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/utils.html#hexToBin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.utils.hexToBin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Coverts hexadecimal code to 56 bit binary string.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hexdec</strong> (<em>string</em>) – Hexadecimal String</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Decimal string</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">String</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
 <dt id="planespotting.utils.bin2np">
 <code class="descclassname">planespotting.utils.</code><code class="descname">bin2np</code><span class="sig-paren">(</span><em>binarystr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/utils.html#bin2np"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.utils.bin2np" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert binary string to numpy array.</p>
@@ -155,24 +64,6 @@ If an exception occurs, then the file is non-binary and vice-versa.</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Numpy array</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Numpy.ndarray</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="planespotting.utils.np2bin">
-<code class="descclassname">planespotting.utils.</code><code class="descname">np2bin</code><span class="sig-paren">(</span><em>npbin</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/utils.html#np2bin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.utils.np2bin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a binary numpy array to string.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>npbin</strong> (<em>Numpy.ndarray</em>) – Each bit of the message stored as an element in the array.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Binary message in string</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">String</td>
 </tr>
 </tbody>
 </table>
@@ -225,9 +116,171 @@ If an exception occurs, then the file is non-binary and vice-versa.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="planespotting.utils.get_all_files">
+<code class="descclassname">planespotting.utils.</code><code class="descname">get_all_files</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/utils.html#get_all_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.utils.get_all_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns the path to all the files present in a directory/folder.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> – Path to the directory/folder</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">File paths</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Python list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.utils.get_one_file">
+<code class="descclassname">planespotting.utils.</code><code class="descname">get_one_file</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/utils.html#get_one_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.utils.get_one_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>To open a specific file for a code segment, this returns the single file path in an unit list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>String</em><em> (</em><em>path</em><em>)</em>) – Path to the specific file</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">File path (singular)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Python list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.utils.hex2bin">
+<code class="descclassname">planespotting.utils.</code><code class="descname">hex2bin</code><span class="sig-paren">(</span><em>hexstr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/utils.html#hex2bin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.utils.hex2bin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a hexdecimal string to binary string, with zero fillings.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.utils.hexToBin">
+<code class="descclassname">planespotting.utils.</code><code class="descname">hexToBin</code><span class="sig-paren">(</span><em>hexdec</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/utils.html#hexToBin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.utils.hexToBin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coverts hexadecimal code to 56 bit binary string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hexdec</strong> (<em>string</em>) – Hexadecimal String</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Decimal string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">String</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.utils.hexToDec">
+<code class="descclassname">planespotting.utils.</code><code class="descname">hexToDec</code><span class="sig-paren">(</span><em>hexdec</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/utils.html#hexToDec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.utils.hexToDec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts hexadecimal code to binary of the length 4x of the hexadecimal string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hexdec</strong> (<em>string</em>) – Hexadecimal String</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Decimal string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">String</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.utils.is_binary">
+<code class="descclassname">planespotting.utils.</code><code class="descname">is_binary</code><span class="sig-paren">(</span><em>file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/utils.html#is_binary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.utils.is_binary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the file type is binary or text. It opens the file in text mode initially and and handles if an exception is thrown.
+If an exception occurs, then the file is non-binary and vice-versa.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file</strong> (<em>string</em>) – The file of which the type is to be checked.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">File type (text/binary)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Boolean</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.utils.load_file_jsonGzip">
+<code class="descclassname">planespotting.utils.</code><code class="descname">load_file_jsonGzip</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/utils.html#load_file_jsonGzip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.utils.load_file_jsonGzip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to load and read a gzipped JSON file present a particular location.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>String</em>) – Name of the .gz file to be opened along with it’s path</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.utils.load_json">
+<code class="descclassname">planespotting.utils.</code><code class="descname">load_json</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/utils.html#load_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.utils.load_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to load and read a JSON file present a particular location.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>String</em>) – Name of the .json file to be opened along with it’s path</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.utils.np2bin">
+<code class="descclassname">planespotting.utils.</code><code class="descname">np2bin</code><span class="sig-paren">(</span><em>npbin</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/utils.html#np2bin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.utils.np2bin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a binary numpy array to string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>npbin</strong> (<em>Numpy.ndarray</em>) – Each bit of the message stored as an element in the array.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Binary message in string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">String</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="planespotting.utils.store_file">
 <code class="descclassname">planespotting.utils.</code><code class="descname">store_file</code><span class="sig-paren">(</span><em>path</em>, <em>file</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/utils.html#store_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.utils.store_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Used to store a file and put the data in that file at a particular location. If the file does not exist, then the file is created and stored.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>path</strong> (<em>String</em>) – Location where the file is to be stored</li>
+<li><strong>file</strong> (<em>String</em>) – The name of the file</li>
+<li><strong>data</strong> (<em>JSON</em><em> (</em><em>Python dictionary</em><em>)</em>) – The contents of the file that is to be saved</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.utils.store_file_jsonGzip">
+<code class="descclassname">planespotting.utils.</code><code class="descname">store_file_jsonGzip</code><span class="sig-paren">(</span><em>path</em>, <em>file</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/utils.html#store_file_jsonGzip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.utils.store_file_jsonGzip" title="Permalink to this definition">¶</a></dt>
+<dd><p>It stores the files by gzipping it to save memory. The file, if it does not exist at the specific location, then it is created and the data is saved in it.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
