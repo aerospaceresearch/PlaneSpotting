@@ -161,7 +161,13 @@
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Small type utility functions ends here</span>
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="k">def</span> <span class="nf">const_frame</span><span class="p">():</span> <span class="c1">#Template for json structure for meta data</span>
+<div class="viewcode-block" id="const_frame"><a class="viewcode-back" href="../../modules.html#planespotting.utils.const_frame">[docs]</a><span class="k">def</span> <span class="nf">const_frame</span><span class="p">():</span> <span class="c1">#Template for json structure for meta data</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Retuns the json meta data template when called. The keys in the dictionary contain null value.</span>
+
+<span class="sd">    :return: JSON</span>
+<span class="sd">    :rtype: Python dictionary</span>
+<span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="n">json_frame</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;meta&quot;</span><span class="p">:{</span>
@@ -181,7 +187,7 @@
         <span class="s2">&quot;data&quot;</span><span class="p">:[]</span>
     <span class="p">}</span>
 
-    <span class="k">return</span> <span class="n">json_frame</span>
+    <span class="k">return</span> <span class="n">json_frame</span></div>
 
 <span class="k">def</span> <span class="nf">const_frame_data</span><span class="p">():</span> <span class="c1">#This serves as a template for the json structure. Consists of only the data part</span>
 

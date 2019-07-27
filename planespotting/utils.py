@@ -115,6 +115,12 @@ def np2bin(npbin):
 Small type utility functions ends here
 '''
 def const_frame(): #Template for json structure for meta data
+    '''
+    Retuns the json meta data template when called. The keys in the dictionary contain null value.
+
+    :return: JSON
+    :rtype: Python dictionary
+    '''
 
     json_frame = {
         "meta":{
