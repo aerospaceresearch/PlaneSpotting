@@ -71,18 +71,34 @@ def hexToDec(hexdec):
 
 
 def hexToBin(hexdec):
+    '''
+    Coverts hexadecimal code to 56 bit binary string.
+
+    :param hexdec: Hexadecimal String
+    :type hexdec: string
+    :return: Decimal string
+    :rtype: String
+    '''
     dec = int(hexdec, 16)
     return bin(dec)[2:].zfill(56)
 
 def hex2bin(hexstr):
-    ''' Convert a hexdecimal string to binary string, with zero fillings. '''
+    ''' Convert a hexdecimal string to binary string, with zero fillings.
+
+    '''
     scale = 16
     num_of_bits = len(hexstr) * math.log(scale, 2)
     binstr = bin(int(hexstr, scale))[2:].zfill(int(num_of_bits))
     return binstr
 
 def bin2np(binarystr):
-    ''' Convert binary string to numpy array. '''
+    ''' Convert binary string to numpy array.
+
+    :param binarystr: The message in binary
+    :type binarystr: String
+    :return: Numpy array
+    :rtype: Numpy.ndarray
+    '''
     return np.array([int(i) for i in binarystr])
 
 def np2bin(npbin):
