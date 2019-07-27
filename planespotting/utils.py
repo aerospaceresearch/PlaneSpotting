@@ -102,7 +102,13 @@ def bin2np(binarystr):
     return np.array([int(i) for i in binarystr])
 
 def np2bin(npbin):
-    """Convert a binary numpy array to string."""
+    """Convert a binary numpy array to string.
+
+    :param npbin: Each bit of the message stored as an element in the array.
+    :type npbin: Numpy.ndarray
+    :return: Binary message in string
+    :rtype: String
+    """
     return np.array2string(npbin, separator='')[1:-1]
 
 '''
