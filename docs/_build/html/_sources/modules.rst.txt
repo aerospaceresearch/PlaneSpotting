@@ -8,7 +8,7 @@ Utility functions
 File loaders and unloaders
 ++++++++++++++++++++++++++
 .. automodule:: planespotting.utils
-   :members: get_all_files, get_one_file, is_binary, hexToDec
+   :members: get_all_files, get_one_file, is_binary, hexToDec, hexToBin, bin2np, np2bin
 
 File loading and transfer
 =========================

@@ -117,24 +117,46 @@
     <span class="k">return</span> <span class="nb">bin</span><span class="p">(</span><span class="n">dec</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">hexToBin</span><span class="p">(</span><span class="n">hexdec</span><span class="p">):</span>
+<div class="viewcode-block" id="hexToBin"><a class="viewcode-back" href="../../modules.html#planespotting.utils.hexToBin">[docs]</a><span class="k">def</span> <span class="nf">hexToBin</span><span class="p">(</span><span class="n">hexdec</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Coverts hexadecimal code to 56 bit binary string.</span>
+
+<span class="sd">    :param hexdec: Hexadecimal String</span>
+<span class="sd">    :type hexdec: string</span>
+<span class="sd">    :return: Decimal string</span>
+<span class="sd">    :rtype: String</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">dec</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">hexdec</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nb">bin</span><span class="p">(</span><span class="n">dec</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">56</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">bin</span><span class="p">(</span><span class="n">dec</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">56</span><span class="p">)</span></div>
 
 <span class="k">def</span> <span class="nf">hex2bin</span><span class="p">(</span><span class="n">hexstr</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39; Convert a hexdecimal string to binary string, with zero fillings. &#39;&#39;&#39;</span>
+    <span class="sd">&#39;&#39;&#39; Convert a hexdecimal string to binary string, with zero fillings.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">scale</span> <span class="o">=</span> <span class="mi">16</span>
     <span class="n">num_of_bits</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">hexstr</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">binstr</span> <span class="o">=</span> <span class="nb">bin</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">hexstr</span><span class="p">,</span> <span class="n">scale</span><span class="p">))[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">num_of_bits</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">binstr</span>
 
-<span class="k">def</span> <span class="nf">bin2np</span><span class="p">(</span><span class="n">binarystr</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39; Convert binary string to numpy array. &#39;&#39;&#39;</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">binarystr</span><span class="p">])</span>
+<div class="viewcode-block" id="bin2np"><a class="viewcode-back" href="../../modules.html#planespotting.utils.bin2np">[docs]</a><span class="k">def</span> <span class="nf">bin2np</span><span class="p">(</span><span class="n">binarystr</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Convert binary string to numpy array.</span>
 
-<span class="k">def</span> <span class="nf">np2bin</span><span class="p">(</span><span class="n">npbin</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Convert a binary numpy array to string.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array2string</span><span class="p">(</span><span class="n">npbin</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="sd">    :param binarystr: The message in binary</span>
+<span class="sd">    :type binarystr: String</span>
+<span class="sd">    :return: Numpy array</span>
+<span class="sd">    :rtype: Numpy.ndarray</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">binarystr</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="np2bin"><a class="viewcode-back" href="../../modules.html#planespotting.utils.np2bin">[docs]</a><span class="k">def</span> <span class="nf">np2bin</span><span class="p">(</span><span class="n">npbin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert a binary numpy array to string.</span>
+
+<span class="sd">    :param npbin: Each bit of the message stored as an element in the array.</span>
+<span class="sd">    :type npbin: Numpy.ndarray</span>
+<span class="sd">    :return: Binary message in string</span>
+<span class="sd">    :rtype: String</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array2string</span><span class="p">(</span><span class="n">npbin</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Small type utility functions ends here</span>

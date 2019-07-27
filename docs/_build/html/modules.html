@@ -126,6 +126,60 @@ If an exception occurs, then the file is non-binary and vice-versa.</p>
 </table>
 </dd></dl>
 
+<dl class="function">
+<dt id="planespotting.utils.hexToBin">
+<code class="descclassname">planespotting.utils.</code><code class="descname">hexToBin</code><span class="sig-paren">(</span><em>hexdec</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/utils.html#hexToBin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.utils.hexToBin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coverts hexadecimal code to 56 bit binary string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hexdec</strong> (<em>string</em>) – Hexadecimal String</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Decimal string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">String</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.utils.bin2np">
+<code class="descclassname">planespotting.utils.</code><code class="descname">bin2np</code><span class="sig-paren">(</span><em>binarystr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/utils.html#bin2np"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.utils.bin2np" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert binary string to numpy array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>binarystr</strong> (<em>String</em>) – The message in binary</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Numpy array</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Numpy.ndarray</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.utils.np2bin">
+<code class="descclassname">planespotting.utils.</code><code class="descname">np2bin</code><span class="sig-paren">(</span><em>npbin</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/utils.html#np2bin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.utils.np2bin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a binary numpy array to string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>npbin</strong> (<em>Numpy.ndarray</em>) – Each bit of the message stored as an element in the array.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Binary message in string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">String</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 </div>
 <div class="section" id="file-loading-and-transfer">
