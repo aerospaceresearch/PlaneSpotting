@@ -8,6 +8,16 @@ import numpy as np
 Beginning of position calculation functions
 '''
 def lat_index(lat_cpr_even, lat_cpr_odd):
+    '''
+    Used to calculate the latitude index using the odd and even frame latitudes.
+
+    :param lat_cpr_even: The latitude data from an even frame
+    :param lat_cpr_odd: The longitude data from the odd frame with the same icao as the even frame
+    :type lat_cpr_even: Float
+    :type lat_cpr_odd: Float
+    :return: Latitude index
+    :rtype: Float
+    '''
     return math.floor((59 * lat_cpr_even) - (60*lat_cpr_odd) + 0.5)
 
 def NL(lat): #this function calculates the number of longitude zones
