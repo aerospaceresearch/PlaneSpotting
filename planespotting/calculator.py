@@ -83,6 +83,22 @@ def latitude(lat_cpr_even, lat_cpr_odd, t_even, t_odd): #Calculation of the lati
         return latOdd
 
 def longitude(long_cpr_even, long_cpr_odd, t_even, t_odd, nl_lat):  #Calculation of longitude coordinate of the aircraft
+    '''
+    Calculation of the Longitude coordinate with the same set of successively received odd and even pair of frames as used in the latitude() function.
+    In this function, the order of the odd and even frames is considered for calculation
+
+    :param long_cpr_even: Latitude data from the even frame
+    :param long_cpr_odd: Latitude data from the odd frame
+    :param t_even: Time/Sample Position of the even message in the recording
+    :param t_odd: Time/Sample Position of the odd message in the recording
+    :type long_cpr_even: Float
+    :type long_cpr_odd: Float
+    :type t_even: Long
+    :type t_odd: Long
+    :return: Longitude in degrees
+    :rtype: Float
+
+    '''
 
     if(t_even > t_odd):
         ni = max(NL(nl_lat),1)

@@ -130,6 +130,22 @@
         <span class="k">return</span> <span class="n">latOdd</span></div>
 
 <span class="k">def</span> <span class="nf">longitude</span><span class="p">(</span><span class="n">long_cpr_even</span><span class="p">,</span> <span class="n">long_cpr_odd</span><span class="p">,</span> <span class="n">t_even</span><span class="p">,</span> <span class="n">t_odd</span><span class="p">,</span> <span class="n">nl_lat</span><span class="p">):</span>  <span class="c1">#Calculation of longitude coordinate of the aircraft</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Calculation of the Longitude coordinate with the same set of successively received odd and even pair of frames as used in the latitude() function.</span>
+<span class="sd">    In this function, the order of the odd and even frames is considered for calculation</span>
+
+<span class="sd">    :param long_cpr_even: Latitude data from the even frame</span>
+<span class="sd">    :param long_cpr_odd: Latitude data from the odd frame</span>
+<span class="sd">    :param t_even: Time/Sample Position of the even message in the recording</span>
+<span class="sd">    :param t_odd: Time/Sample Position of the odd message in the recording</span>
+<span class="sd">    :type long_cpr_even: Float</span>
+<span class="sd">    :type long_cpr_odd: Float</span>
+<span class="sd">    :type t_even: Long</span>
+<span class="sd">    :type t_odd: Long</span>
+<span class="sd">    :return: Longitude in degrees</span>
+<span class="sd">    :rtype: Float</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="k">if</span><span class="p">(</span><span class="n">t_even</span> <span class="o">&gt;</span> <span class="n">t_odd</span><span class="p">):</span>
         <span class="n">ni</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">NL</span><span class="p">(</span><span class="n">nl_lat</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span>
