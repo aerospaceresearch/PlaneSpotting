@@ -717,6 +717,60 @@ For more info: <a class="reference external" href="https://mode-s.org/decode/ads
 </table>
 </dd></dl>
 
+<dl class="function">
+<dt id="planespotting.calculator.longitude">
+<code class="descclassname">planespotting.calculator.</code><code class="descname">longitude</code><span class="sig-paren">(</span><em>long_cpr_even</em>, <em>long_cpr_odd</em>, <em>t_even</em>, <em>t_odd</em>, <em>nl_lat</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/calculator.html#longitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.calculator.longitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculation of the Longitude coordinate with the same set of successively received odd and even pair of frames as used in the latitude() function.
+In this function, the order of the odd and even frames is considered for calculation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>long_cpr_even</strong> (<em>Float</em>) – Latitude data from the even frame</li>
+<li><strong>long_cpr_odd</strong> (<em>Float</em>) – Latitude data from the odd frame</li>
+<li><strong>t_even</strong> (<em>Long</em>) – Time/Sample Position of the even message in the recording</li>
+<li><strong>t_odd</strong> (<em>Long</em>) – Time/Sample Position of the odd message in the recording</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Longitude in degrees</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.calculator.pos_local">
+<code class="descclassname">planespotting.calculator.</code><code class="descname">pos_local</code><span class="sig-paren">(</span><em>latRef</em>, <em>lonRef</em>, <em>F</em>, <em>lat_cpr</em>, <em>lon_cpr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/calculator.html#pos_local"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.calculator.pos_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculation of position using one frame only or ‘Locally unambigous position calculation’&gt; It uses a reference location to remove the ambiguity in the frame.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>latRef</strong> (<em>Float</em>) – Reference latitude (ground station or previous known location)</li>
+<li><strong>lonRef</strong> (<em>Float</em>) – Reference longitude (ground station or previous known location)</li>
+<li><strong>F</strong> (<em>Integer</em>) – Odd/Even bit of the frame</li>
+<li><strong>lat_cpr</strong> (<em>Long</em>) – Latitude data from the frame</li>
+<li><strong>lon_cpr</strong> (<em>Long</em>) – Longitude data from the frame</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Latitide, longitude</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Float, Float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 </div>
 

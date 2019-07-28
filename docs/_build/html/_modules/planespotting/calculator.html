@@ -129,7 +129,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">latOdd</span></div>
 
-<span class="k">def</span> <span class="nf">longitude</span><span class="p">(</span><span class="n">long_cpr_even</span><span class="p">,</span> <span class="n">long_cpr_odd</span><span class="p">,</span> <span class="n">t_even</span><span class="p">,</span> <span class="n">t_odd</span><span class="p">,</span> <span class="n">nl_lat</span><span class="p">):</span>  <span class="c1">#Calculation of longitude coordinate of the aircraft</span>
+<div class="viewcode-block" id="longitude"><a class="viewcode-back" href="../../modules.html#planespotting.calculator.longitude">[docs]</a><span class="k">def</span> <span class="nf">longitude</span><span class="p">(</span><span class="n">long_cpr_even</span><span class="p">,</span> <span class="n">long_cpr_odd</span><span class="p">,</span> <span class="n">t_even</span><span class="p">,</span> <span class="n">t_odd</span><span class="p">,</span> <span class="n">nl_lat</span><span class="p">):</span>  <span class="c1">#Calculation of longitude coordinate of the aircraft</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Calculation of the Longitude coordinate with the same set of successively received odd and even pair of frames as used in the latitude() function.</span>
 <span class="sd">    In this function, the order of the odd and even frames is considered for calculation</span>
@@ -168,14 +168,31 @@
         <span class="k">return</span> <span class="n">lon</span> <span class="o">-</span> <span class="mi">360</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">lon</span>
+        <span class="k">return</span> <span class="n">lon</span></div>
 
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">functions for two frame methods ends here</span>
 <span class="sd">&#39;&#39;&#39;</span>
 
 
-<span class="k">def</span> <span class="nf">pos_local</span><span class="p">(</span><span class="n">latRef</span><span class="p">,</span> <span class="n">lonRef</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">lat_cpr</span><span class="p">,</span> <span class="n">lon_cpr</span><span class="p">):</span>
+<div class="viewcode-block" id="pos_local"><a class="viewcode-back" href="../../modules.html#planespotting.calculator.pos_local">[docs]</a><span class="k">def</span> <span class="nf">pos_local</span><span class="p">(</span><span class="n">latRef</span><span class="p">,</span> <span class="n">lonRef</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">lat_cpr</span><span class="p">,</span> <span class="n">lon_cpr</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Calculation of position using one frame only or &#39;Locally unambigous position calculation&#39;&gt; It uses a reference location to remove the ambiguity in the frame.</span>
+
+<span class="sd">    :param latRef: Reference latitude (ground station or previous known location)</span>
+<span class="sd">    :param lonRef: Reference longitude (ground station or previous known location)</span>
+<span class="sd">    :param F: Odd/Even bit of the frame</span>
+<span class="sd">    :param lat_cpr: Latitude data from the frame</span>
+<span class="sd">    :param lon_cpr: Longitude data from the frame</span>
+<span class="sd">    :type latRef: Float</span>
+<span class="sd">    :type lonRef: Float</span>
+<span class="sd">    :type F: Integer</span>
+<span class="sd">    :type lat_cpr: Long</span>
+<span class="sd">    :type lon_cpr: Long</span>
+<span class="sd">    :return: Latitide, longitude</span>
+<span class="sd">    :rtype: Float, Float</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="n">isEven</span> <span class="o">=</span> <span class="kc">False</span>
 
@@ -206,7 +223,7 @@
     <span class="n">m</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">lonRef</span><span class="o">/</span><span class="n">dLon</span><span class="p">)</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(((</span><span class="n">lonRef</span><span class="o">%</span><span class="n">dLon</span><span class="p">)</span><span class="o">/</span><span class="n">dLon</span><span class="p">)</span> <span class="o">-</span> <span class="n">lon_cpr</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
     <span class="n">lon</span> <span class="o">=</span> <span class="n">dLon</span> <span class="o">*</span> <span class="p">(</span><span class="n">m</span> <span class="o">+</span> <span class="n">lon_cpr</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span>
+    <span class="k">return</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span></div>
 
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">all position calculation functions end here.</span>

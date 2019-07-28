@@ -129,6 +129,23 @@ functions for two frame methods ends here
 
 
 def pos_local(latRef, lonRef, F, lat_cpr, lon_cpr):
+    '''
+    Calculation of position using one frame only or 'Locally unambigous position calculation'> It uses a reference location to remove the ambiguity in the frame.
+
+    :param latRef: Reference latitude (ground station or previous known location)
+    :param lonRef: Reference longitude (ground station or previous known location)
+    :param F: Odd/Even bit of the frame
+    :param lat_cpr: Latitude data from the frame
+    :param lon_cpr: Longitude data from the frame
+    :type latRef: Float
+    :type lonRef: Float
+    :type F: Integer
+    :type lat_cpr: Long
+    :type lon_cpr: Long
+    :return: Latitide, longitude
+    :rtype: Float, Float
+
+    '''
 
     isEven = False
 
