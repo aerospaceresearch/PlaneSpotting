@@ -669,6 +669,48 @@ These messages contain Short Air to Air ACAS messages</p>
 </table>
 </dd></dl>
 
+<dl class="function">
+<dt id="planespotting.calculator.NL">
+<code class="descclassname">planespotting.calculator.</code><code class="descname">NL</code><span class="sig-paren">(</span><em>lat</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/calculator.html#NL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.calculator.NL" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns the number of latitude zones from the latitude angle. The returned value lies inbetween [1, 59]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>lat</strong> (<em>Float</em>) – The latitude angle</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Number of latitude zones</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Integer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.calculator.latitude">
+<code class="descclassname">planespotting.calculator.</code><code class="descname">latitude</code><span class="sig-paren">(</span><em>lat_cpr_even</em>, <em>lat_cpr_odd</em>, <em>t_even</em>, <em>t_odd</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/calculator.html#latitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.calculator.latitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculation of the latitude of a given aircraft with a set of successively received odd and even pair of frames.
+This type of calculation is also known as ‘Globally unambigous position calculation’ in which you need an odd and even frames from the same
+icao received one after the another.
+The order at which the frames at which the frames were received also determines the methodology of the calculation.
+For more info: <a class="reference external" href="https://mode-s.org/decode/adsb/airborne-position.html">https://mode-s.org/decode/adsb/airborne-position.html</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>lat_cpr_even</strong> – Latitude data from the even frame</li>
+<li><strong>lat_cpr_odd</strong> – Latitude data from the odd frame</li>
+<li><strong>t_even</strong> – Time/Sample Position of the even message in the recording</li>
+<li><strong>t_odd</strong> – Time/Sample Position of the odd message in the recording</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 </div>
 

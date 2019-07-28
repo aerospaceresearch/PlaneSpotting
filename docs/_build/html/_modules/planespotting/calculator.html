@@ -67,7 +67,16 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="mi">59</span> <span class="o">*</span> <span class="n">lat_cpr_even</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="mi">60</span><span class="o">*</span><span class="n">lat_cpr_odd</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span></div>
 
-<span class="k">def</span> <span class="nf">NL</span><span class="p">(</span><span class="n">lat</span><span class="p">):</span> <span class="c1">#this function calculates the number of longitude zones</span>
+<div class="viewcode-block" id="NL"><a class="viewcode-back" href="../../modules.html#planespotting.calculator.NL">[docs]</a><span class="k">def</span> <span class="nf">NL</span><span class="p">(</span><span class="n">lat</span><span class="p">):</span> <span class="c1">#this function calculates the number of longitude zones</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This function returns the number of latitude zones from the latitude angle. The returned value lies inbetween [1, 59]</span>
+
+<span class="sd">    :param lat: The latitude angle</span>
+<span class="sd">    :type lat: Float</span>
+<span class="sd">    :return: Number of latitude zones</span>
+<span class="sd">    :rtype: Integer</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">nz</span> <span class="o">=</span> <span class="mi">15</span> <span class="c1">#Number of geographic latitude zones between equator and a pole</span>
         <span class="n">a</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">nz</span><span class="p">))</span>
@@ -77,9 +86,21 @@
         <span class="k">return</span> <span class="n">nl</span>
 
     <span class="k">except</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="mi">1</span></div>
 
-<span class="k">def</span> <span class="nf">latitude</span><span class="p">(</span><span class="n">lat_cpr_even</span><span class="p">,</span> <span class="n">lat_cpr_odd</span><span class="p">,</span> <span class="n">t_even</span><span class="p">,</span> <span class="n">t_odd</span><span class="p">):</span> <span class="c1">#Calculation of the latitude coordinate of the aircraft</span>
+<div class="viewcode-block" id="latitude"><a class="viewcode-back" href="../../modules.html#planespotting.calculator.latitude">[docs]</a><span class="k">def</span> <span class="nf">latitude</span><span class="p">(</span><span class="n">lat_cpr_even</span><span class="p">,</span> <span class="n">lat_cpr_odd</span><span class="p">,</span> <span class="n">t_even</span><span class="p">,</span> <span class="n">t_odd</span><span class="p">):</span> <span class="c1">#Calculation of the latitude coordinate of the aircraft</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Calculation of the latitude of a given aircraft with a set of successively received odd and even pair of frames.</span>
+<span class="sd">    This type of calculation is also known as &#39;Globally unambigous position calculation&#39; in which you need an odd and even frames from the same</span>
+<span class="sd">    icao received one after the another.</span>
+<span class="sd">    The order at which the frames at which the frames were received also determines the methodology of the calculation.</span>
+<span class="sd">    For more info: https://mode-s.org/decode/adsb/airborne-position.html</span>
+
+<span class="sd">    :param lat_cpr_even: Latitude data from the even frame</span>
+<span class="sd">    :param lat_cpr_odd: Latitude data from the odd frame</span>
+<span class="sd">    :param t_even: Time/Sample Position of the even message in the recording</span>
+<span class="sd">    :param t_odd: Time/Sample Position of the odd message in the recording</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">dlatEven</span> <span class="o">=</span> <span class="mi">6</span>
     <span class="n">dlatOdd</span> <span class="o">=</span> <span class="mi">360</span><span class="o">/</span><span class="mi">59</span>
     <span class="n">cprEven</span> <span class="o">=</span> <span class="n">lat_cpr_even</span><span class="o">/</span><span class="mi">131072</span>
@@ -100,7 +121,7 @@
         <span class="k">return</span> <span class="n">latEven</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">latOdd</span>
+        <span class="k">return</span> <span class="n">latOdd</span></div>
 
 <span class="k">def</span> <span class="nf">longitude</span><span class="p">(</span><span class="n">long_cpr_even</span><span class="p">,</span> <span class="n">long_cpr_odd</span><span class="p">,</span> <span class="n">t_even</span><span class="p">,</span> <span class="n">t_odd</span><span class="p">,</span> <span class="n">nl_lat</span><span class="p">):</span>  <span class="c1">#Calculation of longitude coordinate of the aircraft</span>
 
