@@ -19,3 +19,8 @@ Frame Identification and Decoding
 =================================
 .. automodule:: planespotting.identifiers
    :members:
+
+Airborne Parameters Calculation
+===============================
+.. automodule:: planespotting.calculator
+   :members: lat_index
