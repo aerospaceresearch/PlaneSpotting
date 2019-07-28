@@ -29,7 +29,6 @@ def NL(lat): #this function calculates the number of longitude zones
     :return: Number of latitude zones
     :rtype: Integer
 
-    
     '''
     try:
         nz = 15 #Number of geographic latitude zones between equator and a pole
@@ -43,6 +42,18 @@ def NL(lat): #this function calculates the number of longitude zones
         return 1
 
 def latitude(lat_cpr_even, lat_cpr_odd, t_even, t_odd): #Calculation of the latitude coordinate of the aircraft
+    '''
+    Calculation of the latitude of a given aircraft with a set of successively received odd and even pair of frames.
+    This type of calculation is also known as 'Globally unambigous position calculation' in which you need an odd and even frames from the same
+    icao received one after the another.
+    The order at which the frames at which the frames were received also determines the methodology of the calculation.
+    For more info: https://mode-s.org/decode/adsb/airborne-position.html
+
+    :param lat_cpr_even: Latitude data from the even frame
+    :param lat_cpr_odd: Latitude data from the odd frame
+    :param t_even: Time/Sample Position of the even message in the recording
+    :param t_odd: Time/Sample Position of the odd message in the recording
+    '''
     dlatEven = 6
     dlatOdd = 360/59
     cprEven = lat_cpr_even/131072
