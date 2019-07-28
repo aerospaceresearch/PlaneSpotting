@@ -53,6 +53,12 @@ def latitude(lat_cpr_even, lat_cpr_odd, t_even, t_odd): #Calculation of the lati
     :param lat_cpr_odd: Latitude data from the odd frame
     :param t_even: Time/Sample Position of the even message in the recording
     :param t_odd: Time/Sample Position of the odd message in the recording
+    :type lat_cpr_even: Float
+    :type lat_cpr_odd: Float
+    :type t_even: Long
+    :type t_odd: Long
+    :return: Latitude in degrees
+    :rtype: Float
     '''
     dlatEven = 6
     dlatOdd = 360/59
