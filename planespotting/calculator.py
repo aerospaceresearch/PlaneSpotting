@@ -21,6 +21,16 @@ def lat_index(lat_cpr_even, lat_cpr_odd):
     return math.floor((59 * lat_cpr_even) - (60*lat_cpr_odd) + 0.5)
 
 def NL(lat): #this function calculates the number of longitude zones
+    '''
+    This function returns the number of latitude zones from the latitude angle. The returned value lies inbetween [1, 59]
+
+    :param lat: The latitude angle
+    :type lat: Float
+    :return: Number of latitude zones
+    :rtype: Integer
+
+    
+    '''
     try:
         nz = 15 #Number of geographic latitude zones between equator and a pole
         a = 1 - math.cos(math.pi / (2 * nz))
