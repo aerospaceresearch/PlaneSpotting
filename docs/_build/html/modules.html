@@ -646,6 +646,165 @@ These messages contain Short Air to Air ACAS messages</p>
 <div class="section" id="module-planespotting.calculator">
 <span id="airborne-parameters-calculation"></span><h2>Airborne Parameters Calculation<a class="headerlink" href="#module-planespotting.calculator" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
+<dt id="planespotting.calculator.NL">
+<code class="descclassname">planespotting.calculator.</code><code class="descname">NL</code><span class="sig-paren">(</span><em>lat</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/calculator.html#NL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.calculator.NL" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns the number of latitude zones from the latitude angle. The returned value lies inbetween [1, 59]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>lat</strong> (<em>Float</em>) – The latitude angle</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Number of latitude zones</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Integer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.calculator.calculate_position">
+<code class="descclassname">planespotting.calculator.</code><code class="descname">calculate_position</code><span class="sig-paren">(</span><em>all_seen_planes</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/calculator.html#calculate_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.calculator.calculate_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function calculates the position of all the icaos successively, both using the ‘Globally unambigous’ method and the ‘Locally unambigous method’
+Even after several corrective checks on the frames, there is still a possibility for the frames to carry wrong data. Thus, the calculated position is verified by both the steps and an average
+of all the positions is mantained which acts as a reference position.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>all_seen_planes</strong> (<em>Python List</em>) – List of unique icao addresses present in the recording</li>
+<li><strong>data</strong> (<em>Python dictionary</em>) – JSON containing the entire set of frame data found in the recording</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The updated data dictionary with the locations (only for position frames)</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Python dictionary</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.calculator.calculate_velocity">
+<code class="descclassname">planespotting.calculator.</code><code class="descname">calculate_velocity</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/calculator.html#calculate_velocity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.calculator.calculate_velocity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculation of velocity from DF 17-18 &amp; TC 19 frames.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – JSON containing all the frames and data keys</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">JSON with the velocity key filled up</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Python Dictionary</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.calculator.convert_position">
+<code class="descclassname">planespotting.calculator.</code><code class="descname">convert_position</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/calculator.html#convert_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.calculator.convert_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conversion of geographical coordinates present inside data to cartesian coordinates</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – JSON containing all the frames received and the decoded data stored in each key.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">JSON with the coordinates updated</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Python dictionary</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.calculator.get_cartesian_coordinates">
+<code class="descclassname">planespotting.calculator.</code><code class="descname">get_cartesian_coordinates</code><span class="sig-paren">(</span><em>lat=0.0</em>, <em>lon=0.0</em>, <em>alt=0.0</em>, <em>meter=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/calculator.html#get_cartesian_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.calculator.get_cartesian_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts Geographical coordinates to cartesian coordinates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>lat</strong> (<em>Float</em>) – Latitude coordinate in degrees</li>
+<li><strong>lon</strong> (<em>Float</em>) – Longitude coordinate in degrees</li>
+<li><strong>alt</strong> (<em>Float</em>) – Altitude in feet</li>
+<li><strong>meter</strong> (<em>Boolean</em>) – State variable for determining return unit (metres/feet)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Latitude, Longitude, Altitude in metres</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.calculator.get_geo_coordinates">
+<code class="descclassname">planespotting.calculator.</code><code class="descname">get_geo_coordinates</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/calculator.html#get_geo_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.calculator.get_geo_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts cartesian coordinates to geographical coordinates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em>Float</em>) – Latitude in metres</li>
+<li><strong>y</strong> (<em>Float</em>) – Longitude in metres</li>
+<li><strong>z</strong> (<em>Float</em>) – Altitude in metres</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Latitude, longitude, altitude in geographic coordinates.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.calculator.get_meanposition">
+<code class="descclassname">planespotting.calculator.</code><code class="descname">get_meanposition</code><span class="sig-paren">(</span><em>data</em>, <em>relevant_planes_id</em>, <em>hit_counter_global</em>, <em>latitudeMean_global</em>, <em>longitudeMean_global</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/calculator.html#get_meanposition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.calculator.get_meanposition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculation of the mean of all the decoded positions (lat, lon). Returns the mean (lat, lon)
+This mean(lat, lon) is used as the reference position for the locally unambigous method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<em>Python List</em>) – Contains all the frames seen in the recording.</li>
+<li><strong>relevant_planes_id</strong> (<em>Python List</em>) – List containing frames which contain airborne position data.</li>
+<li><strong>hit_counter_global</strong> (<em>Long</em>) – Number of frames considered during average calculation at each iteration.</li>
+<li><strong>latitudeMean_global</strong> (<em>Float</em>) – Mean of all calculated latitudes which gets updated after each iteration.</li>
+<li><strong>longitudeMean_global</strong> (<em>Float</em>) – Mean of all calculated longitudes which gets updated after each iteration.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Latitude, Longitude</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="planespotting.calculator.lat_index">
 <code class="descclassname">planespotting.calculator.</code><code class="descname">lat_index</code><span class="sig-paren">(</span><em>lat_cpr_even</em>, <em>lat_cpr_odd</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/calculator.html#lat_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.calculator.lat_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Used to calculate the latitude index using the odd and even frame latitudes.</p>
@@ -664,24 +823,6 @@ These messages contain Short Air to Air ACAS messages</p>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Float</p>
 </td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="planespotting.calculator.NL">
-<code class="descclassname">planespotting.calculator.</code><code class="descname">NL</code><span class="sig-paren">(</span><em>lat</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/calculator.html#NL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.calculator.NL" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function returns the number of latitude zones from the latitude angle. The returned value lies inbetween [1, 59]</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>lat</strong> (<em>Float</em>) – The latitude angle</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Number of latitude zones</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Integer</td>
 </tr>
 </tbody>
 </table>
@@ -765,85 +906,6 @@ In this function, the order of the odd and even frames is considered for calcula
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Float, Float</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="planespotting.calculator.get_meanposition">
-<code class="descclassname">planespotting.calculator.</code><code class="descname">get_meanposition</code><span class="sig-paren">(</span><em>data</em>, <em>relevant_planes_id</em>, <em>hit_counter_global</em>, <em>latitudeMean_global</em>, <em>longitudeMean_global</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/calculator.html#get_meanposition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.calculator.get_meanposition" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculation of the mean of all the decoded positions (lat, lon). Returns the mean (lat, lon)
-This mean(lat, lon) is used as the reference position for the locally unambigous method.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> (<em>Python List</em>) – Contains all the frames seen in the recording.</li>
-<li><strong>relevant_planes_id</strong> (<em>Python List</em>) – List containing frames which contain airborne position data.</li>
-<li><strong>hit_counter_global</strong> (<em>Long</em>) – Number of frames considered during average calculation at each iteration.</li>
-<li><strong>latitudeMean_global</strong> (<em>Float</em>) – Mean of all calculated latitudes which gets updated after each iteration.</li>
-<li><strong>longitudeMean_global</strong> (<em>Float</em>) – Mean of all calculated longitudes which gets updated after each iteration.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Latitude, Longitude</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Float</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="planespotting.calculator.get_geo_coordinates">
-<code class="descclassname">planespotting.calculator.</code><code class="descname">get_geo_coordinates</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/calculator.html#get_geo_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.calculator.get_geo_coordinates" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts cartesian coordinates to geographical coordinates.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> (<em>Float</em>) – Latitude in metres</li>
-<li><strong>y</strong> (<em>Float</em>) – Longitude in metres</li>
-<li><strong>z</strong> (<em>Float</em>) – Altitude in metres</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Latitude, longitude, altitude in geographic coordinates.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Float</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="planespotting.calculator.calculate_position">
-<code class="descclassname">planespotting.calculator.</code><code class="descname">calculate_position</code><span class="sig-paren">(</span><em>all_seen_planes</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/calculator.html#calculate_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.calculator.calculate_position" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function calculates the position of all the icaos successively, both using the ‘Globally unambigous’ method and the ‘Locally unambigous method’
-Even after several corrective checks on the frames, there is still a possibility for the frames to carry wrong data. Thus, the calculated position is verified by both the steps and an average
-of all the positions is mantained which acts as a reference position.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>all_seen_planes</strong> (<em>Python List</em>) – List of unique icao addresses present in the recording</li>
-<li><strong>data</strong> (<em>Python dictionary</em>) – JSON containing the entire set of frame data found in the recording</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The updated data dictionary with the locations (only for position frames)</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Python dictionary</p>
 </td>
 </tr>
 </tbody>

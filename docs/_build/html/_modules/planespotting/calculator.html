@@ -268,7 +268,7 @@
     <span class="k">return</span> <span class="n">hit_counter</span><span class="p">,</span> <span class="n">latitudeMean</span><span class="p">,</span> <span class="n">longitudeMean</span><span class="p">,</span> <span class="n">hit_counter_global</span><span class="p">,</span> <span class="n">latitudeMean_global</span><span class="p">,</span> <span class="n">longitudeMean_global</span></div>
 
 
-<span class="k">def</span> <span class="nf">get_cartesian_coordinates</span><span class="p">(</span><span class="n">lat</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">alt</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">meter</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="get_cartesian_coordinates"><a class="viewcode-back" href="../../modules.html#planespotting.calculator.get_cartesian_coordinates">[docs]</a><span class="k">def</span> <span class="nf">get_cartesian_coordinates</span><span class="p">(</span><span class="n">lat</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">alt</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">meter</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Converts Geographical coordinates to cartesian coordinates.</span>
@@ -296,7 +296,7 @@
     <span class="n">y</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span>
     <span class="n">z</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span></div>
 
 
 <div class="viewcode-block" id="get_geo_coordinates"><a class="viewcode-back" href="../../modules.html#planespotting.calculator.get_geo_coordinates">[docs]</a><span class="k">def</span> <span class="nf">get_geo_coordinates</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
@@ -490,7 +490,14 @@
 
 
 
-<span class="k">def</span> <span class="nf">calculate_velocity</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="calculate_velocity"><a class="viewcode-back" href="../../modules.html#planespotting.calculator.calculate_velocity">[docs]</a><span class="k">def</span> <span class="nf">calculate_velocity</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Calculation of velocity from DF 17-18 &amp; TC 19 frames.</span>
+
+<span class="sd">    :param data: JSON containing all the frames and data keys</span>
+<span class="sd">    :return: JSON with the velocity key filled up</span>
+<span class="sd">    :rtype: Python Dictionary</span>
+<span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])):</span>
         <span class="n">frames</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
@@ -539,10 +546,17 @@
                 <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;vert_rate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Vr</span> <span class="k">if</span> <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;S_vr&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">Vr</span><span class="o">*-</span><span class="mi">1</span>
 
 
-    <span class="k">return</span> <span class="n">data</span>
+    <span class="k">return</span> <span class="n">data</span></div>
 
 
-<span class="k">def</span> <span class="nf">convert_position</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="convert_position"><a class="viewcode-back" href="../../modules.html#planespotting.calculator.convert_position">[docs]</a><span class="k">def</span> <span class="nf">convert_position</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Conversion of geographical coordinates present inside data to cartesian coordinates</span>
+
+<span class="sd">    :param data: JSON containing all the frames received and the decoded data stored in each key.</span>
+<span class="sd">    :return: JSON with the coordinates updated</span>
+<span class="sd">    :rtype: Python dictionary</span>
+<span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])):</span>
         <span class="n">frames</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
@@ -554,7 +568,7 @@
                                                                               <span class="kc">False</span><span class="p">)</span>
 
 
-    <span class="k">return</span> <span class="n">data</span>
+    <span class="k">return</span> <span class="n">data</span></div>
 </pre></div>
 
           </div>

@@ -444,6 +444,13 @@ def calculate_position(all_seen_planes, data):
 
 
 def calculate_velocity(data):
+    '''
+    Calculation of velocity from DF 17-18 & TC 19 frames.
+
+    :param data: JSON containing all the frames and data keys
+    :return: JSON with the velocity key filled up
+    :rtype: Python Dictionary
+    '''
 
     for i in range(len(data['data'])):
         frames = data['data'][i]
@@ -496,6 +503,13 @@ def calculate_velocity(data):
 
 
 def convert_position(data):
+    '''
+    Conversion of geographical coordinates present inside data to cartesian coordinates
+
+    :param data: JSON containing all the frames received and the decoded data stored in each key.
+    :return: JSON with the coordinates updated
+    :rtype: Python dictionary
+    '''
 
     for i in range (len(data["data"])):
         frames = data['data'][i]
