@@ -269,6 +269,22 @@
 
 
 <span class="k">def</span> <span class="nf">get_cartesian_coordinates</span><span class="p">(</span><span class="n">lat</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">alt</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">meter</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Converts Geographical coordinates to cartesian coordinates.</span>
+
+<span class="sd">    :param lat: Latitude coordinate in degrees</span>
+<span class="sd">    :param lon: Longitude coordinate in degrees</span>
+<span class="sd">    :param alt: Altitude in feet</span>
+<span class="sd">    :param meter: State variable for determining return unit (metres/feet)</span>
+<span class="sd">    :type lat: Float</span>
+<span class="sd">    :type lon: Float</span>
+<span class="sd">    :type alt: Float</span>
+<span class="sd">    :type meter: Boolean</span>
+<span class="sd">    :return: Latitude, Longitude, Altitude in metres</span>
+<span class="sd">    :rtype: Float</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
     <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">lat</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span>
     <span class="n">R_earth</span> <span class="o">=</span> <span class="mf">6371000.0</span> <span class="c1"># radius of the earth in meters</span>
     <span class="n">altitude</span> <span class="o">=</span> <span class="n">alt</span>
@@ -283,12 +299,24 @@
     <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span>
 
 
-<span class="k">def</span> <span class="nf">get_geo_coordinates</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+<div class="viewcode-block" id="get_geo_coordinates"><a class="viewcode-back" href="../../modules.html#planespotting.calculator.get_geo_coordinates">[docs]</a><span class="k">def</span> <span class="nf">get_geo_coordinates</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Converts cartesian coordinates to geographical coordinates.</span>
+
+<span class="sd">    :param x: Latitude in metres</span>
+<span class="sd">    :param y: Longitude in metres</span>
+<span class="sd">    :param z: Altitude in metres</span>
+<span class="sd">    :type x: Float</span>
+<span class="sd">    :type y: Float</span>
+<span class="sd">    :type z: Float</span>
+<span class="sd">    :return: Latitude, longitude, altitude in geographic coordinates.</span>
+<span class="sd">    :rtype: Float</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
     <span class="n">lat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">z</span> <span class="o">/</span> <span class="n">R</span><span class="p">)</span>
     <span class="n">lon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">lon</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">lat</span><span class="p">),</span> <span class="n">R</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">lon</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">lat</span><span class="p">),</span> <span class="n">R</span></div>
 
 
 <span class="k">def</span> <span class="nf">calculate_position</span><span class="p">(</span><span class="n">all_seen_planes</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>

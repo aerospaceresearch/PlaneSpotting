@@ -222,6 +222,22 @@ def get_meanposition(data, relevant_planes_id, hit_counter_global, latitudeMean_
 
 
 def get_cartesian_coordinates(lat=0.0, lon=0.0, alt=0.0, meter = True):
+
+    '''
+    Converts Geographical coordinates to cartesian coordinates.
+
+    :param lat: Latitude coordinate in degrees
+    :param lon: Longitude coordinate in degrees
+    :param alt: Altitude in feet
+    :param meter: State variable for determining return unit (metres/feet)
+    :type lat: Float
+    :type lon: Float
+    :type alt: Float
+    :type meter: Boolean
+    :return: Latitude, Longitude, Altitude in metres
+    :rtype: Float
+    '''
+
     lat, lon = np.deg2rad(lat), np.deg2rad(lon)
     R_earth = 6371000.0 # radius of the earth in meters
     altitude = alt
@@ -237,6 +253,18 @@ def get_cartesian_coordinates(lat=0.0, lon=0.0, alt=0.0, meter = True):
 
 
 def get_geo_coordinates(x, y, z):
+    '''
+    Converts cartesian coordinates to geographical coordinates.
+
+    :param x: Latitude in metres
+    :param y: Longitude in metres
+    :param z: Altitude in metres
+    :type x: Float
+    :type y: Float
+    :type z: Float
+    :return: Latitude, longitude, altitude in geographic coordinates.
+    :rtype: Float
+    '''
     R = np.sqrt(x**2 + y**2 + z**2)
     lat = np.arcsin(z / R)
     lon = np.arctan2(y, x)
