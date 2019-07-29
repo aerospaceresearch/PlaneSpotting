@@ -229,11 +229,24 @@
 <span class="sd">all position calculation functions end here.</span>
 <span class="sd">&#39;&#39;&#39;</span>
 
-<span class="k">def</span> <span class="nf">get_meanposition</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">relevant_planes_id</span><span class="p">,</span> <span class="n">hit_counter_global</span><span class="p">,</span> <span class="n">latitudeMean_global</span><span class="p">,</span> <span class="n">longitudeMean_global</span><span class="p">):</span>
+<div class="viewcode-block" id="get_meanposition"><a class="viewcode-back" href="../../modules.html#planespotting.calculator.get_meanposition">[docs]</a><span class="k">def</span> <span class="nf">get_meanposition</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">relevant_planes_id</span><span class="p">,</span> <span class="n">hit_counter_global</span><span class="p">,</span> <span class="n">latitudeMean_global</span><span class="p">,</span> <span class="n">longitudeMean_global</span><span class="p">):</span>
 
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Calculation of the mean of all the decoded positions (lat, lon). Returns the mean (lat, lon)</span>
-<span class="sd">    This mean(lat, lon) is used as the reference position for the locally unambigous method</span>
+<span class="sd">    This mean(lat, lon) is used as the reference position for the locally unambigous method.</span>
+
+<span class="sd">    :param data: Contains all the frames seen in the recording.</span>
+<span class="sd">    :param relevant_planes_id: List containing frames which contain airborne position data.</span>
+<span class="sd">    :param hit_counter_global: Number of frames considered during average calculation at each iteration.</span>
+<span class="sd">    :param latitudeMean_global: Mean of all calculated latitudes which gets updated after each iteration.</span>
+<span class="sd">    :param longitudeMean_global: Mean of all calculated longitudes which gets updated after each iteration.</span>
+<span class="sd">    :type data: Python List</span>
+<span class="sd">    :type relevant_planes_id: Python List</span>
+<span class="sd">    :type hit_counter_global: Long</span>
+<span class="sd">    :type latitudeMean_global: Float</span>
+<span class="sd">    :type longitudeMean_global: Float</span>
+<span class="sd">    :return: Latitude, Longitude</span>
+<span class="sd">    :rtype: Float</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="n">hit_counter</span> <span class="o">=</span> <span class="mi">0</span>
@@ -252,7 +265,7 @@
             <span class="n">latitudeMean_global</span> <span class="o">+=</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;latitude&quot;</span><span class="p">]</span>
             <span class="n">longitudeMean_global</span> <span class="o">+=</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;longitude&quot;</span><span class="p">]</span>
 
-    <span class="k">return</span> <span class="n">hit_counter</span><span class="p">,</span> <span class="n">latitudeMean</span><span class="p">,</span> <span class="n">longitudeMean</span><span class="p">,</span> <span class="n">hit_counter_global</span><span class="p">,</span> <span class="n">latitudeMean_global</span><span class="p">,</span> <span class="n">longitudeMean_global</span>
+    <span class="k">return</span> <span class="n">hit_counter</span><span class="p">,</span> <span class="n">latitudeMean</span><span class="p">,</span> <span class="n">longitudeMean</span><span class="p">,</span> <span class="n">hit_counter_global</span><span class="p">,</span> <span class="n">latitudeMean_global</span><span class="p">,</span> <span class="n">longitudeMean_global</span></div>
 
 
 <span class="k">def</span> <span class="nf">get_cartesian_coordinates</span><span class="p">(</span><span class="n">lat</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">alt</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">meter</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>

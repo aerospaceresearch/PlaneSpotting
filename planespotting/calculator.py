@@ -186,7 +186,20 @@ def get_meanposition(data, relevant_planes_id, hit_counter_global, latitudeMean_
 
     '''
     Calculation of the mean of all the decoded positions (lat, lon). Returns the mean (lat, lon)
-    This mean(lat, lon) is used as the reference position for the locally unambigous method
+    This mean(lat, lon) is used as the reference position for the locally unambigous method.
+
+    :param data: Contains all the frames seen in the recording.
+    :param relevant_planes_id: List containing frames which contain airborne position data.
+    :param hit_counter_global: Number of frames considered during average calculation at each iteration.
+    :param latitudeMean_global: Mean of all calculated latitudes which gets updated after each iteration.
+    :param longitudeMean_global: Mean of all calculated longitudes which gets updated after each iteration.
+    :type data: Python List
+    :type relevant_planes_id: Python List
+    :type hit_counter_global: Long
+    :type latitudeMean_global: Float
+    :type longitudeMean_global: Float
+    :return: Latitude, Longitude
+    :rtype: Float
     '''
 
     hit_counter = 0

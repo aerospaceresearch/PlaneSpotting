@@ -23,4 +23,4 @@ Frame Identification and Decoding
 Airborne Parameters Calculation
 ===============================
 .. automodule:: planespotting.calculator
-   :members: lat_index, NL, latitude, longitude, pos_local
+   :members: lat_index, NL, latitude, longitude, pos_local, get_meanposition

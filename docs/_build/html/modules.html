@@ -771,6 +771,34 @@ In this function, the order of the odd and even frames is considered for calcula
 </table>
 </dd></dl>
 
+<dl class="function">
+<dt id="planespotting.calculator.get_meanposition">
+<code class="descclassname">planespotting.calculator.</code><code class="descname">get_meanposition</code><span class="sig-paren">(</span><em>data</em>, <em>relevant_planes_id</em>, <em>hit_counter_global</em>, <em>latitudeMean_global</em>, <em>longitudeMean_global</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/calculator.html#get_meanposition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.calculator.get_meanposition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculation of the mean of all the decoded positions (lat, lon). Returns the mean (lat, lon)
+This mean(lat, lon) is used as the reference position for the locally unambigous method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<em>Python List</em>) – Contains all the frames seen in the recording.</li>
+<li><strong>relevant_planes_id</strong> (<em>Python List</em>) – List containing frames which contain airborne position data.</li>
+<li><strong>hit_counter_global</strong> (<em>Long</em>) – Number of frames considered during average calculation at each iteration.</li>
+<li><strong>latitudeMean_global</strong> (<em>Float</em>) – Mean of all calculated latitudes which gets updated after each iteration.</li>
+<li><strong>longitudeMean_global</strong> (<em>Float</em>) – Mean of all calculated longitudes which gets updated after each iteration.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Latitude, Longitude</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 </div>
 
