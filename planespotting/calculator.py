@@ -273,6 +273,18 @@ def get_geo_coordinates(x, y, z):
 
 
 def calculate_position(all_seen_planes, data):
+    '''
+    This function calculates the position of all the icaos successively, both using the 'Globally unambigous' method and the 'Locally unambigous method'
+    Even after several corrective checks on the frames, there is still a possibility for the frames to carry wrong data. Thus, the calculated position is verified by both the steps and an average
+    of all the positions is mantained which acts as a reference position.
+
+    :param all_seen_planes: List of unique icao addresses present in the recording
+    :param data: JSON containing the entire set of frame data found in the recording
+    :type all_seen_planes: Python List
+    :type data: Python dictionary
+    :return: The updated data dictionary with the locations (only for position frames)
+    :rtype: Python dictionary
+    '''
 
     latRef = data["meta"]["gs_lat"]
     lonRef = data["meta"]["gs_lon"]

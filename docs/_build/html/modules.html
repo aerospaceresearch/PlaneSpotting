@@ -824,6 +824,32 @@ This mean(lat, lon) is used as the reference position for the locally unambigous
 </table>
 </dd></dl>
 
+<dl class="function">
+<dt id="planespotting.calculator.calculate_position">
+<code class="descclassname">planespotting.calculator.</code><code class="descname">calculate_position</code><span class="sig-paren">(</span><em>all_seen_planes</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/calculator.html#calculate_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.calculator.calculate_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function calculates the position of all the icaos successively, both using the ‘Globally unambigous’ method and the ‘Locally unambigous method’
+Even after several corrective checks on the frames, there is still a possibility for the frames to carry wrong data. Thus, the calculated position is verified by both the steps and an average
+of all the positions is mantained which acts as a reference position.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>all_seen_planes</strong> (<em>Python List</em>) – List of unique icao addresses present in the recording</li>
+<li><strong>data</strong> (<em>Python dictionary</em>) – JSON containing the entire set of frame data found in the recording</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The updated data dictionary with the locations (only for position frames)</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Python dictionary</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 </div>
 

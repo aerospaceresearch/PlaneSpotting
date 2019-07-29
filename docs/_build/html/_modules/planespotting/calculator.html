@@ -319,7 +319,19 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">lon</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">lat</span><span class="p">),</span> <span class="n">R</span></div>
 
 
-<span class="k">def</span> <span class="nf">calculate_position</span><span class="p">(</span><span class="n">all_seen_planes</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="calculate_position"><a class="viewcode-back" href="../../modules.html#planespotting.calculator.calculate_position">[docs]</a><span class="k">def</span> <span class="nf">calculate_position</span><span class="p">(</span><span class="n">all_seen_planes</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This function calculates the position of all the icaos successively, both using the &#39;Globally unambigous&#39; method and the &#39;Locally unambigous method&#39;</span>
+<span class="sd">    Even after several corrective checks on the frames, there is still a possibility for the frames to carry wrong data. Thus, the calculated position is verified by both the steps and an average</span>
+<span class="sd">    of all the positions is mantained which acts as a reference position.</span>
+
+<span class="sd">    :param all_seen_planes: List of unique icao addresses present in the recording</span>
+<span class="sd">    :param data: JSON containing the entire set of frame data found in the recording</span>
+<span class="sd">    :type all_seen_planes: Python List</span>
+<span class="sd">    :type data: Python dictionary</span>
+<span class="sd">    :return: The updated data dictionary with the locations (only for position frames)</span>
+<span class="sd">    :rtype: Python dictionary</span>
+<span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="n">latRef</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;gs_lat&quot;</span><span class="p">]</span>
     <span class="n">lonRef</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;gs_lon&quot;</span><span class="p">]</span>
@@ -474,7 +486,7 @@
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;possible groundstation location&quot;</span><span class="p">,</span> <span class="n">latGlobal</span><span class="p">,</span> <span class="n">lonGlobal</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">data</span>
+    <span class="k">return</span> <span class="n">data</span></div>
 
 
 
