@@ -646,6 +646,24 @@ These messages contain Short Air to Air ACAS messages</p>
 <div class="section" id="module-planespotting.decoder">
 <span id="data-extraction-from-ads-b-frames"></span><h2>Data Extraction from ADS-B frames<a class="headerlink" href="#module-planespotting.decoder" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
+<dt id="planespotting.decoder.altitude">
+<code class="descclassname">planespotting.decoder.</code><code class="descname">altitude</code><span class="sig-paren">(</span><em>bin_alt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/decoder.html#altitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.decoder.altitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the altitude from airborne position messages.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>bin_alt</strong> (<em>String</em>) – Altitude code in binary</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Altitude</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Integer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="planespotting.decoder.crc">
 <code class="descclassname">planespotting.decoder.</code><code class="descname">crc</code><span class="sig-paren">(</span><em>msg</em>, <em>encoding=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/decoder.html#crc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.decoder.crc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mode-S Cyclic Redundancy Check
@@ -786,6 +804,24 @@ LON_CPR(integer):Longitude in CPR format</td>
 </dd></dl>
 
 <dl class="function">
+<dt id="planespotting.decoder.get_Squawk">
+<code class="descclassname">planespotting.decoder.</code><code class="descname">get_Squawk</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/decoder.html#get_Squawk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.decoder.get_Squawk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decodes and returns the squawk code from the frame.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> (<em>String</em>) – Frame containing the sqawk code encoded</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Squawk code</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">String</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="planespotting.decoder.get_TC">
 <code class="descclassname">planespotting.decoder.</code><code class="descname">get_TC</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/decoder.html#get_TC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.decoder.get_TC" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extraction of Type code from 112 bit ads-b messages</p>
@@ -844,6 +880,24 @@ RESV_B (integer) : Reserved-B
 S_Dif (integer) : Difference from baro alt, sign
 Dif(integer) : Difference from baro alt</div></blockquote>
 </td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Integer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.decoder.get_altCode">
+<code class="descclassname">planespotting.decoder.</code><code class="descname">get_altCode</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/decoder.html#get_altCode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.decoder.get_altCode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculation of altitude for Downlink Format 20 messages</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> (<em>String</em>) – ADS-B message with Downlink Format 20</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Altitude</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Integer</td>
 </tr>

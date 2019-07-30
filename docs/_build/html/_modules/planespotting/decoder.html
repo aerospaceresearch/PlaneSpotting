@@ -363,7 +363,15 @@
 <span class="sd">remove the ambiguity in the frames.</span>
 <span class="sd">&#39;&#39;&#39;</span>
 
-<span class="k">def</span> <span class="nf">get_Squawk</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
+<div class="viewcode-block" id="get_Squawk"><a class="viewcode-back" href="../../modules.html#planespotting.decoder.get_Squawk">[docs]</a><span class="k">def</span> <span class="nf">get_Squawk</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Decodes and returns the squawk code from the frame.</span>
+
+<span class="sd">    :param frame: Frame containing the sqawk code encoded</span>
+<span class="sd">    :type frame: String</span>
+<span class="sd">    :return: Squawk code</span>
+<span class="sd">    :rtype: String</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">msg_bin</span> <span class="o">=</span> <span class="n">hexToDec</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
     <span class="n">C1</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">19</span><span class="p">]</span>
     <span class="n">A1</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">20</span><span class="p">]</span>
@@ -383,18 +391,34 @@
     <span class="n">str3</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">C4</span><span class="o">+</span><span class="n">C2</span><span class="o">+</span><span class="n">C1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">str4</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">D4</span><span class="o">+</span><span class="n">D2</span><span class="o">+</span><span class="n">D1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">str1</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">str2</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">str3</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">str4</span><span class="p">))</span>
+    <span class="k">return</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">str1</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">str2</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">str3</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">str4</span><span class="p">))</span></div>
 
-<span class="k">def</span> <span class="nf">altitude</span><span class="p">(</span><span class="n">bin_alt</span><span class="p">):</span>
+<div class="viewcode-block" id="altitude"><a class="viewcode-back" href="../../modules.html#planespotting.decoder.altitude">[docs]</a><span class="k">def</span> <span class="nf">altitude</span><span class="p">(</span><span class="n">bin_alt</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Calculates the altitude from airborne position messages.</span>
+
+<span class="sd">    :param bin_alt: Altitude code in binary</span>
+<span class="sd">    :type bin_alt: String</span>
+<span class="sd">    :return: Altitude</span>
+<span class="sd">    :rtype: Integer</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">qBit</span> <span class="o">=</span> <span class="n">bin_alt</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span>
     <span class="n">alt</span><span class="o">=</span><span class="n">bin_alt</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">7</span><span class="p">]</span><span class="o">+</span><span class="n">bin_alt</span><span class="p">[</span><span class="mi">8</span><span class="p">:]</span>
     <span class="n">altitude</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">alt</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
     <span class="k">if</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">qBit</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>  <span class="c1">#Checks for the altitude multiplication unit, 0 = 100ft, 1 = 25ft</span>
         <span class="k">return</span> <span class="n">altitude</span> <span class="o">*</span> <span class="mi">25</span> <span class="o">-</span> <span class="mi">1000</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">altitude</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">-</span> <span class="mi">1000</span>
+        <span class="k">return</span> <span class="n">altitude</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">-</span> <span class="mi">1000</span></div>
 
-<span class="k">def</span> <span class="nf">get_altCode</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
+<div class="viewcode-block" id="get_altCode"><a class="viewcode-back" href="../../modules.html#planespotting.decoder.get_altCode">[docs]</a><span class="k">def</span> <span class="nf">get_altCode</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Calculation of altitude for Downlink Format 20 messages</span>
+
+<span class="sd">    :param frame: ADS-B message with Downlink Format 20</span>
+<span class="sd">    :type frame: String</span>
+<span class="sd">    :return: Altitude</span>
+<span class="sd">    :rtype: Integer</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">msg_bin</span> <span class="o">=</span> <span class="n">hexToDec</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
     <span class="n">mbit</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">25</span><span class="p">]</span>
     <span class="n">qbit</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">27</span><span class="p">]</span>
@@ -422,7 +446,7 @@
         <span class="n">vbin</span> <span class="o">=</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">19</span><span class="p">:</span><span class="mi">25</span><span class="p">]</span> <span class="o">+</span> <span class="n">msg_bin</span><span class="p">[</span><span class="mi">26</span><span class="p">:</span><span class="mi">31</span><span class="p">]</span>
         <span class="n">alt_code</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">vbin</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mf">3.28084</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">alt_code</span>
+    <span class="k">return</span> <span class="n">alt_code</span></div>
 
 <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="c1">#for id in range(lendata[&quot;data&quot;])):</span>
