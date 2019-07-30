@@ -210,16 +210,17 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    This function cuts and converts the binary data into its equivalent integer.</span>
 <span class="sd">    The data cut consists of the variables required for position determination.</span>
-<span class="sd">    Args:</span>
-<span class="sd">        frame(string): 112bit DF 17/18 and tc:9-18 ADS-B message</span>
-<span class="sd">    Returns:</span>
-<span class="sd">        SS(integer): Surveillance status</span>
-<span class="sd">        NICsb(integer) : NIC supplement-B</span>
-<span class="sd">        ALT(integer):Altitude</span>
-<span class="sd">        T(integer):Time</span>
-<span class="sd">        F(integer):CPR odd/even frame flag</span>
-<span class="sd">        LAT_CPR(integer):Latitude in CPR format</span>
+
+<span class="sd">    :param frame: 112bit DF 17/18 and tc:9-18 ADS-B message</span>
+<span class="sd">    :type frame: String</span>
+<span class="sd">    :return: SS(integer): Surveillance status,</span>
+<span class="sd">        NICsb(integer) : NIC supplement-B,</span>
+<span class="sd">        ALT(integer):Altitude,</span>
+<span class="sd">        T(integer):Time,</span>
+<span class="sd">        F(integer):CPR odd/even frame flag,</span>
+<span class="sd">        LAT_CPR(integer):Latitude in CPR format,</span>
 <span class="sd">        LON_CPR(integer):Longitude in CPR format</span>
+<span class="sd">    :rtype: Integer</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">22</span><span class="p">]</span>
     <span class="nb">bin</span> <span class="o">=</span> <span class="n">hexToDec</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>

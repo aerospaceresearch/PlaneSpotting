@@ -674,20 +674,25 @@ Detect if bit error occurs in the Mode-S message</p>
 <dt id="planespotting.decoder.get_AirbornePosition">
 <code class="descclassname">planespotting.decoder.</code><code class="descname">get_AirbornePosition</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/decoder.html#get_AirbornePosition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.decoder.get_AirbornePosition" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function cuts and converts the binary data into its equivalent integer.
-The data cut consists of the variables required for position determination.
-Args:</p>
-<blockquote>
-<div>frame(string): 112bit DF 17/18 and tc:9-18 ADS-B message</div></blockquote>
-<dl class="docutils">
-<dt>Returns:</dt>
-<dd>SS(integer): Surveillance status
-NICsb(integer) : NIC supplement-B
-ALT(integer):Altitude
-T(integer):Time
-F(integer):CPR odd/even frame flag
-LAT_CPR(integer):Latitude in CPR format
-LON_CPR(integer):Longitude in CPR format</dd>
-</dl>
+The data cut consists of the variables required for position determination.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> (<em>String</em>) – 112bit DF 17/18 and tc:9-18 ADS-B message</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">SS(integer): Surveillance status,
+NICsb(integer) : NIC supplement-B,
+ALT(integer):Altitude,
+T(integer):Time,
+F(integer):CPR odd/even frame flag,
+LAT_CPR(integer):Latitude in CPR format,
+LON_CPR(integer):Longitude in CPR format</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Integer</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">

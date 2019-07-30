@@ -163,16 +163,17 @@ def get_AirbornePosition(frame): #Extraction of position oriented data
     '''
     This function cuts and converts the binary data into its equivalent integer.
     The data cut consists of the variables required for position determination.
-    Args:
-        frame(string): 112bit DF 17/18 and tc:9-18 ADS-B message
-    Returns:
-        SS(integer): Surveillance status
-        NICsb(integer) : NIC supplement-B
-        ALT(integer):Altitude
-        T(integer):Time
-        F(integer):CPR odd/even frame flag
-        LAT_CPR(integer):Latitude in CPR format
+
+    :param frame: 112bit DF 17/18 and tc:9-18 ADS-B message
+    :type frame: String
+    :return: SS(integer): Surveillance status,
+        NICsb(integer) : NIC supplement-B,
+        ALT(integer):Altitude,
+        T(integer):Time,
+        F(integer):CPR odd/even frame flag,
+        LAT_CPR(integer):Latitude in CPR format,
         LON_CPR(integer):Longitude in CPR format
+    :rtype: Integer
     '''
     data = frame[8:22]
     bin = hexToDec(data)
