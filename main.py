@@ -129,15 +129,15 @@ def main(filename, output, latitude, longitude, altitude):
             clock += 60
         print("input lat & long:", data["meta"]["gs_lat"], data["meta"]["gs_lon"])
 
-        # data = decode(data)
-        #
-        # print("storing adsb-data")
-        #
-        # if "gzip" == "gzip":
-        #     # standard output
-        #     utils.store_file_jsonGzip(path, file, data)
-        # else:
-        #     utils.store_file(path, file, data)
+        data = decode(data)
+
+        print("storing adsb-data")
+
+        if "gzip" == "gzip":
+            # standard output
+            utils.store_file_jsonGzip(path, file, data)
+        else:
+            utils.store_file(path, file, data)
 
     print("doing mlat stuff from here on...")
     multilateration.main(path)

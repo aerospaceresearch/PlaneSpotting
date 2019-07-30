@@ -317,6 +317,14 @@ remove the ambiguity in the frames.
 '''
 
 def get_Squawk(frame):
+    '''
+    Decodes and returns the squawk code from the frame.
+
+    :param frame: Frame containing the sqawk code encoded
+    :type frame: String
+    :return: Squawk code
+    :rtype: String
+    '''
     msg_bin = hexToDec(frame)
     C1 = msg_bin[19]
     A1 = msg_bin[20]
@@ -339,6 +347,14 @@ def get_Squawk(frame):
     return (str(str1) + str(str2) + str(str3) + str(str4))
 
 def altitude(bin_alt):
+    '''
+    Calculates the altitude from airborne position messages.
+
+    :param bin_alt: Altitude code in binary
+    :type bin_alt: String
+    :return: Altitude
+    :rtype: Integer
+    '''
     qBit = bin_alt[7]
     alt=bin_alt[0:7]+bin_alt[8:]
     altitude = int(alt, 2)
@@ -348,6 +364,14 @@ def altitude(bin_alt):
         return altitude * 100 - 1000
 
 def get_altCode(frame):
+    '''
+    Calculation of altitude for Downlink Format 20 messages
+
+    :param frame: ADS-B message with Downlink Format 20
+    :type frame: String
+    :return: Altitude
+    :rtype: Integer
+    '''
     msg_bin = hexToDec(frame)
     mbit = msg_bin[25]
     qbit = msg_bin[27]
