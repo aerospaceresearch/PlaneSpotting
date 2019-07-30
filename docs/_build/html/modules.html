@@ -643,6 +643,45 @@ These messages contain Short Air to Air ACAS messages</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-planespotting.decoder">
+<span id="data-extraction-from-ads-b-frames"></span><h2>Data Extraction from ADS-B frames<a class="headerlink" href="#module-planespotting.decoder" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="planespotting.decoder.get_MsgLength">
+<code class="descclassname">planespotting.decoder.</code><code class="descname">get_MsgLength</code><span class="sig-paren">(</span><em>df</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/decoder.html#get_MsgLength"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.decoder.get_MsgLength" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the bit length of a message according to the type (df&gt;16)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>df</strong> (<em>Integer</em>) – Downlink format</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Length of messages</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Integer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.decoder.get_DF">
+<code class="descclassname">planespotting.decoder.</code><code class="descname">get_DF</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/decoder.html#get_DF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.decoder.get_DF" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns the Downlink Format of any ads-b message present in the stream</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> (<em>String</em>) – The 56/112 bit ads-b message</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Downlink format of ‘frame’</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Integer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
 <div class="section" id="module-planespotting.calculator">
 <span id="airborne-parameters-calculation"></span><h2>Airborne Parameters Calculation<a class="headerlink" href="#module-planespotting.calculator" title="Permalink to this headline">¶</a></h2>
 <dl class="function">

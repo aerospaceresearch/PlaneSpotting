@@ -9,7 +9,15 @@ long_msg_bits = 112
 short_msg_bits = 56
 
 
-def get_MsgLength(df): #Returns the bit length of a message according to the type (df>16)
+def get_MsgLength(df):
+    '''
+    Returns the bit length of a message according to the type (df>16)
+
+    :param df: Downlink format
+    :type df: Integer
+    :return: Length of messages
+    :rtype: Integer
+    '''
     if df > 16:
         return long_msg_bits
     else:
@@ -21,10 +29,11 @@ All messages above df 16 are long messages
 def get_DF(frame):
     '''
     This function returns the Downlink Format of any ads-b message present in the stream
-    Args:
-        frame(string): The 56/112 bit ads-b message
-    Returns:
-        df(integer): Downlink format of 'frame'
+
+    :param frame: The 56/112 bit ads-b message
+    :type frame: String
+    :return: Downlink format of 'frame'
+    :rtype: Integer
     '''
     bin_frame = hexToDec(frame)
     df = int(bin_frame[0:5], 2)
