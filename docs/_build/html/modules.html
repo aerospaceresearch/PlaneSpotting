@@ -696,6 +696,24 @@ LON_CPR(integer):Longitude in CPR format</td>
 </dd></dl>
 
 <dl class="function">
+<dt id="planespotting.decoder.get_Callsign">
+<code class="descclassname">planespotting.decoder.</code><code class="descname">get_Callsign</code><span class="sig-paren">(</span><em>callsign_bin</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/decoder.html#get_Callsign"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.decoder.get_Callsign" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decodes the callsign from ads-b identifier messages</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>callsign_bin</strong> (<em>String</em>) – Binary part of the frame containing the callsign</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The callsign of the aircraft</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">String</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="planespotting.decoder.get_DF">
 <code class="descclassname">planespotting.decoder.</code><code class="descname">get_DF</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/decoder.html#get_DF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.decoder.get_DF" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function returns the Downlink Format of any ads-b message present in the stream</p>
@@ -750,6 +768,24 @@ LON_CPR(integer):Longitude in CPR format</td>
 </dd></dl>
 
 <dl class="function">
+<dt id="planespotting.decoder.get_SeenPlanes">
+<code class="descclassname">planespotting.decoder.</code><code class="descname">get_SeenPlanes</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/decoder.html#get_SeenPlanes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.decoder.get_SeenPlanes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepares and returns a list of all unique aircrafts seen in the recording.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – JSON with ads-b frame data</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of all aircrafts</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Python List</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="planespotting.decoder.get_TC">
 <code class="descclassname">planespotting.decoder.</code><code class="descname">get_TC</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/decoder.html#get_TC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.decoder.get_TC" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extraction of Type code from 112 bit ads-b messages</p>
@@ -771,13 +807,15 @@ LON_CPR(integer):Longitude in CPR format</td>
 <dt id="planespotting.decoder.get_VelocityData">
 <code class="descclassname">planespotting.decoder.</code><code class="descname">get_VelocityData</code><span class="sig-paren">(</span><em>frame</em>, <em>subtype</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/decoder.html#get_VelocityData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.decoder.get_VelocityData" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function cuts and converts the binary data into its equivalent integer.
-The data cut consists of the variables required for veocity and heading calculation.
-Args:</p>
-<blockquote>
-<div>frame(string): 112bit DF 17/18 and tc:9-18 ADS-B message</div></blockquote>
-<dl class="docutils">
-<dt>Returns:</dt>
-<dd>IC(integer) : Intent change flag
+The data cut consists of the variables required for veocity and heading calculation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> (<em>String</em>) – 112bit DF 17/18 and tc:9-18 ADS-B message</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><blockquote>
+<div>IC(integer) : Intent change flag
 RESV_A(integer) : Reserved-A
 NAC(integer) : Velocity uncertainty (NAC)
 S_ew(integer) : East-West velocity sign
@@ -789,10 +827,8 @@ S_vr(integer) : Vertical rate sign
 Vr(integer) : Vertical rate
 RESV_B(integer) : Reserved-B
 S_Dif(integer) : Diff from baro alt, sign
-Dif(integer) : Diff from baro alt</dd>
-</dl>
-<p>When subtype = 3
-Returns:</p>
+Dif(integer) : Diff from baro alt</div></blockquote>
+<p>When subtype = 3</p>
 <blockquote>
 <div>IC(integer) : Intent change flag
 RESV_A(integer) : Reserved-A
@@ -807,6 +843,12 @@ Vr(integer) : Vertical rate
 RESV_B (integer) : Reserved-B
 S_Dif (integer) : Difference from baro alt, sign
 Dif(integer) : Difference from baro alt</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Integer</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">

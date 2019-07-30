@@ -193,25 +193,27 @@ def get_VelocityData(frame, subtype): #Extraction of velocity oriented
     '''
     This function cuts and converts the binary data into its equivalent integer.
     The data cut consists of the variables required for veocity and heading calculation.
-    Args:
-        frame(string): 112bit DF 17/18 and tc:9-18 ADS-B message
-    Returns:
-        IC(integer) : Intent change flag
-        RESV_A(integer) : Reserved-A
-        NAC(integer) : Velocity uncertainty (NAC)
-        S_ew(integer) : East-West velocity sign
-        V_ew(integer) : East-West velocity
-        S_ns(integer) : North-South velocity sign
-        V_ns(integer) : North-South velocity
-        VrSrc(integer) : Vertical rate source
-        S_vr(integer) : Vertical rate sign
-        Vr(integer) : Vertical rate
-        RESV_B(integer) : Reserved-B
-        S_Dif(integer) : Diff from baro alt, sign
-        Dif(integer) : Diff from baro alt
 
-    When subtype = 3
-    Returns:
+    :param frame: 112bit DF 17/18 and tc:9-18 ADS-B message
+    :type frame: String
+    :return:
+            IC(integer) : Intent change flag
+            RESV_A(integer) : Reserved-A
+            NAC(integer) : Velocity uncertainty (NAC)
+            S_ew(integer) : East-West velocity sign
+            V_ew(integer) : East-West velocity
+            S_ns(integer) : North-South velocity sign
+            V_ns(integer) : North-South velocity
+            VrSrc(integer) : Vertical rate source
+            S_vr(integer) : Vertical rate sign
+            Vr(integer) : Vertical rate
+            RESV_B(integer) : Reserved-B
+            S_Dif(integer) : Diff from baro alt, sign
+            Dif(integer) : Diff from baro alt
+
+        When subtype = 3
+
+
             IC(integer) : Intent change flag
             RESV_A(integer) : Reserved-A
             NAC(integer) : Velocity uncertainty (NAC)
@@ -225,7 +227,7 @@ def get_VelocityData(frame, subtype): #Extraction of velocity oriented
             RESV_B (integer) : Reserved-B
             S_Dif (integer) : Difference from baro alt, sign
             Dif(integer) : Difference from baro alt
-
+    :rtype: Integer
     '''
     msg_bin = hexToDec(frame[8:22])
     if subtype == 1:
@@ -264,6 +266,14 @@ def get_VelocityData(frame, subtype): #Extraction of velocity oriented
 
 
 def get_SeenPlanes(data):
+    '''
+    Prepares and returns a list of all unique aircrafts seen in the recording.
+
+    :param data: JSON with ads-b frame data
+    :type frame: Python Dictionary
+    :return: List of all aircrafts
+    :rtype: Python List
+    '''
 
     all_seen_planes = []
 
@@ -281,9 +291,15 @@ def get_SeenPlanes(data):
 
 
 def get_Callsign(callsign_bin):
+    '''
+    Decodes the callsign from ads-b identifier messages
+
+    :param callsign_bin: Binary part of the frame containing the callsign
+    :type callsign_bin: String
+    :return: The callsign of the aircraft
+    :rtype: String
+    '''
     lookup_table = "#ABCDEFGHIJKLMNOPQRSTUVWXYZ#####_###############0123456789######"
-    #print(msg, "Aircraft identifier", df, tc)
-    #dat = frames['callsign_bin']
     callsign = ""
     for i in range(0, len(callsign_bin), 6):
         index = int(callsign_bin[i:i+6], 2)

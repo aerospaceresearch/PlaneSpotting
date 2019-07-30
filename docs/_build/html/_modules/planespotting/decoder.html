@@ -240,25 +240,27 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    This function cuts and converts the binary data into its equivalent integer.</span>
 <span class="sd">    The data cut consists of the variables required for veocity and heading calculation.</span>
-<span class="sd">    Args:</span>
-<span class="sd">        frame(string): 112bit DF 17/18 and tc:9-18 ADS-B message</span>
-<span class="sd">    Returns:</span>
-<span class="sd">        IC(integer) : Intent change flag</span>
-<span class="sd">        RESV_A(integer) : Reserved-A</span>
-<span class="sd">        NAC(integer) : Velocity uncertainty (NAC)</span>
-<span class="sd">        S_ew(integer) : East-West velocity sign</span>
-<span class="sd">        V_ew(integer) : East-West velocity</span>
-<span class="sd">        S_ns(integer) : North-South velocity sign</span>
-<span class="sd">        V_ns(integer) : North-South velocity</span>
-<span class="sd">        VrSrc(integer) : Vertical rate source</span>
-<span class="sd">        S_vr(integer) : Vertical rate sign</span>
-<span class="sd">        Vr(integer) : Vertical rate</span>
-<span class="sd">        RESV_B(integer) : Reserved-B</span>
-<span class="sd">        S_Dif(integer) : Diff from baro alt, sign</span>
-<span class="sd">        Dif(integer) : Diff from baro alt</span>
 
-<span class="sd">    When subtype = 3</span>
-<span class="sd">    Returns:</span>
+<span class="sd">    :param frame: 112bit DF 17/18 and tc:9-18 ADS-B message</span>
+<span class="sd">    :type frame: String</span>
+<span class="sd">    :return:</span>
+<span class="sd">            IC(integer) : Intent change flag</span>
+<span class="sd">            RESV_A(integer) : Reserved-A</span>
+<span class="sd">            NAC(integer) : Velocity uncertainty (NAC)</span>
+<span class="sd">            S_ew(integer) : East-West velocity sign</span>
+<span class="sd">            V_ew(integer) : East-West velocity</span>
+<span class="sd">            S_ns(integer) : North-South velocity sign</span>
+<span class="sd">            V_ns(integer) : North-South velocity</span>
+<span class="sd">            VrSrc(integer) : Vertical rate source</span>
+<span class="sd">            S_vr(integer) : Vertical rate sign</span>
+<span class="sd">            Vr(integer) : Vertical rate</span>
+<span class="sd">            RESV_B(integer) : Reserved-B</span>
+<span class="sd">            S_Dif(integer) : Diff from baro alt, sign</span>
+<span class="sd">            Dif(integer) : Diff from baro alt</span>
+
+<span class="sd">        When subtype = 3</span>
+
+
 <span class="sd">            IC(integer) : Intent change flag</span>
 <span class="sd">            RESV_A(integer) : Reserved-A</span>
 <span class="sd">            NAC(integer) : Velocity uncertainty (NAC)</span>
@@ -272,7 +274,7 @@
 <span class="sd">            RESV_B (integer) : Reserved-B</span>
 <span class="sd">            S_Dif (integer) : Difference from baro alt, sign</span>
 <span class="sd">            Dif(integer) : Difference from baro alt</span>
-
+<span class="sd">    :rtype: Integer</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">msg_bin</span> <span class="o">=</span> <span class="n">hexToDec</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">22</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">subtype</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -310,7 +312,15 @@
         <span class="k">return</span> <span class="n">IC</span><span class="p">,</span> <span class="n">RESV_A</span><span class="p">,</span> <span class="n">NAC</span><span class="p">,</span> <span class="n">S_hdg</span><span class="p">,</span> <span class="n">Hdg</span><span class="p">,</span> <span class="n">AS_t</span><span class="p">,</span> <span class="n">AS</span><span class="p">,</span> <span class="n">VrSrc</span><span class="p">,</span> <span class="n">S_vr</span><span class="p">,</span> <span class="n">Vr</span><span class="p">,</span> <span class="n">RESV_B</span><span class="p">,</span> <span class="n">S_Dif</span><span class="p">,</span> <span class="n">Dif</span></div>
 
 
-<span class="k">def</span> <span class="nf">get_SeenPlanes</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="get_SeenPlanes"><a class="viewcode-back" href="../../modules.html#planespotting.decoder.get_SeenPlanes">[docs]</a><span class="k">def</span> <span class="nf">get_SeenPlanes</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Prepares and returns a list of all unique aircrafts seen in the recording.</span>
+
+<span class="sd">    :param data: JSON with ads-b frame data</span>
+<span class="sd">    :type frame: Python Dictionary</span>
+<span class="sd">    :return: List of all aircrafts</span>
+<span class="sd">    :rtype: Python List</span>
+<span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="n">all_seen_planes</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -324,19 +334,25 @@
         <span class="k">if</span> <span class="n">seen</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">all_seen_planes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s2">&quot;ICAO&quot;</span><span class="p">])</span>
 
-    <span class="k">return</span> <span class="n">all_seen_planes</span>
+    <span class="k">return</span> <span class="n">all_seen_planes</span></div>
 
 
-<span class="k">def</span> <span class="nf">get_Callsign</span><span class="p">(</span><span class="n">callsign_bin</span><span class="p">):</span>
+<div class="viewcode-block" id="get_Callsign"><a class="viewcode-back" href="../../modules.html#planespotting.decoder.get_Callsign">[docs]</a><span class="k">def</span> <span class="nf">get_Callsign</span><span class="p">(</span><span class="n">callsign_bin</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Decodes the callsign from ads-b identifier messages</span>
+
+<span class="sd">    :param callsign_bin: Binary part of the frame containing the callsign</span>
+<span class="sd">    :type callsign_bin: String</span>
+<span class="sd">    :return: The callsign of the aircraft</span>
+<span class="sd">    :rtype: String</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">lookup_table</span> <span class="o">=</span> <span class="s2">&quot;#ABCDEFGHIJKLMNOPQRSTUVWXYZ#####_###############0123456789######&quot;</span>
-    <span class="c1">#print(msg, &quot;Aircraft identifier&quot;, df, tc)</span>
-    <span class="c1">#dat = frames[&#39;callsign_bin&#39;]</span>
     <span class="n">callsign</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">callsign_bin</span><span class="p">),</span> <span class="mi">6</span><span class="p">):</span>
         <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">callsign_bin</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">6</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">callsign</span> <span class="o">+=</span> <span class="n">lookup_table</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 
-    <span class="k">return</span> <span class="n">callsign</span>
+    <span class="k">return</span> <span class="n">callsign</span></div>
 
 
 <span class="sd">&#39;&#39;&#39;</span>
