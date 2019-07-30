@@ -23,7 +23,7 @@ Frame Identification and Decoding
 Data Extraction from ADS-B frames
 =================================
 .. automodule:: planespotting.decoder
-   :members:  get_MsgLength, get_DF, get_TC
+   :members: 
 
 Airborne Parameters Calculation
 ===============================

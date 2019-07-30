@@ -646,21 +646,48 @@ These messages contain Short Air to Air ACAS messages</p>
 <div class="section" id="module-planespotting.decoder">
 <span id="data-extraction-from-ads-b-frames"></span><h2>Data Extraction from ADS-B frames<a class="headerlink" href="#module-planespotting.decoder" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="planespotting.decoder.get_MsgLength">
-<code class="descclassname">planespotting.decoder.</code><code class="descname">get_MsgLength</code><span class="sig-paren">(</span><em>df</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/decoder.html#get_MsgLength"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.decoder.get_MsgLength" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the bit length of a message according to the type (df&gt;16)</p>
+<dt id="planespotting.decoder.crc">
+<code class="descclassname">planespotting.decoder.</code><code class="descname">crc</code><span class="sig-paren">(</span><em>msg</em>, <em>encoding=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/decoder.html#crc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.decoder.crc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mode-S Cyclic Redundancy Check
+Detect if bit error occurs in the Mode-S message</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>df</strong> (<em>Integer</em>) – Downlink format</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>msg</strong> (<em>String</em>) – 28 bytes hexadecimal message string</li>
+<li><strong>encoding</strong> (<em>Boolean</em>) – True to encode the date only and return the checksum</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Length of messages</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">message checksum, or parity bits (encoder)</p>
+</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Integer</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">String</p>
+</td>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.decoder.get_AirbornePosition">
+<code class="descclassname">planespotting.decoder.</code><code class="descname">get_AirbornePosition</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/decoder.html#get_AirbornePosition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.decoder.get_AirbornePosition" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function cuts and converts the binary data into its equivalent integer.
+The data cut consists of the variables required for position determination.
+Args:</p>
+<blockquote>
+<div>frame(string): 112bit DF 17/18 and tc:9-18 ADS-B message</div></blockquote>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>SS(integer): Surveillance status
+NICsb(integer) : NIC supplement-B
+ALT(integer):Altitude
+T(integer):Time
+F(integer):CPR odd/even frame flag
+LAT_CPR(integer):Latitude in CPR format
+LON_CPR(integer):Longitude in CPR format</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -682,6 +709,42 @@ These messages contain Short Air to Air ACAS messages</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="planespotting.decoder.get_ICAO">
+<code class="descclassname">planespotting.decoder.</code><code class="descname">get_ICAO</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/decoder.html#get_ICAO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.decoder.get_ICAO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the ICAO of Downlink Format 11, 17 &amp; 18 messages only</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> (<em>String</em>) – ADS-b message with DF 11, 17 or 18</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The icao 24-bit address in hexadecimal format</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">String</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.decoder.get_MsgLength">
+<code class="descclassname">planespotting.decoder.</code><code class="descname">get_MsgLength</code><span class="sig-paren">(</span><em>df</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/decoder.html#get_MsgLength"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.decoder.get_MsgLength" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the bit length of a message according to the type (df&gt;16)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>df</strong> (<em>Integer</em>) – Downlink format</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Length of messages</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Integer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="planespotting.decoder.get_TC">
 <code class="descclassname">planespotting.decoder.</code><code class="descname">get_TC</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/decoder.html#get_TC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.decoder.get_TC" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extraction of Type code from 112 bit ads-b messages</p>
@@ -692,6 +755,94 @@ These messages contain Short Air to Air ACAS messages</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> (<em>String</em>) – 112 bit ads-b message</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">It returns the integer equivalent of the first 4 bits of the ads-b message block</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Integer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.decoder.get_VelocityData">
+<code class="descclassname">planespotting.decoder.</code><code class="descname">get_VelocityData</code><span class="sig-paren">(</span><em>frame</em>, <em>subtype</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/decoder.html#get_VelocityData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.decoder.get_VelocityData" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function cuts and converts the binary data into its equivalent integer.
+The data cut consists of the variables required for veocity and heading calculation.
+Args:</p>
+<blockquote>
+<div>frame(string): 112bit DF 17/18 and tc:9-18 ADS-B message</div></blockquote>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>IC(integer) : Intent change flag
+RESV_A(integer) : Reserved-A
+NAC(integer) : Velocity uncertainty (NAC)
+S_ew(integer) : East-West velocity sign
+V_ew(integer) : East-West velocity
+S_ns(integer) : North-South velocity sign
+V_ns(integer) : North-South velocity
+VrSrc(integer) : Vertical rate source
+S_vr(integer) : Vertical rate sign
+Vr(integer) : Vertical rate
+RESV_B(integer) : Reserved-B
+S_Dif(integer) : Diff from baro alt, sign
+Dif(integer) : Diff from baro alt</dd>
+</dl>
+<p>When subtype = 3
+Returns:</p>
+<blockquote>
+<div>IC(integer) : Intent change flag
+RESV_A(integer) : Reserved-A
+NAC(integer) : Velocity uncertainty (NAC)
+S_hdg(integer) : Heading status
+Hdg(integer) : Heading (proportion)
+AS_t (integer) : Airspeed Type
+AS (integer) : Airspeed
+VrSrc (integer) : Vertical rate source
+S_vr (integer) : Vertical rate sign
+Vr(integer) : Vertical rate
+RESV_B (integer) : Reserved-B
+S_Dif (integer) : Difference from baro alt, sign
+Dif(integer) : Difference from baro alt</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.decoder.get_crcICAO">
+<code class="descclassname">planespotting.decoder.</code><code class="descname">get_crcICAO</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/decoder.html#get_crcICAO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.decoder.get_crcICAO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the ICAO of Downlink Format 0, 4, 5, 16, 20 &amp; 21 messages only</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> (<em>String</em>) – ADS-b message with DF 0, 4, 5, 16, 20 or 21</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The icao 24-bit address in hexadecimal format</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">String</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.decoder.get_gray2alt">
+<code class="descclassname">planespotting.decoder.</code><code class="descname">get_gray2alt</code><span class="sig-paren">(</span><em>codestr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/decoder.html#get_gray2alt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.decoder.get_gray2alt" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function converts gray code to altitude
+:param codestr: Binary of the altitude code cut from the ads-b frame
+:type codestr: String
+:return: Altitude
+:rtype: Integer</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.decoder.gray2int">
+<code class="descclassname">planespotting.decoder.</code><code class="descname">gray2int</code><span class="sig-paren">(</span><em>graystr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/decoder.html#gray2int"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.decoder.gray2int" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert greycode to binary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>graystr</strong> (<em>String</em>) – String to be converted</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Binary equivelnt</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Integer</td>
 </tr>

@@ -105,17 +105,25 @@
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
-<span class="k">def</span> <span class="nf">get_ICAO</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
+<div class="viewcode-block" id="get_ICAO"><a class="viewcode-back" href="../../modules.html#planespotting.decoder.get_ICAO">[docs]</a><span class="k">def</span> <span class="nf">get_ICAO</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Extracts the ICAO of Downlink Format 11, 17 &amp; 18 messages only</span>
-<span class="sd">    Args:</span>
-<span class="sd">        frame(string): ADS-b message with DF 11, 17 or 18</span>
-<span class="sd">    Returns:</span>
-<span class="sd">        frame[2-7](string): The icao 24-bit address in hexadecimal format</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">return</span> <span class="n">frame</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
 
-<span class="k">def</span> <span class="nf">get_gray2alt</span><span class="p">(</span><span class="n">codestr</span><span class="p">):</span>
+<span class="sd">    :param frame: ADS-b message with DF 11, 17 or 18</span>
+<span class="sd">    :type frame: String</span>
+<span class="sd">    :return: The icao 24-bit address in hexadecimal format</span>
+<span class="sd">    :rtype: String</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">frame</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="get_gray2alt"><a class="viewcode-back" href="../../modules.html#planespotting.decoder.get_gray2alt">[docs]</a><span class="k">def</span> <span class="nf">get_gray2alt</span><span class="p">(</span><span class="n">codestr</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This function converts gray code to altitude</span>
+<span class="sd">    :param codestr: Binary of the altitude code cut from the ads-b frame</span>
+<span class="sd">    :type codestr: String</span>
+<span class="sd">    :return: Altitude</span>
+<span class="sd">    :rtype: Integer</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">gc500</span> <span class="o">=</span> <span class="n">codestr</span><span class="p">[:</span><span class="mi">8</span><span class="p">]</span>
     <span class="n">n500</span> <span class="o">=</span> <span class="n">gray2int</span><span class="p">(</span><span class="n">gc500</span><span class="p">)</span>
 
@@ -133,25 +141,33 @@
         <span class="n">n100</span> <span class="o">=</span> <span class="mi">6</span> <span class="o">-</span> <span class="n">n100</span>
 
     <span class="n">alt</span> <span class="o">=</span> <span class="p">(</span><span class="n">n500</span><span class="o">*</span><span class="mi">500</span> <span class="o">+</span> <span class="n">n100</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1300</span>
-    <span class="k">return</span> <span class="n">alt</span>
+    <span class="k">return</span> <span class="n">alt</span></div>
 
-<span class="k">def</span> <span class="nf">gray2int</span><span class="p">(</span><span class="n">graystr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Convert greycode to binary.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="gray2int"><a class="viewcode-back" href="../../modules.html#planespotting.decoder.gray2int">[docs]</a><span class="k">def</span> <span class="nf">gray2int</span><span class="p">(</span><span class="n">graystr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert greycode to binary.</span>
+
+<span class="sd">    :param graystr: String to be converted</span>
+<span class="sd">    :type graystr: String</span>
+<span class="sd">    :return: Binary equivelnt</span>
+<span class="sd">    :rtype: Integer</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">graystr</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">num</span> <span class="o">^=</span> <span class="p">(</span><span class="n">num</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span><span class="p">)</span>
     <span class="n">num</span> <span class="o">^=</span> <span class="p">(</span><span class="n">num</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">)</span>
     <span class="n">num</span> <span class="o">^=</span> <span class="p">(</span><span class="n">num</span> <span class="o">&gt;&gt;</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">num</span> <span class="o">^=</span> <span class="p">(</span><span class="n">num</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">num</span>
+    <span class="k">return</span> <span class="n">num</span></div>
 
-<span class="k">def</span> <span class="nf">crc</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="crc"><a class="viewcode-back" href="../../modules.html#planespotting.decoder.crc">[docs]</a><span class="k">def</span> <span class="nf">crc</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39; Mode-S Cyclic Redundancy Check</span>
 <span class="sd">    Detect if bit error occurs in the Mode-S message</span>
-<span class="sd">    Args:</span>
-<span class="sd">        msg (string): 28 bytes hexadecimal message string</span>
-<span class="sd">        encoding (bool): True to encode the date only and return the checksum</span>
-<span class="sd">    Returns:</span>
-<span class="sd">        string: message checksum, or parity bits (encoder)</span>
+
+<span class="sd">    :param msg: 28 bytes hexadecimal message string</span>
+<span class="sd">    :param encoding: True to encode the date only and return the checksum</span>
+<span class="sd">    :type msg: String</span>
+<span class="sd">    :type encoding: Boolean</span>
+<span class="sd">    :return: message checksum, or parity bits (encoder)</span>
+<span class="sd">    :rtype: String</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="c1"># the polynominal generattor code for CRC [1111111111111010000001001]</span>
@@ -173,23 +189,24 @@
 
     <span class="c1"># last 24 parity bits</span>
     <span class="n">rest</span> <span class="o">=</span> <span class="n">np2bin</span><span class="p">(</span><span class="n">msgnpbin</span><span class="p">[</span><span class="o">-</span><span class="mi">24</span><span class="p">:])</span>
-    <span class="k">return</span> <span class="n">rest</span>
+    <span class="k">return</span> <span class="n">rest</span></div>
 
 
-<span class="k">def</span> <span class="nf">get_crcICAO</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
+<div class="viewcode-block" id="get_crcICAO"><a class="viewcode-back" href="../../modules.html#planespotting.decoder.get_crcICAO">[docs]</a><span class="k">def</span> <span class="nf">get_crcICAO</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Extracts the ICAO of Downlink Format 0, 4, 5, 16, 20 &amp; 21 messages only</span>
-<span class="sd">    Args:</span>
-<span class="sd">        frame(string): ADS-b message with DF 0, 4, 5, 16, 20 or 21</span>
-<span class="sd">    Returns:</span>
-<span class="sd">        icao(string): The icao 24-bit address in hexadecimal format</span>
+
+<span class="sd">    :param frame: ADS-b message with DF 0, 4, 5, 16, 20 or 21</span>
+<span class="sd">    :type frame: String</span>
+<span class="sd">    :return: The icao 24-bit address in hexadecimal format</span>
+<span class="sd">    :rtype: String</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">c0</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">crc</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="kc">True</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">c1</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="o">-</span><span class="mi">6</span><span class="p">:],</span> <span class="mi">16</span><span class="p">)</span>
     <span class="n">icao</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%06X</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">c0</span> <span class="o">^</span> <span class="n">c1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">icao</span>
+    <span class="k">return</span> <span class="n">icao</span></div>
 
-<span class="k">def</span> <span class="nf">get_AirbornePosition</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span> <span class="c1">#Extraction of position oriented data</span>
+<div class="viewcode-block" id="get_AirbornePosition"><a class="viewcode-back" href="../../modules.html#planespotting.decoder.get_AirbornePosition">[docs]</a><span class="k">def</span> <span class="nf">get_AirbornePosition</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span> <span class="c1">#Extraction of position oriented data</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    This function cuts and converts the binary data into its equivalent integer.</span>
 <span class="sd">    The data cut consists of the variables required for position determination.</span>
@@ -215,10 +232,10 @@
     <span class="n">LAT_CPR</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">bin</span><span class="p">[</span><span class="mi">22</span><span class="p">:</span><span class="mi">39</span><span class="p">],</span><span class="mi">2</span><span class="p">)</span>
     <span class="n">LON_CPR</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">bin</span><span class="p">[</span><span class="mi">39</span><span class="p">:],</span><span class="mi">2</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">SS</span><span class="p">,</span> <span class="n">NICsb</span><span class="p">,</span> <span class="n">ALT</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">LAT_CPR</span><span class="p">,</span> <span class="n">LON_CPR</span>
+    <span class="k">return</span> <span class="n">SS</span><span class="p">,</span> <span class="n">NICsb</span><span class="p">,</span> <span class="n">ALT</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">LAT_CPR</span><span class="p">,</span> <span class="n">LON_CPR</span></div>
 
 
-<span class="k">def</span> <span class="nf">get_VelocityData</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">subtype</span><span class="p">):</span> <span class="c1">#Extraction of velocity oriented</span>
+<div class="viewcode-block" id="get_VelocityData"><a class="viewcode-back" href="../../modules.html#planespotting.decoder.get_VelocityData">[docs]</a><span class="k">def</span> <span class="nf">get_VelocityData</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">subtype</span><span class="p">):</span> <span class="c1">#Extraction of velocity oriented</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    This function cuts and converts the binary data into its equivalent integer.</span>
 <span class="sd">    The data cut consists of the variables required for veocity and heading calculation.</span>
@@ -289,7 +306,7 @@
         <span class="n">S_Dif</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">msg_bin</span><span class="p">[</span><span class="mi">48</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">Dif</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">msg_bin</span><span class="p">[</span><span class="mi">49</span><span class="p">:</span><span class="mi">56</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">IC</span><span class="p">,</span> <span class="n">RESV_A</span><span class="p">,</span> <span class="n">NAC</span><span class="p">,</span> <span class="n">S_hdg</span><span class="p">,</span> <span class="n">Hdg</span><span class="p">,</span> <span class="n">AS_t</span><span class="p">,</span> <span class="n">AS</span><span class="p">,</span> <span class="n">VrSrc</span><span class="p">,</span> <span class="n">S_vr</span><span class="p">,</span> <span class="n">Vr</span><span class="p">,</span> <span class="n">RESV_B</span><span class="p">,</span> <span class="n">S_Dif</span><span class="p">,</span> <span class="n">Dif</span>
+        <span class="k">return</span> <span class="n">IC</span><span class="p">,</span> <span class="n">RESV_A</span><span class="p">,</span> <span class="n">NAC</span><span class="p">,</span> <span class="n">S_hdg</span><span class="p">,</span> <span class="n">Hdg</span><span class="p">,</span> <span class="n">AS_t</span><span class="p">,</span> <span class="n">AS</span><span class="p">,</span> <span class="n">VrSrc</span><span class="p">,</span> <span class="n">S_vr</span><span class="p">,</span> <span class="n">Vr</span><span class="p">,</span> <span class="n">RESV_B</span><span class="p">,</span> <span class="n">S_Dif</span><span class="p">,</span> <span class="n">Dif</span></div>
 
 
 <span class="k">def</span> <span class="nf">get_SeenPlanes</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
