@@ -43,11 +43,11 @@ def get_DF(frame):
 def get_TC(frame):
     '''
     Extraction of Type code from 112 bit ads-b messages
-    Args:
-        frame(string) : 112 bit ads-b message
-    Return:
-        (int)binary(adsb_dataBlock)[0-4]: It returns the integer part of the first 4 bit of the
-                                            ads-b message block
+
+    :param frame: 112 bit ads-b message
+    :type frame: String
+    :return: It returns the integer equivalent of the first 4 bits of the ads-b message block
+    :rtype: Integer
     '''
     data = frame[8:22]
     bin = hexToDec(data)

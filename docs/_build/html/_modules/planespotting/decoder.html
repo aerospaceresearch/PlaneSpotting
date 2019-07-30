@@ -87,14 +87,14 @@
     <span class="k">return</span> <span class="n">df</span></div>
 
 
-<span class="k">def</span> <span class="nf">get_TC</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
+<div class="viewcode-block" id="get_TC"><a class="viewcode-back" href="../../modules.html#planespotting.decoder.get_TC">[docs]</a><span class="k">def</span> <span class="nf">get_TC</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Extraction of Type code from 112 bit ads-b messages</span>
-<span class="sd">    Args:</span>
-<span class="sd">        frame(string) : 112 bit ads-b message</span>
-<span class="sd">    Return:</span>
-<span class="sd">        (int)binary(adsb_dataBlock)[0-4]: It returns the integer part of the first 4 bit of the</span>
-<span class="sd">                                            ads-b message block</span>
+
+<span class="sd">    :param frame: 112 bit ads-b message</span>
+<span class="sd">    :type frame: String</span>
+<span class="sd">    :return: It returns the integer equivalent of the first 4 bits of the ads-b message block</span>
+<span class="sd">    :rtype: Integer</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">22</span><span class="p">]</span>
     <span class="nb">bin</span> <span class="o">=</span> <span class="n">hexToDec</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -102,7 +102,7 @@
     <span class="k">if</span> <span class="n">get_MsgLength</span><span class="p">(</span><span class="n">get_DF</span><span class="p">(</span><span class="n">frame</span><span class="p">))</span> <span class="o">==</span> <span class="mi">112</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nb">bin</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">],</span><span class="mi">2</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
 
 
 <span class="k">def</span> <span class="nf">get_ICAO</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
