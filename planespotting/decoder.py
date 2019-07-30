@@ -61,14 +61,22 @@ def get_TC(frame):
 def get_ICAO(frame):
     '''
     Extracts the ICAO of Downlink Format 11, 17 & 18 messages only
-    Args:
-        frame(string): ADS-b message with DF 11, 17 or 18
-    Returns:
-        frame[2-7](string): The icao 24-bit address in hexadecimal format
+
+    :param frame: ADS-b message with DF 11, 17 or 18
+    :type frame: String
+    :return: The icao 24-bit address in hexadecimal format
+    :rtype: String
     '''
     return frame[2:8]
 
 def get_gray2alt(codestr):
+    '''
+    This function converts gray code to altitude
+    :param codestr: Binary of the altitude code cut from the ads-b frame
+    :type codestr: String
+    :return: Altitude
+    :rtype: Integer
+    '''
     gc500 = codestr[:8]
     n500 = gray2int(gc500)
 
@@ -89,7 +97,13 @@ def get_gray2alt(codestr):
     return alt
 
 def gray2int(graystr):
-    """Convert greycode to binary."""
+    """Convert greycode to binary.
+
+    :param graystr: String to be converted
+    :type graystr: String
+    :return: Binary equivelnt
+    :rtype: Integer
+    """
     num = int(graystr, 2)
     num ^= (num >> 8)
     num ^= (num >> 4)
@@ -100,11 +114,13 @@ def gray2int(graystr):
 def crc(msg, encoding=False):
     ''' Mode-S Cyclic Redundancy Check
     Detect if bit error occurs in the Mode-S message
-    Args:
-        msg (string): 28 bytes hexadecimal message string
-        encoding (bool): True to encode the date only and return the checksum
-    Returns:
-        string: message checksum, or parity bits (encoder)
+
+    :param msg: 28 bytes hexadecimal message string
+    :param encoding: True to encode the date only and return the checksum
+    :type msg: String
+    :type encoding: Boolean
+    :return: message checksum, or parity bits (encoder)
+    :rtype: String
     '''
 
     # the polynominal generattor code for CRC [1111111111111010000001001]
@@ -132,10 +148,11 @@ def crc(msg, encoding=False):
 def get_crcICAO(frame):
     '''
     Extracts the ICAO of Downlink Format 0, 4, 5, 16, 20 & 21 messages only
-    Args:
-        frame(string): ADS-b message with DF 0, 4, 5, 16, 20 or 21
-    Returns:
-        icao(string): The icao 24-bit address in hexadecimal format
+
+    :param frame: ADS-b message with DF 0, 4, 5, 16, 20 or 21
+    :type frame: String
+    :return: The icao 24-bit address in hexadecimal format
+    :rtype: String
     '''
     c0 = int(crc(frame, encoding = True), 2)
     c1 = int(frame[-6:], 16)
