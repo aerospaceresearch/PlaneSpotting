@@ -1,6 +1,5 @@
 from planespotting.calculator import *
 from planespotting import utils
-#from planespotting import create_table
 from pathlib import Path
 import os
 import sqlite3
