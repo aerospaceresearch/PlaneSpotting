@@ -571,6 +571,7 @@ def decode(data):
 
                 frames['squawk'] = get_Squawk(frames['adsb_msg'])
 
+            continue
         '''
         Decoding 56 bit msgs from here
         '''
@@ -578,16 +579,20 @@ def decode(data):
         if identifier8(frames['df'], frames['tc']):
             frames['ICAO'] = get_crcICAO(frames['adsb_msg'])
             frames['squawk'] = get_Squawk(frames['adsb_msg'])
+            continue
 
         if identifier9(frames['df'], frames['tc']):
             frames['ICAO'] = get_crcICAO(frames['adsb_msg'])
+            continue
 
         if identifier10(frames['df'], frames['tc']):
             frames['ICAO'] = get_crcICAO(frames['adsb_msg'])
             frames['altitude'] = get_altCode(frames['adsb_msg'])
+            continue
 
         if identifier11(frames['df'], frames['tc']):
             frames['ICAO'] = get_crcICAO(frames['adsb_msg'])
+            continue
 
         #Currently decoding only icao from DF0, 4, 5, 16, need more reading on what more can we decode
 
