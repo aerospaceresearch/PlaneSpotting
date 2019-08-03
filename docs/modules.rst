@@ -33,5 +33,5 @@ Airborne Parameters Calculation
 File Overlap check and search of unique signals
 ===============================================
 
-.. automodule: planespotting.multilateration
+.. automodule:: planespotting.multilateration
    :members:
