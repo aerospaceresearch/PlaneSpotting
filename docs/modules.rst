@@ -23,9 +23,15 @@ Frame Identification and Decoding
 Data Extraction from ADS-B frames
 =================================
 .. automodule:: planespotting.decoder
-   :members: 
+   :members:
 
 Airborne Parameters Calculation
 ===============================
 .. automodule:: planespotting.calculator
+   :members:
+
+File Overlap check and search of unique signals
+===============================================
+
+.. automodule: planespotting.multilateration
    :members:
