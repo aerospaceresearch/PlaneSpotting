@@ -5,6 +5,12 @@ import os
 import sqlite3
 
 def create_table():
+    '''
+    This function is used to create a sqlite database which is used for searching for unique frames present in different files, or station recordings.
+
+    :param: None
+    :return: Void
+    '''
     conn = sqlite3.connect('planespotting/data.db')
 
     conn.execute('''CREATE TABLE frames
@@ -26,7 +32,6 @@ def create_table():
              gs_lon FLOAT,
              gs_alt FLOAT);''')
 
-    #conn.execute('''CREATE UNIQUE INDEX check ON frames (adsb_msg, gs_id);''')
     conn.close()
 
 
