@@ -75,11 +75,29 @@ def correct_samplePos(data):
 
 
 def get_files(path):
+    '''
+    This function is used to get all the files present in a station directory
+
+    :param path: Path to the station directory/folder
+    :type path: String
+    :return: List of file(s) present inside the given directory
+    :rtype: Python List
+    '''
     for _, _, files in os.walk(path):
         file = files
-    return file #This function is used to get all the files present in a station directory
+    return file
 
 def check_file_overlap(file1, file2):
+    '''
+    Checks if two files overlap at any point. Both the files are recordings belonging to different ground stations
+
+    :param file1: Path to a recorded file in JSON.
+    :param file2: Path to a recorded file in JSON from a different ground station
+    :type file1: Python dictionary
+    :type file2: Python dictionary
+    :return: True/False, whether the two files have an overlap
+    :rtype: Boolean
+    '''
 
     data1 = load_file_jsonGzip(file1)
     data2 = load_file_jsonGzip(file2)
