@@ -36,6 +36,14 @@ def create_table():
 
 
 def calculate_signalpropagationtime(data):
+    '''
+    Calculates the time taken for a signal to travel from the aircraft location to the ground station.
+
+    :param data: JSON containing all the frames with decoded data.
+    :type data: Python dictionary
+    :return: JSON which now contains the time of propagation from aircraft to ground station.
+    :rtype: Python dictionary
+    '''
     c = 300000000.0 # speed of light
 
     if data["meta"]["gs_lat"] is not None and data["meta"]["gs_lon"] is not None and data["meta"]["gs_alt"] is not None:
