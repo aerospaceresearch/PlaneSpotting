@@ -1225,6 +1225,48 @@ In this function, the order of the odd and even frames is considered for calcula
 <div class="section" id="module-planespotting.multilateration">
 <span id="file-overlap-check-and-search-of-unique-signals"></span><h2>File Overlap check and search of unique signals<a class="headerlink" href="#module-planespotting.multilateration" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
+<dt id="planespotting.multilateration.calculate_signalpropagationtime">
+<code class="descclassname">planespotting.multilateration.</code><code class="descname">calculate_signalpropagationtime</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/multilateration.html#calculate_signalpropagationtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.multilateration.calculate_signalpropagationtime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the time taken for a signal to travel from the aircraft location to the ground station.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>Python dictionary</em>) – JSON containing all the frames with decoded data.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">JSON which now contains the time of propagation from aircraft to ground station.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Python dictionary</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.multilateration.check_file_overlap">
+<code class="descclassname">planespotting.multilateration.</code><code class="descname">check_file_overlap</code><span class="sig-paren">(</span><em>file1</em>, <em>file2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/multilateration.html#check_file_overlap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.multilateration.check_file_overlap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if two files overlap at any point. Both the files are recordings belonging to different ground stations</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>file1</strong> (<em>Python dictionary</em>) – Path to a recorded file in JSON.</li>
+<li><strong>file2</strong> (<em>Python dictionary</em>) – Path to a recorded file in JSON from a different ground station</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True/False, whether the two files have an overlap</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Boolean</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="planespotting.multilateration.create_table">
 <code class="descclassname">planespotting.multilateration.</code><code class="descname">create_table</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/multilateration.html#create_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.multilateration.create_table" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function is used to create a sqlite database which is used for searching for unique frames present in different files, or station recordings.</p>
@@ -1235,6 +1277,24 @@ In this function, the order of the odd and even frames is considered for calcula
 <tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">None</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="planespotting.multilateration.get_files">
+<code class="descclassname">planespotting.multilateration.</code><code class="descname">get_files</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/planespotting/multilateration.html#get_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#planespotting.multilateration.get_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is used to get all the files present in a station directory</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<em>String</em>) – Path to the station directory/folder</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of file(s) present inside the given directory</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Python List</td>
 </tr>
 </tbody>
 </table>

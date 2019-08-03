@@ -82,7 +82,15 @@
     <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
-<span class="k">def</span> <span class="nf">calculate_signalpropagationtime</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="calculate_signalpropagationtime"><a class="viewcode-back" href="../../modules.html#planespotting.multilateration.calculate_signalpropagationtime">[docs]</a><span class="k">def</span> <span class="nf">calculate_signalpropagationtime</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Calculates the time taken for a signal to travel from the aircraft location to the ground station.</span>
+
+<span class="sd">    :param data: JSON containing all the frames with decoded data.</span>
+<span class="sd">    :type data: Python dictionary</span>
+<span class="sd">    :return: JSON which now contains the time of propagation from aircraft to ground station.</span>
+<span class="sd">    :rtype: Python dictionary</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">c</span> <span class="o">=</span> <span class="mf">300000000.0</span> <span class="c1"># speed of light</span>
 
     <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;gs_lat&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;gs_lon&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;gs_alt&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -98,7 +106,7 @@
 
             <span class="n">data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">frames</span>
 
-    <span class="k">return</span> <span class="n">data</span>
+    <span class="k">return</span> <span class="n">data</span></div>
 
 <span class="k">def</span> <span class="nf">correct_samplePos</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
 
@@ -113,12 +121,30 @@
 
 
 
-<span class="k">def</span> <span class="nf">get_files</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<div class="viewcode-block" id="get_files"><a class="viewcode-back" href="../../modules.html#planespotting.multilateration.get_files">[docs]</a><span class="k">def</span> <span class="nf">get_files</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This function is used to get all the files present in a station directory</span>
+
+<span class="sd">    :param path: Path to the station directory/folder</span>
+<span class="sd">    :type path: String</span>
+<span class="sd">    :return: List of file(s) present inside the given directory</span>
+<span class="sd">    :rtype: Python List</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
         <span class="n">file</span> <span class="o">=</span> <span class="n">files</span>
-    <span class="k">return</span> <span class="n">file</span> <span class="c1">#This function is used to get all the files present in a station directory</span>
+    <span class="k">return</span> <span class="n">file</span></div>
 
-<span class="k">def</span> <span class="nf">check_file_overlap</span><span class="p">(</span><span class="n">file1</span><span class="p">,</span> <span class="n">file2</span><span class="p">):</span>
+<div class="viewcode-block" id="check_file_overlap"><a class="viewcode-back" href="../../modules.html#planespotting.multilateration.check_file_overlap">[docs]</a><span class="k">def</span> <span class="nf">check_file_overlap</span><span class="p">(</span><span class="n">file1</span><span class="p">,</span> <span class="n">file2</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Checks if two files overlap at any point. Both the files are recordings belonging to different ground stations</span>
+
+<span class="sd">    :param file1: Path to a recorded file in JSON.</span>
+<span class="sd">    :param file2: Path to a recorded file in JSON from a different ground station</span>
+<span class="sd">    :type file1: Python dictionary</span>
+<span class="sd">    :type file2: Python dictionary</span>
+<span class="sd">    :return: True/False, whether the two files have an overlap</span>
+<span class="sd">    :rtype: Boolean</span>
+<span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="n">data1</span> <span class="o">=</span> <span class="n">load_file_jsonGzip</span><span class="p">(</span><span class="n">file1</span><span class="p">)</span>
     <span class="n">data2</span> <span class="o">=</span> <span class="n">load_file_jsonGzip</span><span class="p">(</span><span class="n">file2</span><span class="p">)</span>
@@ -151,7 +177,7 @@
         <span class="k">return</span> <span class="kc">True</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
