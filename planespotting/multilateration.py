@@ -158,7 +158,7 @@ def main(path):
             print()
         break
     print(list)
-    exit()
+    #exit()
     print("processing mlat")
     print("")
 
