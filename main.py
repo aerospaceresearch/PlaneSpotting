@@ -115,13 +115,11 @@ def main(filename, output, latitude, longitude, altitude):
         data['meta']['gs_sampling_rate'] = 2000000
         data["meta"]["rec_start"] = float(file.split(os.sep)[-1].split('_')[2])
         data["meta"]["rec_end"] = float(data['meta']['rec_start']) + float(data['data'][-1]['SamplePos']) / float(data['meta']['gs_sampling_rate'])
-        # print(data['meta'])
-        # exit()
+    
         gs_data = get_gs_data(file.split(os.sep)[1], "planespotting"+os.sep+"gs_data.json")
         latitude, longitude, altitude = gs_data['lat'], gs_data['lon'], gs_data['alt']
 
-        # print(latitude, longitude, altitude)
-        # exit()
+
 
         if data["meta"]["gs_lat"] is None and data["meta"]["gs_lon"] is None and \
                         latitude is not None and longitude is not None:
@@ -130,9 +128,7 @@ def main(filename, output, latitude, longitude, altitude):
             data["meta"]["gs_lat"] = float(latitude)
             data["meta"]["gs_lon"] = float(longitude)
             data["meta"]["gs_alt"] = float(altitude)
-            # data["meta"]["rec_start"] = clock
-            # data["meta"]["rec_end"] = clock + 120
-            # clock += 60
+
         print("input lat & long:", data["meta"]["gs_lat"], data["meta"]["gs_lon"])
 
         data = decode(data)
