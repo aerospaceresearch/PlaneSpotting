@@ -115,7 +115,7 @@ def check_file_overlap(file1, file2):
     else:
         data2_rec_end = float(data1['meta']['rec_start']) + float(data1['data'][-1]['SamplePos']) / float(data1['meta']['gs_sampling_rate'])
 
-    print(data1_rec_start, data1_rec_end, data2_rec_start, data2_rec_end)
+    print("File1_start=", data1_rec_start, "\n", "File1_end", data1_rec_end, "\n", "File2_start", data2_rec_start, "\n", "File2_end", data2_rec_end)
 
     if (data2_rec_start >= data1_rec_start and data2_rec_end >= data1_rec_end and data1_rec_end > data2_rec_start) or (data2_rec_start <= data1_rec_start and data2_rec_end <= data1_rec_end and data2_rec_end > data1_rec_start):
         return True
@@ -130,6 +130,7 @@ def check_file_overlap(file1, file2):
         return True
 
     else:
+        print("NOT OVERLAPPING")
         return False
 
 
@@ -152,7 +153,7 @@ def main(path):
                 for file in files:
                     if check_file_overlap(path+os.sep+stations[i]+os.sep+m_file, path+os.sep+stations[j]+os.sep+file):
                         print(path+os.sep+stations[i]+os.sep+m_file, path+os.sep+stations[j]+os.sep+file)
-
+                        #exit()
                         list[batch].append(path+os.sep+stations[j]+os.sep+file)
 
             print()
@@ -205,9 +206,9 @@ def main(path):
         for frames in uniq_frames: #Looking for the same message in different station file
             cur.execute("SELECT * FROM frames WHERE adsb_msg = ?", (frames,))
             finding = cur.fetchall()
-
-            print(finding)
-            print("")
+            if len(finding) > 1:
+                print(len(finding), finding)
+                print("")
 
         conn.close()
         os.remove("planespotting/data.db") #Throwing away the db
