@@ -162,7 +162,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">data2_rec_end</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">data1</span><span class="p">[</span><span class="s1">&#39;meta&#39;</span><span class="p">][</span><span class="s1">&#39;rec_start&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">data1</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;SamplePos&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">data1</span><span class="p">[</span><span class="s1">&#39;meta&#39;</span><span class="p">][</span><span class="s1">&#39;gs_sampling_rate&#39;</span><span class="p">])</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">data1_rec_start</span><span class="p">,</span> <span class="n">data1_rec_end</span><span class="p">,</span> <span class="n">data2_rec_start</span><span class="p">,</span> <span class="n">data2_rec_end</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File1_start=&quot;</span><span class="p">,</span> <span class="n">data1_rec_start</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;File1_end&quot;</span><span class="p">,</span> <span class="n">data1_rec_end</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;File2_start&quot;</span><span class="p">,</span> <span class="n">data2_rec_start</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;File2_end&quot;</span><span class="p">,</span> <span class="n">data2_rec_end</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="p">(</span><span class="n">data2_rec_start</span> <span class="o">&gt;=</span> <span class="n">data1_rec_start</span> <span class="ow">and</span> <span class="n">data2_rec_end</span> <span class="o">&gt;=</span> <span class="n">data1_rec_end</span> <span class="ow">and</span> <span class="n">data1_rec_end</span> <span class="o">&gt;</span> <span class="n">data2_rec_start</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">data2_rec_start</span> <span class="o">&lt;=</span> <span class="n">data1_rec_start</span> <span class="ow">and</span> <span class="n">data2_rec_end</span> <span class="o">&lt;=</span> <span class="n">data1_rec_end</span> <span class="ow">and</span> <span class="n">data2_rec_end</span> <span class="o">&gt;</span> <span class="n">data1_rec_start</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">True</span>
@@ -177,6 +177,7 @@
         <span class="k">return</span> <span class="kc">True</span>
 
     <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;NOT OVERLAPPING&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">False</span></div>
 
 
@@ -199,13 +200,12 @@
                 <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">check_file_overlap</span><span class="p">(</span><span class="n">path</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">+</span><span class="n">stations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">+</span><span class="n">m_file</span><span class="p">,</span> <span class="n">path</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">+</span><span class="n">stations</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">+</span><span class="n">file</span><span class="p">):</span>
                         <span class="nb">print</span><span class="p">(</span><span class="n">path</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">+</span><span class="n">stations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">+</span><span class="n">m_file</span><span class="p">,</span> <span class="n">path</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">+</span><span class="n">stations</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">+</span><span class="n">file</span><span class="p">)</span>
-
+                        <span class="c1">#exit()</span>
                         <span class="nb">list</span><span class="p">[</span><span class="n">batch</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">+</span><span class="n">stations</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">+</span><span class="n">file</span><span class="p">)</span>
 
             <span class="nb">print</span><span class="p">()</span>
         <span class="k">break</span>
     <span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
-
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;processing mlat&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 
@@ -224,7 +224,6 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                     <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-
 
             <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]:</span>
 
@@ -252,9 +251,9 @@
         <span class="k">for</span> <span class="n">frames</span> <span class="ow">in</span> <span class="n">uniq_frames</span><span class="p">:</span> <span class="c1">#Looking for the same message in different station file</span>
             <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM frames WHERE adsb_msg = ?&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">frames</span><span class="p">,))</span>
             <span class="n">finding</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-
-            <span class="nb">print</span><span class="p">(</span><span class="n">finding</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">finding</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">finding</span><span class="p">),</span> <span class="n">finding</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 
         <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;planespotting/data.db&quot;</span><span class="p">)</span> <span class="c1">#Throwing away the db</span>
