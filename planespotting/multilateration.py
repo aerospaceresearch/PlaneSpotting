@@ -83,10 +83,8 @@ def get_files(path):
     :return: List of file(s) present inside the given directory
     :rtype: Python List
     '''
-    path = "input/"
     for _, _, files in os.walk(path):
         file = files
-    exit(file)
     return file
 
 def check_file_overlap(file1, file2):
@@ -161,7 +159,6 @@ def main(path):
             print()
         break
     print(list)
-    #exit()
     print("processing mlat")
     print("")
 
@@ -180,7 +177,6 @@ def main(path):
             else:
                 with open(file, 'r') as f:
                     data = json.load(f)
-
 
             for frame in data['data']:
 
