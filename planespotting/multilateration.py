@@ -204,7 +204,7 @@ def main(path):
         for frames in uniq_frames: #Looking for the same message in different station file
             cur.execute("SELECT * FROM frames WHERE adsb_msg = ?", (frames,))
             finding = cur.fetchall()
-            if len(finding) > 1:
+            if len(finding) > 2:
                 print(len(finding), finding)
                 print("")
 

@@ -115,7 +115,7 @@ def main(filename, output, latitude, longitude, altitude):
         data['meta']['gs_sampling_rate'] = 2000000
         data["meta"]["rec_start"] = float(file.split(os.sep)[-1].split('_')[2])
         data["meta"]["rec_end"] = float(data['meta']['rec_start']) + float(data['data'][-1]['SamplePos']) / float(data['meta']['gs_sampling_rate'])
-    
+
         gs_data = get_gs_data(file.split(os.sep)[1], "planespotting"+os.sep+"gs_data.json")
         latitude, longitude, altitude = gs_data['lat'], gs_data['lon'], gs_data['alt']
 
