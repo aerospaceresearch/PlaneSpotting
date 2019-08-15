@@ -182,7 +182,7 @@ def main(path):
 
                 if frame['is_repeated'] != int(1):  #skipping the repeated frames in the same file, no idea why they even exist
                     gs_x, gs_y, gs_z = get_cartesian_coordinates(data["meta"]["gs_lat"], data["meta"]["gs_lon"], data["meta"]["gs_alt"], True)
-                    record = (i, frame['raw'], frame['adsb_msg'], frame['timestamp'], frame['SamplePos'], frame['df'], frame['tc'], frame['x'], frame['y'], frame['z'], frame['time_propagation'], data['meta']['file'], data['meta']['mlat_mode'], data['meta']['file'], data["meta"]["gs_lat"], data["meta"]["gs_lon"], data["meta"]["gs_alt"])#gs_x, gs_y, gs_z)
+                    record = (i, frame['raw'], frame['adsb_msg'], frame['timestamp'], frame['SamplePos'], frame['df'], frame['tc'], frame['x'], frame['y'], frame['z'], frame['time_propagation'], data['meta']['file'], data['meta']['mlat_mode'], data['meta']['file'], gs_x, gs_y, gs_z)
                     conn.execute("INSERT INTO frames VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", record)
                     i += 1
 
@@ -209,4 +209,4 @@ def main(path):
                 print("")
 
         conn.close()
-        os.remove("planespotting/data.db") #Throwing away the db
+        os.remove("planespotting"+os.sep+"data.db") #Throwing away the db
