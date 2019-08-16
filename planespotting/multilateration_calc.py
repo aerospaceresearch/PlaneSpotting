@@ -37,7 +37,7 @@ def trilaterate(x1,y1,r1,x2,y2,r2,x3,y3,r3):
   F = r2**2 - r3**2 - x2**2 + x3**2 - y2**2 + y3**2
   x = (C*E - F*B) / (E*A - B*D)
   y = (C*D - A*F) / (B*D - A*E)
-  x, y, z = get_geo_coordinates(x, y, 4950497.0726876855)
+  #x, y, z = get_geo_coordinates(x, y, 4950497.0726876855)
   return x, y
 
 # if __name__ == '__main__':

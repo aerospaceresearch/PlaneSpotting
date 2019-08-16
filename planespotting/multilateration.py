@@ -209,7 +209,7 @@ def main(path):
                 print(len(finding), finding)
                 x, y = trilaterate(float(finding[0][-3]), float(finding[0][-2]), float(finding[0][-7])*300000000, float(finding[1][-3]), float(finding[1][-2]), float(finding[1][-7])*300000000, float(finding[2][-3]), float(finding[2][-2]), float(finding[2][-7])*300000000)
                 calc_x, calc_y, calc_z = get_geo_coordinates(float(finding[0][7]), float(finding[0][8]), float(finding[0][9]))
-                print("Calculated location", calc_x, calc_y)
+                print("Calculated location", float(finding[0][7]), float(finding[0][8]))
                 print("Possible location after trilateration: ", x, y)
                 print()
 
