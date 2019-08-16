@@ -4,6 +4,30 @@ from pathlib import Path
 import os
 import sqlite3
 from planespotting.multilateration_calc import trilaterate
+import matplotlib.pyplot as plt
+
+#temporary plotter function here
+def plotter(x1, y1, x2, y2):
+    fig = plt.figure()
+    x = [x1, x2]
+    y = [y1, y2]
+    plt.plot(x, y, "*")
+    plt.xlabel("Longitude")
+    plt.ylabel("Latitude")
+    fig.savefig("plot/"+str(x1)+".png")
+    plt.show()
+
+def plot_dist(dist):
+    fig = plt.figure()
+    y = list(range(1, len(dist)+1))
+    plt.plot(y, dist, '*-')
+    plt.ylabel("Distance(m)")
+    fig.savefig("plot/distance.png")
+    plt.show()
+
+
+def get_distance(x1, y1, z1, x2, y2, z2):
+    return ((x2-x1)**2 + (y2-y1)**2 + (z2-z1)**2) ** 0.5
 
 def create_table():
     '''
@@ -135,8 +159,9 @@ def check_file_overlap(file1, file2):
         return False
 
 
-def main(path):
 
+def main(path):
+    dist = []
     list = []
     stations = os.listdir(path)
     batch = -1
@@ -206,12 +231,21 @@ def main(path):
             cur.execute("SELECT * FROM frames WHERE adsb_msg = ?", (frames,))
             finding = cur.fetchall()
             if len(finding) == 3:
+
                 print(len(finding), finding)
-                x, y = trilaterate(float(finding[0][-3]), float(finding[0][-2]), float(finding[0][-7])*300000000, float(finding[1][-3]), float(finding[1][-2]), float(finding[1][-7])*300000000, float(finding[2][-3]), float(finding[2][-2]), float(finding[2][-7])*300000000)
-                calc_x, calc_y, calc_z = get_geo_coordinates(float(finding[0][7]), float(finding[0][8]), float(finding[0][9]))
-                print("Calculated location", float(finding[0][7]), float(finding[0][8]))
-                print("Possible location after trilateration: ", x, y)
+                x, y, z= trilaterate(float(finding[0][-3]), float(finding[0][-2]), float(finding[0][-1]), float(finding[0][-7])*300000000, float(finding[1][-3]), float(finding[1][-2]), float(finding[1][-1]), float(finding[1][-7])*300000000, float(finding[2][-3]), float(finding[2][-2]), float(finding[2][-1]), float(finding[2][-7])*300000000)
+                #calc_x, calc_y, calc_z = get_geo_coordinates(float(finding[0][7]), float(finding[0][8]), float(finding[0][9]))
+
+                print("Calculated location", float(finding[0][7]), float(finding[0][8]), float(finding[0][9]))
+                print("Possible location after trilateration: ", x, y, z)
+                dist.append(get_distance(float(finding[0][7]), float(finding[0][8]), float(finding[0][9]), x, y, z))
+
+                print("Error distance:", get_distance(float(finding[0][7]), float(finding[0][8]), float(finding[0][9]), x, y, z))
+                #plotter(float(finding[0][7]), float(finding[0][8]), x, y)
                 print()
 
         conn.close()
         os.remove("planespotting"+os.sep+"data.db") #Throwing away the db
+
+
+    plot_dist(dist)
