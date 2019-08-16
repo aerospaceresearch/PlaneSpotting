@@ -3,6 +3,7 @@ from planespotting import utils
 from pathlib import Path
 import os
 import sqlite3
+from planespotting.multilateration_calc import trilaterate
 
 def create_table():
     '''
@@ -204,9 +205,13 @@ def main(path):
         for frames in uniq_frames: #Looking for the same message in different station file
             cur.execute("SELECT * FROM frames WHERE adsb_msg = ?", (frames,))
             finding = cur.fetchall()
-            if len(finding) > 2:
+            if len(finding) == 3:
                 print(len(finding), finding)
-                print("")
+                x, y = trilaterate(float(finding[0][-3]), float(finding[0][-2]), float(finding[0][-7]), float(finding[1][-3]), float(finding[1][-2]), float(finding[1][-7]), float(finding[2][-3]), float(finding[2][-2]), float(finding[2][-7]))
+                calc_x, calc_y, calc_z = get_geo_coordinates(float(finding[0][7]), float(finding[0][8]), float(finding[0][9]))
+                print("Calculated location", calc_x, calc_y)
+                print("Possible location after trilateration: ", x, y)
+                print()
 
         conn.close()
         os.remove("planespotting"+os.sep+"data.db") #Throwing away the db
