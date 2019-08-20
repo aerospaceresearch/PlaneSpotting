@@ -241,6 +241,8 @@ def main(path):
                 dist.append(get_distance(float(finding[0][7]), float(finding[0][8]), float(finding[0][9]), x, y, z))
 
                 print("Error distance:", get_distance(float(finding[0][7]), float(finding[0][8]), float(finding[0][9]), x, y, z))
+                x, y, z = get_geo_coordinates(x, y, z)
+                print("geo: ", x, y, z)
                 #plotter(float(finding[0][7]), float(finding[0][8]), x, y)
                 print()
 

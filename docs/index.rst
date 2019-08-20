@@ -4,7 +4,10 @@
    contain the root `toctree` directive.
 
 Welcome to PlaneSpotting's documentation!
-=========================================``
+=========================================
+
+PlaneSpotting is a software package written in python3 which can decode ADS-B(Automatic Dependant Survelliance Broadcast) from the output provided by dump1090 (a Mode-S decoder which is designed for RTL-SDR devices).
+
 
 .. toctree::
    :maxdepth: 2
