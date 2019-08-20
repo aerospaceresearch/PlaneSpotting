@@ -1,3 +1,5 @@
 numpy=1.16.2
 argparse
 sqlite3
+gzip
+json
