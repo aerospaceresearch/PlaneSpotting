@@ -6,5 +6,3 @@ Installation
 ------------
 Requirements
 ------------
-Usage
------------
