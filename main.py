@@ -107,7 +107,7 @@ def main(filename, output, latitude, longitude, altitude):
     print("")
     clock = 0
     for file in processing_files:
-        print("processing", file.)
+        print("processing", file)
         #exit()
         print(file.split(os.sep)[1])
 

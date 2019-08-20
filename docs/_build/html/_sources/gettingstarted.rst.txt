@@ -26,3 +26,6 @@ The input folder should be present in the root directory with the name **'input'
     :alt: Input directory structure
 
 The directory structure should be like this and the input files from each station should be stored inside these station directories.
+
+Run the program executing **python3 main.py** in the command line.
+The output files will be stored in the **data** folder (if it doesn't exists, it will be created)
