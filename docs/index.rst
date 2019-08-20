@@ -32,3 +32,9 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+Copyright and License
+=====================
+Copyright (c) 2019 AerospaceResearch
+
+This project is distributed under the open source MIT License. Please find 'LICENSE' in the main directory of the project.
