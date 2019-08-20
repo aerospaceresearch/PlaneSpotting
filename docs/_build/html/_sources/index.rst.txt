@@ -15,7 +15,7 @@ The processed files serves as the input for this project.
 All ADS-B frames do not contain position information in them. To be specific only frames with Downlink Format(DF) 17-18 and Type Code(TC) 9-18 carry the location as the payload. Thus, the next part of this project is
 to find the location of the plane at the point when a non-position carrying frame is sent using multilateration.
 
-Multilateration is a method by which the location of an aircraft (can be any moving object which broadcasts a signal) using  multiple ground stations and the Time Difference of Arrival of a signal to each ground station.
+Multilateration is a method by which the location of an aircraft (can be any moving object which broadcasts a signal) using  multiple ground stations and the Time Difference of Arrival(TDOA) of a signal to each ground station.
 
 
 .. toctree::
@@ -35,6 +35,6 @@ Indices and tables
 
 Copyright and License
 =====================
-Copyright (c) 2019 AerospaceResearch
+Copyright (c) 2019 Shoumik Dey, Andreas Hornig, AerospaceResearch
 
 This project is distributed under the open source MIT License. Please find 'LICENSE' in the main directory of the project.
