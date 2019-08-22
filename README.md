@@ -39,12 +39,6 @@ The output files will be stored in the ```data``` folder (if it doesn't exists, 
 
 
 
-
-```sh
-$ npm install --production
-$ NODE_ENV=production node app
-```
-
 ### Links
 
 
