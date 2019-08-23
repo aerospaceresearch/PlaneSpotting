@@ -14,6 +14,8 @@ to find the location of the plane at the point when a non-position carrying fram
 
 Multilateration is a method by which the location of an aircraft (can be any moving object which broadcasts a signal) using  multiple ground stations and the Time Difference of Arrival(TDOA) of a signal to each ground station.
 
+This project is a part of **Google Summer of Code 2019** program.
+
 # Requirements
 
 These are the mandatory libraries required:
