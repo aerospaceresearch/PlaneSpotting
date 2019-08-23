@@ -9,7 +9,15 @@ long_msg_bits = 112
 short_msg_bits = 56
 
 
-def get_MsgLength(df): #Returns the bit length of a message according to the type (df>16)
+def get_MsgLength(df):
+    '''
+    Returns the bit length of a message according to the type (df>16)
+
+    :param df: Downlink format
+    :type df: Integer
+    :return: Length of messages
+    :rtype: Integer
+    '''
     if df > 16:
         return long_msg_bits
     else:
@@ -21,10 +29,11 @@ All messages above df 16 are long messages
 def get_DF(frame):
     '''
     This function returns the Downlink Format of any ads-b message present in the stream
-    Args:
-        frame(string): The 56/112 bit ads-b message
-    Returns:
-        df(integer): Downlink format of 'frame'
+
+    :param frame: The 56/112 bit ads-b message
+    :type frame: String
+    :return: Downlink format of 'frame'
+    :rtype: Integer
     '''
     bin_frame = hexToDec(frame)
     df = int(bin_frame[0:5], 2)
@@ -34,11 +43,11 @@ def get_DF(frame):
 def get_TC(frame):
     '''
     Extraction of Type code from 112 bit ads-b messages
-    Args:
-        frame(string) : 112 bit ads-b message
-    Return:
-        (int)binary(adsb_dataBlock)[0-4]: It returns the integer part of the first 4 bit of the
-                                            ads-b message block
+
+    :param frame: 112 bit ads-b message
+    :type frame: String
+    :return: It returns the integer equivalent of the first 4 bits of the ads-b message block
+    :rtype: Integer
     '''
     data = frame[8:22]
     bin = hexToDec(data)
@@ -52,14 +61,22 @@ def get_TC(frame):
 def get_ICAO(frame):
     '''
     Extracts the ICAO of Downlink Format 11, 17 & 18 messages only
-    Args:
-        frame(string): ADS-b message with DF 11, 17 or 18
-    Returns:
-        frame[2-7](string): The icao 24-bit address in hexadecimal format
+
+    :param frame: ADS-b message with DF 11, 17 or 18
+    :type frame: String
+    :return: The icao 24-bit address in hexadecimal format
+    :rtype: String
     '''
     return frame[2:8]
 
 def get_gray2alt(codestr):
+    '''
+    This function converts gray code to altitude
+    :param codestr: Binary of the altitude code cut from the ads-b frame
+    :type codestr: String
+    :return: Altitude
+    :rtype: Integer
+    '''
     gc500 = codestr[:8]
     n500 = gray2int(gc500)
 
@@ -80,7 +97,13 @@ def get_gray2alt(codestr):
     return alt
 
 def gray2int(graystr):
-    """Convert greycode to binary."""
+    """Convert greycode to binary.
+
+    :param graystr: String to be converted
+    :type graystr: String
+    :return: Binary equivelnt
+    :rtype: Integer
+    """
     num = int(graystr, 2)
     num ^= (num >> 8)
     num ^= (num >> 4)
@@ -91,11 +114,13 @@ def gray2int(graystr):
 def crc(msg, encoding=False):
     ''' Mode-S Cyclic Redundancy Check
     Detect if bit error occurs in the Mode-S message
-    Args:
-        msg (string): 28 bytes hexadecimal message string
-        encoding (bool): True to encode the date only and return the checksum
-    Returns:
-        string: message checksum, or parity bits (encoder)
+
+    :param msg: 28 bytes hexadecimal message string
+    :param encoding: True to encode the date only and return the checksum
+    :type msg: String
+    :type encoding: Boolean
+    :return: message checksum, or parity bits (encoder)
+    :rtype: String
     '''
 
     # the polynominal generattor code for CRC [1111111111111010000001001]
@@ -123,10 +148,11 @@ def crc(msg, encoding=False):
 def get_crcICAO(frame):
     '''
     Extracts the ICAO of Downlink Format 0, 4, 5, 16, 20 & 21 messages only
-    Args:
-        frame(string): ADS-b message with DF 0, 4, 5, 16, 20 or 21
-    Returns:
-        icao(string): The icao 24-bit address in hexadecimal format
+
+    :param frame: ADS-b message with DF 0, 4, 5, 16, 20 or 21
+    :type frame: String
+    :return: The icao 24-bit address in hexadecimal format
+    :rtype: String
     '''
     c0 = int(crc(frame, encoding = True), 2)
     c1 = int(frame[-6:], 16)
@@ -137,16 +163,17 @@ def get_AirbornePosition(frame): #Extraction of position oriented data
     '''
     This function cuts and converts the binary data into its equivalent integer.
     The data cut consists of the variables required for position determination.
-    Args:
-        frame(string): 112bit DF 17/18 and tc:9-18 ADS-B message
-    Returns:
-        SS(integer): Surveillance status
-        NICsb(integer) : NIC supplement-B
-        ALT(integer):Altitude
-        T(integer):Time
-        F(integer):CPR odd/even frame flag
-        LAT_CPR(integer):Latitude in CPR format
+
+    :param frame: 112bit DF 17/18 and tc:9-18 ADS-B message
+    :type frame: String
+    :return: SS(integer): Surveillance status,
+        NICsb(integer) : NIC supplement-B,
+        ALT(integer):Altitude,
+        T(integer):Time,
+        F(integer):CPR odd/even frame flag,
+        LAT_CPR(integer):Latitude in CPR format,
         LON_CPR(integer):Longitude in CPR format
+    :rtype: Integer
     '''
     data = frame[8:22]
     bin = hexToDec(data)
@@ -166,25 +193,27 @@ def get_VelocityData(frame, subtype): #Extraction of velocity oriented
     '''
     This function cuts and converts the binary data into its equivalent integer.
     The data cut consists of the variables required for veocity and heading calculation.
-    Args:
-        frame(string): 112bit DF 17/18 and tc:9-18 ADS-B message
-    Returns:
-        IC(integer) : Intent change flag
-        RESV_A(integer) : Reserved-A
-        NAC(integer) : Velocity uncertainty (NAC)
-        S_ew(integer) : East-West velocity sign
-        V_ew(integer) : East-West velocity
-        S_ns(integer) : North-South velocity sign
-        V_ns(integer) : North-South velocity
-        VrSrc(integer) : Vertical rate source
-        S_vr(integer) : Vertical rate sign
-        Vr(integer) : Vertical rate
-        RESV_B(integer) : Reserved-B
-        S_Dif(integer) : Diff from baro alt, sign
-        Dif(integer) : Diff from baro alt
 
-    When subtype = 3
-    Returns:
+    :param frame: 112bit DF 17/18 and tc:9-18 ADS-B message
+    :type frame: String
+    :return:
+            IC(integer) : Intent change flag
+            RESV_A(integer) : Reserved-A
+            NAC(integer) : Velocity uncertainty (NAC)
+            S_ew(integer) : East-West velocity sign
+            V_ew(integer) : East-West velocity
+            S_ns(integer) : North-South velocity sign
+            V_ns(integer) : North-South velocity
+            VrSrc(integer) : Vertical rate source
+            S_vr(integer) : Vertical rate sign
+            Vr(integer) : Vertical rate
+            RESV_B(integer) : Reserved-B
+            S_Dif(integer) : Diff from baro alt, sign
+            Dif(integer) : Diff from baro alt
+
+        When subtype = 3
+
+
             IC(integer) : Intent change flag
             RESV_A(integer) : Reserved-A
             NAC(integer) : Velocity uncertainty (NAC)
@@ -198,7 +227,7 @@ def get_VelocityData(frame, subtype): #Extraction of velocity oriented
             RESV_B (integer) : Reserved-B
             S_Dif (integer) : Difference from baro alt, sign
             Dif(integer) : Difference from baro alt
-
+    :rtype: Integer
     '''
     msg_bin = hexToDec(frame[8:22])
     if subtype == 1:
@@ -237,6 +266,14 @@ def get_VelocityData(frame, subtype): #Extraction of velocity oriented
 
 
 def get_SeenPlanes(data):
+    '''
+    Prepares and returns a list of all unique aircrafts seen in the recording.
+
+    :param data: JSON with ads-b frame data
+    :type frame: Python Dictionary
+    :return: List of all aircrafts
+    :rtype: Python List
+    '''
 
     all_seen_planes = []
 
@@ -254,9 +291,15 @@ def get_SeenPlanes(data):
 
 
 def get_Callsign(callsign_bin):
+    '''
+    Decodes the callsign from ads-b identifier messages
+
+    :param callsign_bin: Binary part of the frame containing the callsign
+    :type callsign_bin: String
+    :return: The callsign of the aircraft
+    :rtype: String
+    '''
     lookup_table = "#ABCDEFGHIJKLMNOPQRSTUVWXYZ#####_###############0123456789######"
-    #print(msg, "Aircraft identifier", df, tc)
-    #dat = frames['callsign_bin']
     callsign = ""
     for i in range(0, len(callsign_bin), 6):
         index = int(callsign_bin[i:i+6], 2)
@@ -274,6 +317,14 @@ remove the ambiguity in the frames.
 '''
 
 def get_Squawk(frame):
+    '''
+    Decodes and returns the squawk code from the frame.
+
+    :param frame: Frame containing the sqawk code encoded
+    :type frame: String
+    :return: Squawk code
+    :rtype: String
+    '''
     msg_bin = hexToDec(frame)
     C1 = msg_bin[19]
     A1 = msg_bin[20]
@@ -296,6 +347,14 @@ def get_Squawk(frame):
     return (str(str1) + str(str2) + str(str3) + str(str4))
 
 def altitude(bin_alt):
+    '''
+    Calculates the altitude from airborne position messages.
+
+    :param bin_alt: Altitude code in binary
+    :type bin_alt: String
+    :return: Altitude
+    :rtype: Integer
+    '''
     qBit = bin_alt[7]
     alt=bin_alt[0:7]+bin_alt[8:]
     altitude = int(alt, 2)
@@ -305,6 +364,14 @@ def altitude(bin_alt):
         return altitude * 100 - 1000
 
 def get_altCode(frame):
+    '''
+    Calculation of altitude for Downlink Format 20 messages
+
+    :param frame: ADS-B message with Downlink Format 20
+    :type frame: String
+    :return: Altitude
+    :rtype: Integer
+    '''
     msg_bin = hexToDec(frame)
     mbit = msg_bin[25]
     qbit = msg_bin[27]
@@ -336,7 +403,14 @@ def get_altCode(frame):
 
 def decode(data):
     #for id in range(lendata["data"])):
+    frame_check = []
     for frames in data['data']:
+
+        if frames['adsb_msg'] not in frame_check:
+            frame_check.append(frames['adsb_msg'])
+        else:
+            frames['is_repeated'] = 1
+            #continue
 
         df = get_DF(frames['adsb_msg'])
         tc = get_TC(frames['adsb_msg'])
@@ -497,6 +571,7 @@ def decode(data):
 
                 frames['squawk'] = get_Squawk(frames['adsb_msg'])
 
+            continue
         '''
         Decoding 56 bit msgs from here
         '''
@@ -504,16 +579,20 @@ def decode(data):
         if identifier8(frames['df'], frames['tc']):
             frames['ICAO'] = get_crcICAO(frames['adsb_msg'])
             frames['squawk'] = get_Squawk(frames['adsb_msg'])
+            continue
 
         if identifier9(frames['df'], frames['tc']):
             frames['ICAO'] = get_crcICAO(frames['adsb_msg'])
+            continue
 
         if identifier10(frames['df'], frames['tc']):
             frames['ICAO'] = get_crcICAO(frames['adsb_msg'])
             frames['altitude'] = get_altCode(frames['adsb_msg'])
+            continue
 
         if identifier11(frames['df'], frames['tc']):
             frames['ICAO'] = get_crcICAO(frames['adsb_msg'])
+            continue
 
         #Currently decoding only icao from DF0, 4, 5, 16, need more reading on what more can we decode
 

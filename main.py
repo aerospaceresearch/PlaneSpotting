@@ -3,6 +3,7 @@ import os
 from planespotting import utils
 from planespotting.decoder import decode
 from planespotting import multilateration
+import time
 
 
 samplerate = 2000000 # of the recorded IQ date with 2MHz for each I and Q
@@ -55,6 +56,13 @@ def load_dump1090_file(file):
 
     return json_data
 
+def get_gs_data(station, path):
+    data = utils.load_json(path)
+
+    return data[station]
+
+
+
 
 def main(filename, output, latitude, longitude, altitude):
     '''
@@ -97,11 +105,21 @@ def main(filename, output, latitude, longitude, altitude):
 
     print("processing", len(processing_files))
     print("")
-
+    clock = 0
     for file in processing_files:
         print("processing", file)
+        #exit()
+        print(file.split(os.sep)[1])
 
         data = load_dump1090_file(file)
+        data['meta']['gs_sampling_rate'] = 2000000
+        data["meta"]["rec_start"] = float(file.split(os.sep)[-1].split('_')[2])
+        data["meta"]["rec_end"] = float(data['meta']['rec_start']) + float(data['data'][-1]['SamplePos']) / float(data['meta']['gs_sampling_rate'])
+
+        gs_data = get_gs_data(file.split(os.sep)[1], "planespotting"+os.sep+"gs_data.json")
+        latitude, longitude, altitude = gs_data['lat'], gs_data['lon'], gs_data['alt']
+
+
 
         if data["meta"]["gs_lat"] is None and data["meta"]["gs_lon"] is None and \
                         latitude is not None and longitude is not None:
@@ -153,7 +171,7 @@ def getArgs():
 
     parser.add_argument('--alt', action='store', default=0.0,
                         dest='altitude',
-                        help='sets the groundstation longitude')
+                        help='sets the groundstation altitude')
 
     parser.add_argument('-o', '--output', action='store', default=None,
                         dest='output',

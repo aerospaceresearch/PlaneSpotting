@@ -5,6 +5,14 @@ import numpy as np
 import gzip
 
 def get_all_files(filename):
+    '''
+    This function returns the path to all the files present in a directory/folder.
+
+    :param filename: Path to the directory/folder
+    :type file: String (path)
+    :return: File paths
+    :rtype: Python list
+    '''
 
     processing_files = []
     for root, dirs, files in os.walk(filename):
@@ -18,10 +26,27 @@ def get_all_files(filename):
 
 
 def get_one_file(filename):
+    '''
+    To open a specific file for a code segment, this returns the single file path in an unit list.
+
+    :param filename: Path to the specific file
+    :type filename: String (path)
+    :return: File path (singular)
+    :rtype: Python list
+    '''
     return [filename]
 
 
 def is_binary(file):
+    '''
+    Checks if the file type is binary or text. It opens the file in text mode initially and and handles if an exception is thrown.
+    If an exception occurs, then the file is non-binary and vice-versa.
+
+    :param file: The file of which the type is to be checked.
+    :type file: string
+    :return: File type (text/binary)
+    :rtype: Boolean
+    '''
     try:
         with open(file, 'tr') as check_file:  # try opening file in text mode
             check_file.read()
@@ -32,42 +57,85 @@ def is_binary(file):
 
 
 def hexToDec(hexdec):
+    '''
+    Converts hexadecimal code to binary of the length 4x of the hexadecimal string.
+
+    :param hexdec: Hexadecimal String
+    :type hexdec: string
+    :return: Decimal string
+    :rtype: String
+    '''
     dec = int(hexdec, 16)
     bits = len(hexdec) * 4
     return bin(dec)[2:].zfill(bits)
 
 
 def hexToBin(hexdec):
+    '''
+    Coverts hexadecimal code to 56 bit binary string.
+
+    :param hexdec: Hexadecimal String
+    :type hexdec: string
+    :return: Decimal string
+    :rtype: String
+    '''
     dec = int(hexdec, 16)
     return bin(dec)[2:].zfill(56)
 
 def hex2bin(hexstr):
-    ''' Convert a hexdecimal string to binary string, with zero fillings. '''
+    ''' Convert a hexdecimal string to binary string, with zero fillings.
+
+    '''
     scale = 16
     num_of_bits = len(hexstr) * math.log(scale, 2)
     binstr = bin(int(hexstr, scale))[2:].zfill(int(num_of_bits))
     return binstr
 
 def bin2np(binarystr):
-    ''' Convert binary string to numpy array. '''
+    ''' Convert binary string to numpy array.
+
+    :param binarystr: The message in binary
+    :type binarystr: String
+    :return: Numpy array
+    :rtype: Numpy.ndarray
+    '''
     return np.array([int(i) for i in binarystr])
 
 def np2bin(npbin):
-    """Convert a binary numpy array to string."""
+    """Convert a binary numpy array to string.
+
+    :param npbin: Each bit of the message stored as an element in the array.
+    :type npbin: Numpy.ndarray
+    :return: Binary message in string
+    :rtype: String
+    """
     return np.array2string(npbin, separator='')[1:-1]
 
 '''
 Small type utility functions ends here
 '''
 def const_frame(): #Template for json structure for meta data
+    '''
+    Retuns the json meta data template when called. The keys in the dictionary contain null value.
+
+    :return: JSON
+    :rtype: Python dictionary
+    '''
 
     json_frame = {
         "meta":{
             "file":None,
             "mlat_mode":None,
+            "rec_start":None,
+            "rec_end":None,
             "gs_lat":None,
             "gs_lon":None,
-            "gs_alt":None
+            "gs_alt":None,
+            "gs_id":None,
+            "gs_x":None,
+            "gs_y":None,
+            "gs_z":None,
+            "gs_sampling_rate":None
         },
         "data":[]
     }
@@ -75,10 +143,16 @@ def const_frame(): #Template for json structure for meta data
     return json_frame
 
 def const_frame_data(): #This serves as a template for the json structure. Consists of only the data part
+    '''
+    This function, when called, returns a blank template of the data segment of the entire JSON structure
 
+    :return: JSON
+    :rtype: Python String
+    '''
     json_frame = {
         "data":{
             "id":None,
+            "is_repeated":None,
             "raw":None,
             "adsb_msg":None,
             "timestamp":None,
@@ -174,12 +248,28 @@ def const_frame_data(): #This serves as a template for the json structure. Consi
     return json_frame
 
 def create_folder(path):
+    '''
+    Creates a folder/directory at a given path. Often required when a directory which does not exist and is required for dumping the output
+
+    :param path: Path to the location where the folder/directory is to be created.
+    :type path: String
+    '''
 
     if not os.path.exists(path):
         os.makedirs(path)
 
 
 def store_file(path, file, data):
+    '''
+    Used to store a file and put the data in that file at a particular location. If the file does not exist, then the file is created and stored.
+
+    :param path: Location where the file is to be stored
+    :param file: The name of the file
+    :param data: The contents of the file that is to be saved
+    :type path: String
+    :type file: String
+    :type data: JSON (Python dictionary)
+    '''
 
     filename = file.split(os.sep)[-1].split(".")[0] + ".json"
 
@@ -191,10 +281,21 @@ def store_file(path, file, data):
 
 
 def store_file_jsonGzip(path, file, data):
+    '''
+    It stores the files by gzipping it to save memory. The file, if it does not exist at the specific location, then it is created and the data is saved in it.
+
+    :param path: Location where the file is to be stored
+    :param file: The name of the file
+    :param data: The contents of the file that is to be saved
+    :type path: String
+    :type file: String
+    :type data: JSON (Python dictionary)
+    '''
 
     filename = file.split(os.sep)[-1].split(".")[0] + ".json.gz"
 
     # create the folder
+    path = path+os.sep+file.split(os.sep)[1]
     create_folder(path)
 
     with gzip.open(path + os.sep + filename, 'wt', encoding="utf-8") as fout:
@@ -202,8 +303,27 @@ def store_file_jsonGzip(path, file, data):
 
 
 def load_file_jsonGzip(filename):
+    '''
+    Used to load and read a gzipped JSON file present a particular location.
+
+    :param filename: Name of the .gz file to be opened along with it's path
+    :type filename: String
+    '''
 
     with gzip.GzipFile(filename, 'r') as fin:
         data = json.loads(fin.read().decode('utf-8'))
+
+    return data
+
+def load_json(filename):
+    '''
+    Used to load and read a JSON file present a particular location.
+
+    :param filename: Name of the .json file to be opened along with it's path
+    :type filename: String
+    '''
+
+    with open(filename, 'r') as fh:
+        data = json.loads(fh.read())
 
     return data

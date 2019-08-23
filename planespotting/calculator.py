@@ -8,9 +8,28 @@ import numpy as np
 Beginning of position calculation functions
 '''
 def lat_index(lat_cpr_even, lat_cpr_odd):
+    '''
+    Used to calculate the latitude index using the odd and even frame latitudes.
+
+    :param lat_cpr_even: The latitude data from an even frame
+    :param lat_cpr_odd: The longitude data from the odd frame with the same icao as the even frame
+    :type lat_cpr_even: Float
+    :type lat_cpr_odd: Float
+    :return: Latitude index
+    :rtype: Float
+    '''
     return math.floor((59 * lat_cpr_even) - (60*lat_cpr_odd) + 0.5)
 
 def NL(lat): #this function calculates the number of longitude zones
+    '''
+    This function returns the number of latitude zones from the latitude angle. The returned value lies inbetween [1, 59]
+
+    :param lat: The latitude angle
+    :type lat: Float
+    :return: Number of latitude zones
+    :rtype: Integer
+
+    '''
     try:
         nz = 15 #Number of geographic latitude zones between equator and a pole
         a = 1 - math.cos(math.pi / (2 * nz))
@@ -23,6 +42,24 @@ def NL(lat): #this function calculates the number of longitude zones
         return 1
 
 def latitude(lat_cpr_even, lat_cpr_odd, t_even, t_odd): #Calculation of the latitude coordinate of the aircraft
+    '''
+    Calculation of the latitude of a given aircraft with a set of successively received odd and even pair of frames.
+    This type of calculation is also known as 'Globally unambigous position calculation' in which you need an odd and even frames from the same
+    icao received one after the another.
+    The order at which the frames at which the frames were received also determines the methodology of the calculation.
+    For more info: https://mode-s.org/decode/adsb/airborne-position.html
+
+    :param lat_cpr_even: Latitude data from the even frame
+    :param lat_cpr_odd: Latitude data from the odd frame
+    :param t_even: Time/Sample Position of the even message in the recording
+    :param t_odd: Time/Sample Position of the odd message in the recording
+    :type lat_cpr_even: Float
+    :type lat_cpr_odd: Float
+    :type t_even: Long
+    :type t_odd: Long
+    :return: Latitude in degrees
+    :rtype: Float
+    '''
     dlatEven = 6
     dlatOdd = 360/59
     cprEven = lat_cpr_even/131072
@@ -46,6 +83,22 @@ def latitude(lat_cpr_even, lat_cpr_odd, t_even, t_odd): #Calculation of the lati
         return latOdd
 
 def longitude(long_cpr_even, long_cpr_odd, t_even, t_odd, nl_lat):  #Calculation of longitude coordinate of the aircraft
+    '''
+    Calculation of the Longitude coordinate with the same set of successively received odd and even pair of frames as used in the latitude() function.
+    In this function, the order of the odd and even frames is considered for calculation
+
+    :param long_cpr_even: Latitude data from the even frame
+    :param long_cpr_odd: Latitude data from the odd frame
+    :param t_even: Time/Sample Position of the even message in the recording
+    :param t_odd: Time/Sample Position of the odd message in the recording
+    :type long_cpr_even: Float
+    :type long_cpr_odd: Float
+    :type t_even: Long
+    :type t_odd: Long
+    :return: Longitude in degrees
+    :rtype: Float
+
+    '''
 
     if(t_even > t_odd):
         ni = max(NL(nl_lat),1)
@@ -76,6 +129,23 @@ functions for two frame methods ends here
 
 
 def pos_local(latRef, lonRef, F, lat_cpr, lon_cpr):
+    '''
+    Calculation of position using one frame only or 'Locally unambigous position calculation'> It uses a reference location to remove the ambiguity in the frame.
+
+    :param latRef: Reference latitude (ground station or previous known location)
+    :param lonRef: Reference longitude (ground station or previous known location)
+    :param F: Odd/Even bit of the frame
+    :param lat_cpr: Latitude data from the frame
+    :param lon_cpr: Longitude data from the frame
+    :type latRef: Float
+    :type lonRef: Float
+    :type F: Integer
+    :type lat_cpr: Long
+    :type lon_cpr: Long
+    :return: Latitide, longitude
+    :rtype: Float, Float
+
+    '''
 
     isEven = False
 
@@ -116,7 +186,20 @@ def get_meanposition(data, relevant_planes_id, hit_counter_global, latitudeMean_
 
     '''
     Calculation of the mean of all the decoded positions (lat, lon). Returns the mean (lat, lon)
-    This mean(lat, lon) is used as the reference position for the locally unambigous method
+    This mean(lat, lon) is used as the reference position for the locally unambigous method.
+
+    :param data: Contains all the frames seen in the recording.
+    :param relevant_planes_id: List containing frames which contain airborne position data.
+    :param hit_counter_global: Number of frames considered during average calculation at each iteration.
+    :param latitudeMean_global: Mean of all calculated latitudes which gets updated after each iteration.
+    :param longitudeMean_global: Mean of all calculated longitudes which gets updated after each iteration.
+    :type data: Python List
+    :type relevant_planes_id: Python List
+    :type hit_counter_global: Long
+    :type latitudeMean_global: Float
+    :type longitudeMean_global: Float
+    :return: Latitude, Longitude
+    :rtype: Float
     '''
 
     hit_counter = 0
@@ -139,6 +222,22 @@ def get_meanposition(data, relevant_planes_id, hit_counter_global, latitudeMean_
 
 
 def get_cartesian_coordinates(lat=0.0, lon=0.0, alt=0.0, meter = True):
+
+    '''
+    Converts Geographical coordinates to cartesian coordinates.
+
+    :param lat: Latitude coordinate in degrees
+    :param lon: Longitude coordinate in degrees
+    :param alt: Altitude in feet
+    :param meter: State variable for determining return unit (metres/feet)
+    :type lat: Float
+    :type lon: Float
+    :type alt: Float
+    :type meter: Boolean
+    :return: Latitude, Longitude, Altitude in metres
+    :rtype: Float
+    '''
+
     lat, lon = np.deg2rad(lat), np.deg2rad(lon)
     R_earth = 6371000.0 # radius of the earth in meters
     altitude = alt
@@ -154,6 +253,18 @@ def get_cartesian_coordinates(lat=0.0, lon=0.0, alt=0.0, meter = True):
 
 
 def get_geo_coordinates(x, y, z):
+    '''
+    Converts cartesian coordinates to geographical coordinates.
+
+    :param x: Latitude in metres
+    :param y: Longitude in metres
+    :param z: Altitude in metres
+    :type x: Float
+    :type y: Float
+    :type z: Float
+    :return: Latitude, longitude, altitude in geographic coordinates.
+    :rtype: Float
+    '''
     R = np.sqrt(x**2 + y**2 + z**2)
     lat = np.arcsin(z / R)
     lon = np.arctan2(y, x)
@@ -162,6 +273,18 @@ def get_geo_coordinates(x, y, z):
 
 
 def calculate_position(all_seen_planes, data):
+    '''
+    This function calculates the position of all the icaos successively, both using the 'Globally unambigous' method and the 'Locally unambigous method'
+    Even after several corrective checks on the frames, there is still a possibility for the frames to carry wrong data. Thus, the calculated position is verified by both the steps and an average
+    of all the positions is mantained which acts as a reference position.
+
+    :param all_seen_planes: List of unique icao addresses present in the recording
+    :param data: JSON containing the entire set of frame data found in the recording
+    :type all_seen_planes: Python List
+    :type data: Python dictionary
+    :return: The updated data dictionary with the locations (only for position frames)
+    :rtype: Python dictionary
+    '''
 
     latRef = data["meta"]["gs_lat"]
     lonRef = data["meta"]["gs_lon"]
@@ -321,6 +444,13 @@ def calculate_position(all_seen_planes, data):
 
 
 def calculate_velocity(data):
+    '''
+    Calculation of velocity from DF 17-18 & TC 19 frames.
+
+    :param data: JSON containing all the frames and data keys
+    :return: JSON with the velocity key filled up
+    :rtype: Python Dictionary
+    '''
 
     for i in range(len(data['data'])):
         frames = data['data'][i]
@@ -373,6 +503,13 @@ def calculate_velocity(data):
 
 
 def convert_position(data):
+    '''
+    Conversion of geographical coordinates present inside data to cartesian coordinates
+
+    :param data: JSON containing all the frames received and the decoded data stored in each key.
+    :return: JSON with the coordinates updated
+    :rtype: Python dictionary
+    '''
 
     for i in range (len(data["data"])):
         frames = data['data'][i]

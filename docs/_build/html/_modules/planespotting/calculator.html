@@ -1,0 +1,727 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>planespotting.calculator &mdash; PlaneSpotting 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../../',
+              VERSION:'0.0.1',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> PlaneSpotting
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../gettingstarted.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">PlaneSpotting: Technical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials &amp; Usage</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PlaneSpotting</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>planespotting.calculator</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for planespotting.calculator</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">planespotting.identifiers</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">planespotting.utils</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1">#All imports end here</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Beginning of position calculation functions</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="lat_index"><a class="viewcode-back" href="../../modules.html#planespotting.calculator.lat_index">[docs]</a><span class="k">def</span> <span class="nf">lat_index</span><span class="p">(</span><span class="n">lat_cpr_even</span><span class="p">,</span> <span class="n">lat_cpr_odd</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Used to calculate the latitude index using the odd and even frame latitudes.</span>
+
+<span class="sd">    :param lat_cpr_even: The latitude data from an even frame</span>
+<span class="sd">    :param lat_cpr_odd: The longitude data from the odd frame with the same icao as the even frame</span>
+<span class="sd">    :type lat_cpr_even: Float</span>
+<span class="sd">    :type lat_cpr_odd: Float</span>
+<span class="sd">    :return: Latitude index</span>
+<span class="sd">    :rtype: Float</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="mi">59</span> <span class="o">*</span> <span class="n">lat_cpr_even</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="mi">60</span><span class="o">*</span><span class="n">lat_cpr_odd</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NL"><a class="viewcode-back" href="../../modules.html#planespotting.calculator.NL">[docs]</a><span class="k">def</span> <span class="nf">NL</span><span class="p">(</span><span class="n">lat</span><span class="p">):</span> <span class="c1">#this function calculates the number of longitude zones</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This function returns the number of latitude zones from the latitude angle. The returned value lies inbetween [1, 59]</span>
+
+<span class="sd">    :param lat: The latitude angle</span>
+<span class="sd">    :type lat: Float</span>
+<span class="sd">    :return: Number of latitude zones</span>
+<span class="sd">    :rtype: Integer</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">nz</span> <span class="o">=</span> <span class="mi">15</span> <span class="c1">#Number of geographic latitude zones between equator and a pole</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">nz</span><span class="p">))</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">lat</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="n">nl</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">a</span><span class="o">/</span><span class="n">b</span><span class="p">))</span>
+        <span class="n">nl</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">nl</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">nl</span>
+
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="latitude"><a class="viewcode-back" href="../../modules.html#planespotting.calculator.latitude">[docs]</a><span class="k">def</span> <span class="nf">latitude</span><span class="p">(</span><span class="n">lat_cpr_even</span><span class="p">,</span> <span class="n">lat_cpr_odd</span><span class="p">,</span> <span class="n">t_even</span><span class="p">,</span> <span class="n">t_odd</span><span class="p">):</span> <span class="c1">#Calculation of the latitude coordinate of the aircraft</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Calculation of the latitude of a given aircraft with a set of successively received odd and even pair of frames.</span>
+<span class="sd">    This type of calculation is also known as &#39;Globally unambigous position calculation&#39; in which you need an odd and even frames from the same</span>
+<span class="sd">    icao received one after the another.</span>
+<span class="sd">    The order at which the frames at which the frames were received also determines the methodology of the calculation.</span>
+<span class="sd">    For more info: https://mode-s.org/decode/adsb/airborne-position.html</span>
+
+<span class="sd">    :param lat_cpr_even: Latitude data from the even frame</span>
+<span class="sd">    :param lat_cpr_odd: Latitude data from the odd frame</span>
+<span class="sd">    :param t_even: Time/Sample Position of the even message in the recording</span>
+<span class="sd">    :param t_odd: Time/Sample Position of the odd message in the recording</span>
+<span class="sd">    :type lat_cpr_even: Float</span>
+<span class="sd">    :type lat_cpr_odd: Float</span>
+<span class="sd">    :type t_even: Long</span>
+<span class="sd">    :type t_odd: Long</span>
+<span class="sd">    :return: Latitude in degrees</span>
+<span class="sd">    :rtype: Float</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">dlatEven</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">dlatOdd</span> <span class="o">=</span> <span class="mi">360</span><span class="o">/</span><span class="mi">59</span>
+    <span class="n">cprEven</span> <span class="o">=</span> <span class="n">lat_cpr_even</span><span class="o">/</span><span class="mi">131072</span>
+    <span class="n">cprOdd</span> <span class="o">=</span> <span class="n">lat_cpr_odd</span><span class="o">/</span><span class="mi">131072</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="n">lat_index</span><span class="p">(</span><span class="n">cprEven</span><span class="p">,</span> <span class="n">cprOdd</span><span class="p">)</span>
+    <span class="n">latEven</span> <span class="o">=</span> <span class="n">dlatEven</span> <span class="o">*</span> <span class="p">(</span><span class="n">j</span> <span class="o">%</span> <span class="mi">60</span> <span class="o">+</span> <span class="n">cprEven</span><span class="p">)</span>
+    <span class="n">latOdd</span> <span class="o">=</span> <span class="n">dlatOdd</span> <span class="o">*</span> <span class="p">(</span><span class="n">j</span> <span class="o">%</span> <span class="mi">59</span> <span class="o">+</span> <span class="n">cprOdd</span><span class="p">)</span>    <span class="c1">#Calculation of relative latitudes</span>
+
+    <span class="k">if</span> <span class="n">latEven</span> <span class="o">&gt;=</span> <span class="mi">270</span><span class="p">:</span>
+        <span class="n">latEven</span> <span class="o">-=</span> <span class="mi">360</span>
+
+    <span class="k">if</span> <span class="n">latOdd</span> <span class="o">&gt;=</span> <span class="mi">270</span><span class="p">:</span>
+        <span class="n">latOdd</span> <span class="o">-=</span> <span class="mi">360</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">NL</span><span class="p">(</span><span class="n">latEven</span><span class="p">)</span> <span class="o">!=</span> <span class="n">NL</span><span class="p">(</span><span class="n">latOdd</span><span class="p">)):</span>  <span class="c1">#Confirmation of the validation of the calculated latitude, checks if latitude from both odd and evven frame lies in the same zone</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">t_even</span> <span class="o">&gt;=</span> <span class="n">t_odd</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">latEven</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">latOdd</span></div>
+
+<div class="viewcode-block" id="longitude"><a class="viewcode-back" href="../../modules.html#planespotting.calculator.longitude">[docs]</a><span class="k">def</span> <span class="nf">longitude</span><span class="p">(</span><span class="n">long_cpr_even</span><span class="p">,</span> <span class="n">long_cpr_odd</span><span class="p">,</span> <span class="n">t_even</span><span class="p">,</span> <span class="n">t_odd</span><span class="p">,</span> <span class="n">nl_lat</span><span class="p">):</span>  <span class="c1">#Calculation of longitude coordinate of the aircraft</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Calculation of the Longitude coordinate with the same set of successively received odd and even pair of frames as used in the latitude() function.</span>
+<span class="sd">    In this function, the order of the odd and even frames is considered for calculation</span>
+
+<span class="sd">    :param long_cpr_even: Latitude data from the even frame</span>
+<span class="sd">    :param long_cpr_odd: Latitude data from the odd frame</span>
+<span class="sd">    :param t_even: Time/Sample Position of the even message in the recording</span>
+<span class="sd">    :param t_odd: Time/Sample Position of the odd message in the recording</span>
+<span class="sd">    :type long_cpr_even: Float</span>
+<span class="sd">    :type long_cpr_odd: Float</span>
+<span class="sd">    :type t_even: Long</span>
+<span class="sd">    :type t_odd: Long</span>
+<span class="sd">    :return: Longitude in degrees</span>
+<span class="sd">    :rtype: Float</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">t_even</span> <span class="o">&gt;</span> <span class="n">t_odd</span><span class="p">):</span>
+        <span class="n">ni</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">NL</span><span class="p">(</span><span class="n">nl_lat</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">dLon</span> <span class="o">=</span> <span class="mi">360</span> <span class="o">/</span> <span class="n">ni</span>
+        <span class="n">cprEven1</span> <span class="o">=</span> <span class="n">long_cpr_even</span><span class="o">/</span><span class="mi">131072</span>
+        <span class="n">cprOdd1</span> <span class="o">=</span> <span class="n">long_cpr_odd</span><span class="o">/</span><span class="mi">131072</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">cprEven1</span> <span class="o">*</span> <span class="p">(</span><span class="n">NL</span><span class="p">(</span><span class="n">nl_lat</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">cprOdd1</span> <span class="o">*</span> <span class="n">NL</span><span class="p">(</span><span class="n">nl_lat</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">lon</span> <span class="o">=</span>  <span class="n">dLon</span><span class="o">*</span><span class="p">(</span><span class="n">m</span> <span class="o">%</span> <span class="n">ni</span> <span class="o">+</span> <span class="n">cprEven1</span><span class="p">)</span>
+
+
+    <span class="k">elif</span><span class="p">(</span><span class="n">t_odd</span> <span class="o">&gt;</span> <span class="n">t_even</span><span class="p">):</span>
+        <span class="n">ni</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">NL</span><span class="p">(</span><span class="n">nl_lat</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">dLon</span> <span class="o">=</span> <span class="mi">360</span> <span class="o">/</span> <span class="n">ni</span>
+        <span class="n">cprEven1</span> <span class="o">=</span> <span class="n">long_cpr_even</span><span class="o">/</span><span class="mi">131072</span>
+        <span class="n">cprOdd1</span> <span class="o">=</span> <span class="n">long_cpr_odd</span><span class="o">/</span><span class="mi">131072</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">cprEven1</span> <span class="o">*</span> <span class="p">(</span><span class="n">NL</span><span class="p">(</span><span class="n">nl_lat</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">cprOdd1</span> <span class="o">*</span> <span class="n">NL</span><span class="p">(</span><span class="n">nl_lat</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="c1">#Longitude index</span>
+        <span class="n">lon</span> <span class="o">=</span> <span class="n">dLon</span><span class="o">*</span><span class="p">(</span><span class="n">m</span><span class="o">%</span><span class="n">ni</span> <span class="o">+</span> <span class="n">cprOdd1</span><span class="p">)</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">lon</span> <span class="o">&gt;=</span> <span class="mi">180</span><span class="p">):</span>                             <span class="c1">#Coordinate correction, if it lies in the southern hemisphere</span>
+        <span class="k">return</span> <span class="n">lon</span> <span class="o">-</span> <span class="mi">360</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">lon</span></div>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">functions for two frame methods ends here</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+
+<div class="viewcode-block" id="pos_local"><a class="viewcode-back" href="../../modules.html#planespotting.calculator.pos_local">[docs]</a><span class="k">def</span> <span class="nf">pos_local</span><span class="p">(</span><span class="n">latRef</span><span class="p">,</span> <span class="n">lonRef</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">lat_cpr</span><span class="p">,</span> <span class="n">lon_cpr</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Calculation of position using one frame only or &#39;Locally unambigous position calculation&#39;&gt; It uses a reference location to remove the ambiguity in the frame.</span>
+
+<span class="sd">    :param latRef: Reference latitude (ground station or previous known location)</span>
+<span class="sd">    :param lonRef: Reference longitude (ground station or previous known location)</span>
+<span class="sd">    :param F: Odd/Even bit of the frame</span>
+<span class="sd">    :param lat_cpr: Latitude data from the frame</span>
+<span class="sd">    :param lon_cpr: Longitude data from the frame</span>
+<span class="sd">    :type latRef: Float</span>
+<span class="sd">    :type lonRef: Float</span>
+<span class="sd">    :type F: Integer</span>
+<span class="sd">    :type lat_cpr: Long</span>
+<span class="sd">    :type lon_cpr: Long</span>
+<span class="sd">    :return: Latitide, longitude</span>
+<span class="sd">    :rtype: Float, Float</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">isEven</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">F</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">isEven</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">if</span> <span class="n">isEven</span><span class="p">:</span>
+        <span class="n">dLat</span> <span class="o">=</span> <span class="mi">360</span><span class="o">/</span><span class="mi">60</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dLat</span> <span class="o">=</span> <span class="mi">360</span><span class="o">/</span><span class="mi">59</span>
+
+    <span class="n">lat_cpr</span> <span class="o">=</span> <span class="n">lat_cpr</span><span class="o">/</span><span class="mi">131072</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">latRef</span><span class="o">/</span><span class="n">dLat</span><span class="p">)</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(((</span><span class="n">latRef</span><span class="o">%</span><span class="n">dLat</span><span class="p">)</span><span class="o">/</span><span class="n">dLat</span><span class="p">)</span> <span class="o">-</span> <span class="n">lat_cpr</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">lat</span> <span class="o">=</span> <span class="n">dLat</span> <span class="o">*</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="n">lat_cpr</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">isEven</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">NL</span><span class="p">(</span><span class="n">lat</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">dLon</span> <span class="o">=</span> <span class="mi">360</span><span class="o">/</span><span class="n">NL</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dLon</span> <span class="o">=</span> <span class="mi">360</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">NL</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">dLon</span> <span class="o">=</span> <span class="mi">360</span><span class="o">/</span><span class="p">(</span><span class="n">NL</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dLon</span> <span class="o">=</span> <span class="mi">360</span>
+
+    <span class="n">lon_cpr</span> <span class="o">=</span> <span class="n">lon_cpr</span><span class="o">/</span><span class="mi">131072</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">lonRef</span><span class="o">/</span><span class="n">dLon</span><span class="p">)</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(((</span><span class="n">lonRef</span><span class="o">%</span><span class="n">dLon</span><span class="p">)</span><span class="o">/</span><span class="n">dLon</span><span class="p">)</span> <span class="o">-</span> <span class="n">lon_cpr</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">lon</span> <span class="o">=</span> <span class="n">dLon</span> <span class="o">*</span> <span class="p">(</span><span class="n">m</span> <span class="o">+</span> <span class="n">lon_cpr</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span></div>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">all position calculation functions end here.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="get_meanposition"><a class="viewcode-back" href="../../modules.html#planespotting.calculator.get_meanposition">[docs]</a><span class="k">def</span> <span class="nf">get_meanposition</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">relevant_planes_id</span><span class="p">,</span> <span class="n">hit_counter_global</span><span class="p">,</span> <span class="n">latitudeMean_global</span><span class="p">,</span> <span class="n">longitudeMean_global</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Calculation of the mean of all the decoded positions (lat, lon). Returns the mean (lat, lon)</span>
+<span class="sd">    This mean(lat, lon) is used as the reference position for the locally unambigous method.</span>
+
+<span class="sd">    :param data: Contains all the frames seen in the recording.</span>
+<span class="sd">    :param relevant_planes_id: List containing frames which contain airborne position data.</span>
+<span class="sd">    :param hit_counter_global: Number of frames considered during average calculation at each iteration.</span>
+<span class="sd">    :param latitudeMean_global: Mean of all calculated latitudes which gets updated after each iteration.</span>
+<span class="sd">    :param longitudeMean_global: Mean of all calculated longitudes which gets updated after each iteration.</span>
+<span class="sd">    :type data: Python List</span>
+<span class="sd">    :type relevant_planes_id: Python List</span>
+<span class="sd">    :type hit_counter_global: Long</span>
+<span class="sd">    :type latitudeMean_global: Float</span>
+<span class="sd">    :type longitudeMean_global: Float</span>
+<span class="sd">    :return: Latitude, Longitude</span>
+<span class="sd">    :rtype: Float</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">hit_counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">latitudeMean</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">longitudeMean</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">relevant_planes_id</span><span class="p">)):</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">relevant_planes_id</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+
+        <span class="k">if</span> <span class="n">frame</span><span class="p">[</span><span class="s1">&#39;latitude&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">hit_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">latitudeMean</span> <span class="o">+=</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;latitude&quot;</span><span class="p">]</span>
+            <span class="n">longitudeMean</span> <span class="o">+=</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;longitude&quot;</span><span class="p">]</span>
+
+            <span class="n">hit_counter_global</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">latitudeMean_global</span> <span class="o">+=</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;latitude&quot;</span><span class="p">]</span>
+            <span class="n">longitudeMean_global</span> <span class="o">+=</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;longitude&quot;</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">hit_counter</span><span class="p">,</span> <span class="n">latitudeMean</span><span class="p">,</span> <span class="n">longitudeMean</span><span class="p">,</span> <span class="n">hit_counter_global</span><span class="p">,</span> <span class="n">latitudeMean_global</span><span class="p">,</span> <span class="n">longitudeMean_global</span></div>
+
+
+<div class="viewcode-block" id="get_cartesian_coordinates"><a class="viewcode-back" href="../../modules.html#planespotting.calculator.get_cartesian_coordinates">[docs]</a><span class="k">def</span> <span class="nf">get_cartesian_coordinates</span><span class="p">(</span><span class="n">lat</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">alt</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">meter</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Converts Geographical coordinates to cartesian coordinates.</span>
+
+<span class="sd">    :param lat: Latitude coordinate in degrees</span>
+<span class="sd">    :param lon: Longitude coordinate in degrees</span>
+<span class="sd">    :param alt: Altitude in feet</span>
+<span class="sd">    :param meter: State variable for determining return unit (metres/feet)</span>
+<span class="sd">    :type lat: Float</span>
+<span class="sd">    :type lon: Float</span>
+<span class="sd">    :type alt: Float</span>
+<span class="sd">    :type meter: Boolean</span>
+<span class="sd">    :return: Latitude, Longitude, Altitude in metres</span>
+<span class="sd">    :rtype: Float</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">lat</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span>
+    <span class="n">R_earth</span> <span class="o">=</span> <span class="mf">6371000.0</span> <span class="c1"># radius of the earth in meters</span>
+    <span class="n">altitude</span> <span class="o">=</span> <span class="n">alt</span>
+    <span class="k">if</span> <span class="n">meter</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="n">altitude</span> <span class="o">=</span> <span class="n">altitude</span> <span class="o">*</span> <span class="mf">0.3048</span> <span class="c1"># from feet to meters</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">R_earth</span> <span class="o">+</span> <span class="n">altitude</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span></div>
+
+
+<div class="viewcode-block" id="get_geo_coordinates"><a class="viewcode-back" href="../../modules.html#planespotting.calculator.get_geo_coordinates">[docs]</a><span class="k">def</span> <span class="nf">get_geo_coordinates</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Converts cartesian coordinates to geographical coordinates.</span>
+
+<span class="sd">    :param x: Latitude in metres</span>
+<span class="sd">    :param y: Longitude in metres</span>
+<span class="sd">    :param z: Altitude in metres</span>
+<span class="sd">    :type x: Float</span>
+<span class="sd">    :type y: Float</span>
+<span class="sd">    :type z: Float</span>
+<span class="sd">    :return: Latitude, longitude, altitude in geographic coordinates.</span>
+<span class="sd">    :rtype: Float</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">lat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">z</span> <span class="o">/</span> <span class="n">R</span><span class="p">)</span>
+    <span class="n">lon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">lon</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">lat</span><span class="p">),</span> <span class="n">R</span></div>
+
+
+<div class="viewcode-block" id="calculate_position"><a class="viewcode-back" href="../../modules.html#planespotting.calculator.calculate_position">[docs]</a><span class="k">def</span> <span class="nf">calculate_position</span><span class="p">(</span><span class="n">all_seen_planes</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This function calculates the position of all the icaos successively, both using the &#39;Globally unambigous&#39; method and the &#39;Locally unambigous method&#39;</span>
+<span class="sd">    Even after several corrective checks on the frames, there is still a possibility for the frames to carry wrong data. Thus, the calculated position is verified by both the steps and an average</span>
+<span class="sd">    of all the positions is mantained which acts as a reference position.</span>
+
+<span class="sd">    :param all_seen_planes: List of unique icao addresses present in the recording</span>
+<span class="sd">    :param data: JSON containing the entire set of frame data found in the recording</span>
+<span class="sd">    :type all_seen_planes: Python List</span>
+<span class="sd">    :type data: Python dictionary</span>
+<span class="sd">    :return: The updated data dictionary with the locations (only for position frames)</span>
+<span class="sd">    :rtype: Python dictionary</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">latRef</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;gs_lat&quot;</span><span class="p">]</span>
+    <span class="n">lonRef</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;gs_lon&quot;</span><span class="p">]</span>
+
+    <span class="n">latGlobal</span> <span class="o">=</span> <span class="n">latRef</span>
+    <span class="n">lonGlobal</span> <span class="o">=</span> <span class="n">lonRef</span>
+
+    <span class="n">hit_counter_global</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">latitudeMean_global</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">longitudeMean_global</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;there are&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_seen_planes</span><span class="p">),</span> <span class="s2">&quot;planes&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">plane</span> <span class="ow">in</span> <span class="n">all_seen_planes</span><span class="p">:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Position decoding by the globally unambigous position (aka Two frame method)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1">#print(plane)</span>
+        <span class="n">relevant_planes_id</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">plane</span> <span class="o">==</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;ICAO&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">identifier3</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="s2">&quot;df&quot;</span><span class="p">],</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;tc&quot;</span><span class="p">]):</span>
+                <span class="n">relevant_planes_id</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">])</span>
+
+
+        <span class="c1"># finding just alternating &quot;frames&quot;</span>
+        <span class="n">frame_b4</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">id_b4</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">relevant_planes_id</span><span class="p">)):</span>
+            <span class="n">frame</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">relevant_planes_id</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">frame_b4</span> <span class="o">!=</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;F&quot;</span><span class="p">]:</span>
+
+                    <span class="c1"># do positioning here with one alternating even and odd frame</span>
+
+                    <span class="k">if</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;F&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="c1"># frame is even</span>
+                        <span class="n">lat_even</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;LAT_CPR&quot;</span><span class="p">]</span>
+                        <span class="n">t_even</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+
+                        <span class="n">lon_even</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;LON_CPR&quot;</span><span class="p">]</span>
+
+                        <span class="n">lat_odd</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">id_b4</span><span class="p">][</span><span class="s2">&quot;LAT_CPR&quot;</span><span class="p">]</span>
+                        <span class="n">t_odd</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">id_b4</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+
+                        <span class="n">lon_odd</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">id_b4</span><span class="p">][</span><span class="s2">&quot;LON_CPR&quot;</span><span class="p">]</span>
+
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># frame is odd</span>
+                        <span class="n">lat_even</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">id_b4</span><span class="p">][</span><span class="s2">&quot;LAT_CPR&quot;</span><span class="p">]</span>
+                        <span class="n">t_even</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">id_b4</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+
+                        <span class="n">lon_even</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">id_b4</span><span class="p">][</span><span class="s2">&quot;LON_CPR&quot;</span><span class="p">]</span>
+
+                        <span class="n">lat_odd</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;LAT_CPR&quot;</span><span class="p">]</span>
+                        <span class="n">t_odd</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+
+                        <span class="n">lon_odd</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;LON_CPR&quot;</span><span class="p">]</span>
+
+                    <span class="n">nl_lat</span> <span class="o">=</span> <span class="n">latitude</span><span class="p">(</span><span class="n">lat_even</span><span class="p">,</span> <span class="n">lat_odd</span><span class="p">,</span> <span class="n">t_even</span><span class="p">,</span> <span class="n">t_odd</span><span class="p">)</span>
+                    <span class="n">nl_lon</span> <span class="o">=</span> <span class="n">longitude</span><span class="p">(</span><span class="n">lon_even</span><span class="p">,</span> <span class="n">lon_odd</span><span class="p">,</span> <span class="n">t_even</span><span class="p">,</span> <span class="n">t_odd</span><span class="p">,</span> <span class="n">nl_lat</span><span class="p">)</span>
+
+                    <span class="n">frame</span><span class="p">[</span><span class="s1">&#39;latitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nl_lat</span>
+                    <span class="n">frame</span><span class="p">[</span><span class="s1">&#39;longitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nl_lon</span>
+
+
+            <span class="c1">#data[&quot;data&quot;][relevant_planes_id[i]] = frame</span>
+            <span class="n">frame_b4</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">relevant_planes_id</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="s2">&quot;F&quot;</span><span class="p">]</span>
+            <span class="n">id_b4</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+
+
+        <span class="c1"># finding the mean location of all planes</span>
+        <span class="n">hit_counter</span><span class="p">,</span> <span class="n">latitudeMean</span><span class="p">,</span> <span class="n">longitudeMean</span><span class="p">,</span> <span class="n">hit_counter_global</span><span class="p">,</span> <span class="n">latitudeMean_global</span><span class="p">,</span> <span class="n">longitudeMean_global</span> <span class="o">=</span> \
+            <span class="n">get_meanposition</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">relevant_planes_id</span><span class="p">,</span> <span class="n">hit_counter_global</span><span class="p">,</span> <span class="n">latitudeMean_global</span><span class="p">,</span> <span class="n">longitudeMean_global</span><span class="p">)</span>
+
+
+    <span class="k">if</span> <span class="n">hit_counter_global</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">latGlobal</span> <span class="o">=</span> <span class="n">latitudeMean_global</span> <span class="o">/</span> <span class="n">hit_counter_global</span>
+        <span class="n">lonGlobal</span> <span class="o">=</span> <span class="n">longitudeMean_global</span> <span class="o">/</span> <span class="n">hit_counter_global</span>
+
+
+    <span class="c1"># todo: adding a logic to decide whether to take the generated latGlobal or lonGlobal or the groundstation setup.</span>
+
+
+    <span class="c1"># still the odd-even method, but checking for outliers and rpearing them.</span>
+    <span class="k">for</span> <span class="n">plane</span> <span class="ow">in</span> <span class="n">all_seen_planes</span><span class="p">:</span>
+        <span class="c1">#print(plane)</span>
+        <span class="n">relevant_planes_id</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">plane</span> <span class="o">==</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;ICAO&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">identifier3</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="s2">&quot;df&quot;</span><span class="p">],</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;tc&quot;</span><span class="p">]):</span>
+                <span class="c1">#print(frame[&quot;ICAO&quot;], frame[&quot;id&quot;], frame[&quot;F&quot;], frame[&quot;ALT&quot;], frame[&quot;LAT_CPR&quot;], frame[&#39;LON_CPR&#39;])</span>
+                <span class="n">relevant_planes_id</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">])</span>
+
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">relevant_planes_id</span><span class="p">)):</span>
+            <span class="n">frame</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">relevant_planes_id</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+
+            <span class="k">if</span> <span class="n">frame</span><span class="p">[</span><span class="s1">&#39;latitude&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">frame</span><span class="p">[</span><span class="s1">&#39;longitude&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">identifier3</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="s2">&quot;df&quot;</span><span class="p">],</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;tc&quot;</span><span class="p">]):</span>
+                <span class="n">lat_ambigous</span><span class="p">,</span> <span class="n">lon_ambigous</span> <span class="o">=</span> <span class="n">pos_local</span><span class="p">(</span><span class="n">latGlobal</span><span class="p">,</span> <span class="n">lonGlobal</span><span class="p">,</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;F&quot;</span><span class="p">],</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;LAT_CPR&quot;</span><span class="p">],</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;LON_CPR&quot;</span><span class="p">])</span>
+
+                <span class="k">if</span> <span class="n">frame</span><span class="p">[</span><span class="s1">&#39;latitude&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">lat_ambigous</span> <span class="ow">or</span> <span class="n">frame</span><span class="p">[</span><span class="s1">&#39;longitude&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">lon_ambigous</span><span class="p">:</span>
+                    <span class="n">frame</span><span class="p">[</span><span class="s1">&#39;latitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lat_ambigous</span>
+                    <span class="n">frame</span><span class="p">[</span><span class="s1">&#39;longitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lon_ambigous</span>
+
+            <span class="c1">#data[&#39;data&#39;][relevant_planes_id[i]] = frame</span>
+        <span class="n">hit_counter</span><span class="p">,</span> <span class="n">latitudeMean</span><span class="p">,</span> <span class="n">longitudeMean</span><span class="p">,</span> <span class="n">hit_counter_global</span><span class="p">,</span> <span class="n">latitudeMean_global</span><span class="p">,</span> <span class="n">longitudeMean_global</span> <span class="o">=</span> \
+                 <span class="n">get_meanposition</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">relevant_planes_id</span><span class="p">,</span> <span class="n">hit_counter_global</span><span class="p">,</span> <span class="n">latitudeMean_global</span><span class="p">,</span> <span class="n">longitudeMean_global</span><span class="p">)</span>
+
+
+    <span class="k">if</span> <span class="n">hit_counter_global</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">latGlobal</span> <span class="o">=</span> <span class="n">latitudeMean_global</span> <span class="o">/</span> <span class="n">hit_counter_global</span>
+        <span class="n">lonGlobal</span> <span class="o">=</span> <span class="n">longitudeMean_global</span> <span class="o">/</span> <span class="n">hit_counter_global</span>
+
+
+    <span class="c1"># finding the leftover positions</span>
+    <span class="n">hit_counter_global</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">latitudeMean_global</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">longitudeMean_global</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Decoding the frames that had escaped the initial decoding run.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">plane</span> <span class="ow">in</span> <span class="n">all_seen_planes</span><span class="p">:</span>
+        <span class="n">relevant_planes_id</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">plane</span> <span class="o">==</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;ICAO&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">identifier3</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="s2">&quot;df&quot;</span><span class="p">],</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;tc&quot;</span><span class="p">]):</span>
+                <span class="n">relevant_planes_id</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">])</span>
+
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">relevant_planes_id</span><span class="p">)):</span>
+            <span class="n">frame</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">relevant_planes_id</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+
+            <span class="k">if</span> <span class="n">frame</span><span class="p">[</span><span class="s1">&#39;latitude&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">frame</span><span class="p">[</span><span class="s1">&#39;longitude&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">identifier3</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="s2">&quot;df&quot;</span><span class="p">],</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;tc&quot;</span><span class="p">]):</span>
+                <span class="n">lat_ambigous</span><span class="p">,</span> <span class="n">lon_ambigous</span> <span class="o">=</span> <span class="n">pos_local</span><span class="p">(</span><span class="n">latGlobal</span><span class="p">,</span> <span class="n">lonGlobal</span><span class="p">,</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;F&quot;</span><span class="p">],</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;LAT_CPR&quot;</span><span class="p">],</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;LON_CPR&quot;</span><span class="p">])</span>
+
+                <span class="n">frame</span><span class="p">[</span><span class="s1">&#39;latitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lat_ambigous</span>
+                <span class="n">frame</span><span class="p">[</span><span class="s1">&#39;longitude&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lon_ambigous</span>
+
+
+        <span class="c1"># todo after the odd-even positioning, the average position can be used for latRef and lonRef</span>
+        <span class="n">hit_counter</span><span class="p">,</span> <span class="n">latitudeMean</span><span class="p">,</span> <span class="n">longitudeMean</span><span class="p">,</span> <span class="n">hit_counter_global</span><span class="p">,</span> <span class="n">latitudeMean_global</span><span class="p">,</span> <span class="n">longitudeMean_global</span> <span class="o">=</span> \
+            <span class="n">get_meanposition</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">relevant_planes_id</span><span class="p">,</span> <span class="n">hit_counter_global</span><span class="p">,</span> <span class="n">latitudeMean_global</span><span class="p">,</span> <span class="n">longitudeMean_global</span><span class="p">)</span>
+
+
+    <span class="k">if</span> <span class="n">hit_counter_global</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">latGlobal</span> <span class="o">=</span> <span class="n">latitudeMean_global</span> <span class="o">/</span> <span class="n">hit_counter_global</span>
+        <span class="n">lonGlobal</span> <span class="o">=</span> <span class="n">longitudeMean_global</span> <span class="o">/</span> <span class="n">hit_counter_global</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;possible groundstation location&quot;</span><span class="p">,</span> <span class="n">latGlobal</span><span class="p">,</span> <span class="n">lonGlobal</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">data</span></div>
+
+
+
+<div class="viewcode-block" id="calculate_velocity"><a class="viewcode-back" href="../../modules.html#planespotting.calculator.calculate_velocity">[docs]</a><span class="k">def</span> <span class="nf">calculate_velocity</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Calculation of velocity from DF 17-18 &amp; TC 19 frames.</span>
+
+<span class="sd">    :param data: JSON containing all the frames and data keys</span>
+<span class="sd">    :return: JSON with the velocity key filled up</span>
+<span class="sd">    :rtype: Python Dictionary</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])):</span>
+        <span class="n">frames</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">identifier4</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;df&#39;</span><span class="p">],</span> <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;tc&#39;</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;Subtype&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;isGspeed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="c1">#Horizontal velocity Calculation Below</span>
+                <span class="k">if</span> <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;S_ew&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">Vwe</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;V_ew&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">Vwe</span> <span class="o">=</span> <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;V_ew&#39;</span><span class="p">]</span> <span class="o">-</span><span class="mi">1</span>
+                <span class="k">if</span> <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;S_ns&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">Vsn</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;V_ns&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">Vsn</span> <span class="o">=</span> <span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;V_ns&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+                <span class="n">vel</span> <span class="o">=</span> <span class="p">((</span><span class="n">Vwe</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">Vsn</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span> <span class="o">**</span> <span class="mf">0.5</span>
+                <span class="n">hdg</span> <span class="o">=</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">Vwe</span><span class="p">,</span> <span class="n">Vsn</span><span class="p">)</span><span class="o">*</span><span class="mi">360</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">hdg</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">hdg</span> <span class="o">+=</span> <span class="mi">360</span>
+
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;heading&#39;</span><span class="p">],</span> <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hdg</span><span class="p">,</span> <span class="n">vel</span>
+                <span class="c1">#Vertical Rate calculation Below</span>
+                <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">                To be taken care of: VrSrc : Baro-pressure change/geometric change</span>
+<span class="sd">                &#39;&#39;&#39;</span>
+                <span class="n">Vr</span> <span class="o">=</span> <span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;Vr&#39;</span><span class="p">]</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">64</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;vert_rate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Vr</span> <span class="k">if</span> <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;S_vr&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">Vr</span><span class="o">*-</span><span class="mi">1</span>
+
+            <span class="k">elif</span> <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;Subtype&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="c1">#Airspeed Calculation</span>
+                <span class="n">hdg</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">if</span> <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;S_hdg&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">hdg</span> <span class="o">=</span> <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;Hdg&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">360</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;heading&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hdg</span>
+                <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">                To be taken care of: AS_t</span>
+<span class="sd">                0/1::IAS/TAS</span>
+<span class="sd">                &#39;&#39;&#39;</span>
+                <span class="c1">#Airspeed calculation below</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;isGspeed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;AS&#39;</span><span class="p">]</span>
+
+                <span class="c1">#Vertical rate Below</span>
+                <span class="n">Vr</span> <span class="o">=</span> <span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s1">&#39;Vr&#39;</span><span class="p">]</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">64</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;vert_rate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Vr</span> <span class="k">if</span> <span class="n">frames</span><span class="p">[</span><span class="s1">&#39;S_vr&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">Vr</span><span class="o">*-</span><span class="mi">1</span>
+
+
+    <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="convert_position"><a class="viewcode-back" href="../../modules.html#planespotting.calculator.convert_position">[docs]</a><span class="k">def</span> <span class="nf">convert_position</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Conversion of geographical coordinates present inside data to cartesian coordinates</span>
+
+<span class="sd">    :param data: JSON containing all the frames received and the decoded data stored in each key.</span>
+<span class="sd">    :return: JSON with the coordinates updated</span>
+<span class="sd">    :rtype: Python dictionary</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])):</span>
+        <span class="n">frames</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;latitude&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;longitude&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;altitude&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">],</span> <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">],</span> <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_cartesian_coordinates</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s2">&quot;latitude&quot;</span><span class="p">],</span>
+                                                                              <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;longitude&quot;</span><span class="p">],</span>
+                                                                              <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;altitude&quot;</span><span class="p">],</span>
+                                                                              <span class="kc">False</span><span class="p">)</span>
+
+
+    <span class="k">return</span> <span class="n">data</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Shoumik Dey and &amp; Andreas Hornig
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

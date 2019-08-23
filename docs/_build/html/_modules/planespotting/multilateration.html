@@ -1,0 +1,456 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>planespotting.multilateration &mdash; PlaneSpotting 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../../',
+              VERSION:'0.0.1',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> PlaneSpotting
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../gettingstarted.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">PlaneSpotting: Technical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials &amp; Usage</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PlaneSpotting</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>planespotting.multilateration</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for planespotting.multilateration</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">planespotting.calculator</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">planespotting</span> <span class="k">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sqlite3</span>
+<span class="kn">from</span> <span class="nn">planespotting.multilateration_calc</span> <span class="k">import</span> <span class="n">trilaterate</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1">#temporary plotter function here</span>
+<span class="k">def</span> <span class="nf">plotter</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">):</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">]</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Longitude&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Latitude&quot;</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;plot/&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;.png&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">plot_dist</span><span class="p">(</span><span class="n">dist</span><span class="p">):</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="s1">&#39;*-&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Distance(m)&quot;</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;plot/distance.png&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">get_distance</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">z1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">z2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">((</span><span class="n">x2</span><span class="o">-</span><span class="n">x1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y2</span><span class="o">-</span><span class="n">y1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">z2</span><span class="o">-</span><span class="n">z1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
+
+<div class="viewcode-block" id="create_table"><a class="viewcode-back" href="../../modules.html#planespotting.multilateration.create_table">[docs]</a><span class="k">def</span> <span class="nf">create_table</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This function is used to create a sqlite database which is used for searching for unique frames present in different files, or station recordings.</span>
+
+<span class="sd">    :param: None</span>
+<span class="sd">    :return: Void</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;planespotting/data.db&#39;</span><span class="p">)</span>
+
+    <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;CREATE TABLE frames</span>
+<span class="s1">             (id INT PRIMARY KEY,</span>
+<span class="s1">             raw TEXT,</span>
+<span class="s1">             adsb_msg TEXT,</span>
+<span class="s1">             timestamp TEXT,</span>
+<span class="s1">             SamplePos TEXT,</span>
+<span class="s1">             df INT,</span>
+<span class="s1">             tc INT,</span>
+<span class="s1">             x TEXT,</span>
+<span class="s1">             y TEXT,</span>
+<span class="s1">             z TEXT,</span>
+<span class="s1">             time_propagation TEXT,</span>
+<span class="s1">             file TEXT,</span>
+<span class="s1">             mlat_mode TEXT,</span>
+<span class="s1">             gs_id TEXT,</span>
+<span class="s1">             gs_lat FLOAT,</span>
+<span class="s1">             gs_lon FLOAT,</span>
+<span class="s1">             gs_alt FLOAT);&#39;&#39;&#39;</span><span class="p">)</span>
+
+    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="calculate_signalpropagationtime"><a class="viewcode-back" href="../../modules.html#planespotting.multilateration.calculate_signalpropagationtime">[docs]</a><span class="k">def</span> <span class="nf">calculate_signalpropagationtime</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Calculates the time taken for a signal to travel from the aircraft location to the ground station.</span>
+
+<span class="sd">    :param data: JSON containing all the frames with decoded data.</span>
+<span class="sd">    :type data: Python dictionary</span>
+<span class="sd">    :return: JSON which now contains the time of propagation from aircraft to ground station.</span>
+<span class="sd">    :rtype: Python dictionary</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="mf">300000000.0</span> <span class="c1"># speed of light</span>
+
+    <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;gs_lat&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;gs_lon&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;gs_alt&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">gs_x</span><span class="p">,</span> <span class="n">gs_y</span><span class="p">,</span> <span class="n">gs_z</span> <span class="o">=</span> <span class="n">get_cartesian_coordinates</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;gs_lat&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;gs_lon&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;gs_alt&quot;</span><span class="p">],</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])):</span>
+            <span class="n">frames</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;time_propagation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="n">gs_x</span> <span class="o">-</span> <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span>
+                                              <span class="p">(</span><span class="n">gs_y</span> <span class="o">-</span> <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span>
+                                              <span class="p">(</span><span class="n">gs_z</span> <span class="o">-</span> <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span> <span class="o">/</span> <span class="n">c</span>
+
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">frames</span>
+
+    <span class="k">return</span> <span class="n">data</span></div>
+
+<span class="k">def</span> <span class="nf">correct_samplePos</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+
+    <span class="n">samplerate</span> <span class="o">=</span> <span class="mi">2000000</span> <span class="c1">#Hz</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])):</span>
+        <span class="n">frames</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;SamplePos&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frames</span><span class="p">[</span><span class="s2">&quot;SamplePos&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="s2">&quot;time_propagation&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">samplerate</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">data</span>
+
+
+
+<div class="viewcode-block" id="get_files"><a class="viewcode-back" href="../../modules.html#planespotting.multilateration.get_files">[docs]</a><span class="k">def</span> <span class="nf">get_files</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This function is used to get all the files present in a station directory</span>
+
+<span class="sd">    :param path: Path to the station directory/folder</span>
+<span class="sd">    :type path: String</span>
+<span class="sd">    :return: List of file(s) present inside the given directory</span>
+<span class="sd">    :rtype: Python List</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="n">file</span> <span class="o">=</span> <span class="n">files</span>
+    <span class="k">return</span> <span class="n">file</span></div>
+
+<div class="viewcode-block" id="check_file_overlap"><a class="viewcode-back" href="../../modules.html#planespotting.multilateration.check_file_overlap">[docs]</a><span class="k">def</span> <span class="nf">check_file_overlap</span><span class="p">(</span><span class="n">file1</span><span class="p">,</span> <span class="n">file2</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Checks if two files overlap at any point. Both the files are recordings belonging to different ground stations</span>
+
+<span class="sd">    :param file1: Path to a recorded file in JSON.</span>
+<span class="sd">    :param file2: Path to a recorded file in JSON from a different ground station</span>
+<span class="sd">    :type file1: Python dictionary</span>
+<span class="sd">    :type file2: Python dictionary</span>
+<span class="sd">    :return: True/False, whether the two files have an overlap</span>
+<span class="sd">    :rtype: Boolean</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">data1</span> <span class="o">=</span> <span class="n">load_file_jsonGzip</span><span class="p">(</span><span class="n">file1</span><span class="p">)</span>
+    <span class="n">data2</span> <span class="o">=</span> <span class="n">load_file_jsonGzip</span><span class="p">(</span><span class="n">file2</span><span class="p">)</span>
+    <span class="n">data1_rec_start</span> <span class="o">=</span> <span class="n">data1</span><span class="p">[</span><span class="s1">&#39;meta&#39;</span><span class="p">][</span><span class="s1">&#39;rec_start&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">data1</span><span class="p">[</span><span class="s1">&#39;meta&#39;</span><span class="p">][</span><span class="s1">&#39;rec_end&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">data1_rec_end</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">data1</span><span class="p">[</span><span class="s1">&#39;meta&#39;</span><span class="p">][</span><span class="s1">&#39;rec_end&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">data2_rec_end</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">data1</span><span class="p">[</span><span class="s1">&#39;meta&#39;</span><span class="p">][</span><span class="s1">&#39;rec_start&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">data1</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;SamplePos&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">data1</span><span class="p">[</span><span class="s1">&#39;meta&#39;</span><span class="p">][</span><span class="s1">&#39;gs_sampling_rate&#39;</span><span class="p">])</span>
+
+    <span class="n">data2_rec_start</span> <span class="o">=</span> <span class="n">data2</span><span class="p">[</span><span class="s1">&#39;meta&#39;</span><span class="p">][</span><span class="s1">&#39;rec_start&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">data2</span><span class="p">[</span><span class="s1">&#39;meta&#39;</span><span class="p">][</span><span class="s1">&#39;rec_end&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">data2_rec_end</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">data2</span><span class="p">[</span><span class="s1">&#39;meta&#39;</span><span class="p">][</span><span class="s1">&#39;rec_end&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">data2_rec_end</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">data1</span><span class="p">[</span><span class="s1">&#39;meta&#39;</span><span class="p">][</span><span class="s1">&#39;rec_start&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">data1</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;SamplePos&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">data1</span><span class="p">[</span><span class="s1">&#39;meta&#39;</span><span class="p">][</span><span class="s1">&#39;gs_sampling_rate&#39;</span><span class="p">])</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File1_start=&quot;</span><span class="p">,</span> <span class="n">data1_rec_start</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;File1_end&quot;</span><span class="p">,</span> <span class="n">data1_rec_end</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;File2_start&quot;</span><span class="p">,</span> <span class="n">data2_rec_start</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;File2_end&quot;</span><span class="p">,</span> <span class="n">data2_rec_end</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">data2_rec_start</span> <span class="o">&gt;=</span> <span class="n">data1_rec_start</span> <span class="ow">and</span> <span class="n">data2_rec_end</span> <span class="o">&gt;=</span> <span class="n">data1_rec_end</span> <span class="ow">and</span> <span class="n">data1_rec_end</span> <span class="o">&gt;</span> <span class="n">data2_rec_start</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">data2_rec_start</span> <span class="o">&lt;=</span> <span class="n">data1_rec_start</span> <span class="ow">and</span> <span class="n">data2_rec_end</span> <span class="o">&lt;=</span> <span class="n">data1_rec_end</span> <span class="ow">and</span> <span class="n">data2_rec_end</span> <span class="o">&gt;</span> <span class="n">data1_rec_start</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">elif</span> <span class="p">(</span><span class="n">data2_rec_start</span> <span class="o">==</span> <span class="n">data1_rec_start</span> <span class="ow">and</span> <span class="n">data2_rec_end</span> <span class="o">==</span> <span class="n">data1_rec_end</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">elif</span> <span class="p">(</span><span class="n">data2_rec_start</span> <span class="o">&gt;=</span> <span class="n">data1_rec_start</span> <span class="ow">and</span> <span class="n">data2_rec_end</span> <span class="o">&lt;=</span> <span class="n">data1_rec_end</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">elif</span> <span class="p">(</span><span class="n">data1_rec_start</span> <span class="o">&gt;=</span> <span class="n">data2_rec_start</span> <span class="ow">and</span> <span class="n">data1_rec_end</span> <span class="o">&lt;=</span> <span class="n">data2_rec_end</span> <span class="ow">and</span> <span class="n">data1_rec_start</span> <span class="o">&lt;</span> <span class="n">data2_rec_end</span> <span class="ow">and</span> <span class="n">data1_rec_end</span> <span class="o">&gt;</span> <span class="n">data2_rec_start</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;NOT OVERLAPPING&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">stations</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">batch</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">stations</span><span class="p">)):</span>
+        <span class="n">mother_file</span> <span class="o">=</span> <span class="n">get_files</span><span class="p">(</span><span class="n">path</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">+</span><span class="n">stations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">m_file</span> <span class="ow">in</span> <span class="n">mother_file</span><span class="p">:</span>
+            <span class="n">batch</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+            <span class="nb">list</span><span class="p">[</span><span class="n">batch</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">+</span><span class="n">stations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">+</span><span class="n">m_file</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">stations</span><span class="p">)):</span>
+
+                <span class="n">files</span> <span class="o">=</span> <span class="n">get_files</span><span class="p">(</span><span class="n">path</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">+</span><span class="n">stations</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">check_file_overlap</span><span class="p">(</span><span class="n">path</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">+</span><span class="n">stations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">+</span><span class="n">m_file</span><span class="p">,</span> <span class="n">path</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">+</span><span class="n">stations</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">+</span><span class="n">file</span><span class="p">):</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="n">path</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">+</span><span class="n">stations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">+</span><span class="n">m_file</span><span class="p">,</span> <span class="n">path</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">+</span><span class="n">stations</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">+</span><span class="n">file</span><span class="p">)</span>
+                        <span class="c1">#exit()</span>
+                        <span class="nb">list</span><span class="p">[</span><span class="n">batch</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">+</span><span class="n">stations</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">+</span><span class="n">file</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">()</span>
+        <span class="k">break</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;processing mlat&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">processing_files</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">()</span>
+
+        <span class="n">create_table</span><span class="p">()</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;planespotting/data.db&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">processing_files</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;processing&quot;</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.gz&quot;</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">load_file_jsonGzip</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="c1">#ungzipping</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]:</span>
+
+                <span class="k">if</span> <span class="n">frame</span><span class="p">[</span><span class="s1">&#39;is_repeated&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>  <span class="c1">#skipping the repeated frames in the same file, no idea why they even exist</span>
+                    <span class="n">gs_x</span><span class="p">,</span> <span class="n">gs_y</span><span class="p">,</span> <span class="n">gs_z</span> <span class="o">=</span> <span class="n">get_cartesian_coordinates</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;gs_lat&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;gs_lon&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;gs_alt&quot;</span><span class="p">],</span> <span class="kc">True</span><span class="p">)</span>
+                    <span class="n">record</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">frame</span><span class="p">[</span><span class="s1">&#39;raw&#39;</span><span class="p">],</span> <span class="n">frame</span><span class="p">[</span><span class="s1">&#39;adsb_msg&#39;</span><span class="p">],</span> <span class="n">frame</span><span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">],</span> <span class="n">frame</span><span class="p">[</span><span class="s1">&#39;SamplePos&#39;</span><span class="p">],</span> <span class="n">frame</span><span class="p">[</span><span class="s1">&#39;df&#39;</span><span class="p">],</span> <span class="n">frame</span><span class="p">[</span><span class="s1">&#39;tc&#39;</span><span class="p">],</span> <span class="n">frame</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span> <span class="n">frame</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">],</span> <span class="n">frame</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">],</span> <span class="n">frame</span><span class="p">[</span><span class="s1">&#39;time_propagation&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;meta&#39;</span><span class="p">][</span><span class="s1">&#39;file&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;meta&#39;</span><span class="p">][</span><span class="s1">&#39;mlat_mode&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;meta&#39;</span><span class="p">][</span><span class="s1">&#39;file&#39;</span><span class="p">],</span> <span class="n">gs_x</span><span class="p">,</span> <span class="n">gs_y</span><span class="p">,</span> <span class="n">gs_z</span><span class="p">)</span>
+                    <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;INSERT INTO frames VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)&quot;</span><span class="p">,</span> <span class="n">record</span><span class="p">)</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+        <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+        <span class="n">cur</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM frames WHERE df = 17 AND tc BETWEEN 9 AND 18&quot;</span><span class="p">)</span> <span class="c1">#filtering the position report messages</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="n">uniq_frames</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1">#This list will contain df17 and tc9-18 msgs, and each msgs will occur only once in this list, to be used for querying</span>
+
+
+        <span class="k">for</span> <span class="n">rows</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">rows</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">uniq_frames</span><span class="p">:</span>
+                <span class="n">uniq_frames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rows</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">frames</span> <span class="ow">in</span> <span class="n">uniq_frames</span><span class="p">:</span> <span class="c1">#Looking for the same message in different station file</span>
+            <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM frames WHERE adsb_msg = ?&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">frames</span><span class="p">,))</span>
+            <span class="n">finding</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">finding</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+
+                <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">finding</span><span class="p">),</span> <span class="n">finding</span><span class="p">)</span>
+                <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span> <span class="n">trilaterate</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">finding</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">3</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">finding</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">2</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">finding</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">finding</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">7</span><span class="p">])</span><span class="o">*</span><span class="mi">300000000</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">finding</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">3</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">finding</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">2</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">finding</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">finding</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">7</span><span class="p">])</span><span class="o">*</span><span class="mi">300000000</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">finding</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="o">-</span><span class="mi">3</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">finding</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="o">-</span><span class="mi">2</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">finding</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">finding</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="o">-</span><span class="mi">7</span><span class="p">])</span><span class="o">*</span><span class="mi">300000000</span><span class="p">)</span>
+                <span class="c1">#calc_x, calc_y, calc_z = get_geo_coordinates(float(finding[0][7]), float(finding[0][8]), float(finding[0][9]))</span>
+
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Calculated location&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">finding</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">7</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">finding</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">8</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">finding</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">9</span><span class="p">]))</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Possible location after trilateration: &quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+                <span class="n">dist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_distance</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">finding</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">7</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">finding</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">8</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">finding</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">9</span><span class="p">]),</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">))</span>
+
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error distance:&quot;</span><span class="p">,</span> <span class="n">get_distance</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">finding</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">7</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">finding</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">8</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">finding</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">9</span><span class="p">]),</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">))</span>
+                <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">get_geo_coordinates</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;geo: &quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+                <span class="c1">#plotter(float(finding[0][7]), float(finding[0][8]), x, y)</span>
+                <span class="nb">print</span><span class="p">()</span>
+
+        <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;planespotting&quot;</span><span class="o">+</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">+</span><span class="s2">&quot;data.db&quot;</span><span class="p">)</span> <span class="c1">#Throwing away the db</span>
+
+
+    <span class="n">plot_dist</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Shoumik Dey and &amp; Andreas Hornig
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
