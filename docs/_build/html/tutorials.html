@@ -163,6 +163,73 @@
             
   <div class="section" id="tutorials-usage">
 <h1>Tutorials &amp; Usage<a class="headerlink" href="#tutorials-usage" title="Permalink to this headline">¶</a></h1>
+<p>Here is a presentation of an example as to how to use the current state of the project.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><em>Note:</em> This project is currently tested in Python3.7 and is also being developed using Python3.7</p>
+</div>
+<p>Input:
+* The dump1090 mlat output from an raw IQ recording/file.</p>
+<p>Arguments used in dump1090:</p>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">--mlat</span></kbd></td>
+<td>So that the output is in AVR format</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--ifile</span></kbd></td>
+<td>To load an IQ file</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--gain</span></kbd></td>
+<td>By default this value is set to (-10)</td></tr>
+</tbody>
+</table>
+<p>A typical ADS-B 112 bit frame in AVR format:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nd">@0000000929E28e3ff6e6990c4684000011548194</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>AVR format is identified by ‘&#64;’ and the ‘;’ at the beginning and at the end respectively.</p>
+<p>The output from dump1090 which serves as our input should be named in the following manner:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">date</span><span class="p">]</span><span class="n">_</span><span class="p">[</span><span class="n">station_name</span><span class="p">]</span><span class="n">_</span><span class="p">[</span><span class="n">start_time_of_recording_epoch</span><span class="p">]</span><span class="n">_frame</span><span class="o">.</span><span class="n">dat</span>
+</pre></div>
+</div>
+<p>Example of a typical file name:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="mi">20190206</span><span class="n">_station1_1566723047_frame</span><span class="o">.</span><span class="n">dat</span>
+</pre></div>
+</div>
+<p>Such of these files should be ordered in the following manner in a folder named <strong>‘input’</strong> in the home directory:</p>
+<img alt="Input directory structure" src="_images/input1.png" />
+<p>Update the coordinates of each station in the planespotting/gs_data.json file</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;station_1&quot;</span><span class="p">:{</span>
+    <span class="s2">&quot;lat&quot;</span><span class="p">:</span><span class="n">latitude</span><span class="p">,</span>
+    <span class="s2">&quot;lon&quot;</span><span class="p">:</span><span class="n">longitude</span><span class="p">,</span>
+    <span class="s2">&quot;alt&quot;</span><span class="p">:</span><span class="n">altitude</span>
+  <span class="p">},</span>
+  <span class="s2">&quot;station_2&quot;</span><span class="p">:{</span>
+    <span class="s2">&quot;lat&quot;</span><span class="p">:</span><span class="n">latitude</span><span class="p">,</span>
+    <span class="s2">&quot;lon&quot;</span><span class="p">:</span><span class="n">longitude</span><span class="p">,</span>
+    <span class="s2">&quot;alt&quot;</span><span class="p">:</span><span class="n">altitude</span>
+  <span class="p">},</span>
+  <span class="s2">&quot;station_3&quot;</span><span class="p">:{</span>
+    <span class="s2">&quot;lat&quot;</span><span class="p">:</span><span class="n">latitude</span><span class="p">,</span>
+    <span class="s2">&quot;lon&quot;</span><span class="p">:</span><span class="n">longitude</span><span class="p">,</span>
+    <span class="s2">&quot;alt&quot;</span><span class="p">:</span><span class="n">latitude</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">‘latitude’ and ‘longitude’ should be in degrees.</p>
+</div>
+<p>Now run the script by using this command in the console:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>While the script runs, it will save all the decoded frames and the data in the <strong>‘data’</strong> folder in the home directory.</p>
 </div>
 
 

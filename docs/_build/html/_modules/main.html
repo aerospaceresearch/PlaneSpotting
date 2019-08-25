@@ -292,15 +292,15 @@
 
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;input lat &amp; long:&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;gs_lat&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;gs_lon&quot;</span><span class="p">])</span>
 
-        <span class="c1"># data = decode(data)</span>
-        <span class="c1">#</span>
-        <span class="c1"># print(&quot;storing adsb-data&quot;)</span>
-        <span class="c1">#</span>
-        <span class="c1"># if &quot;gzip&quot; == &quot;gzip&quot;:</span>
-        <span class="c1">#     # standard output</span>
-        <span class="c1">#     utils.store_file_jsonGzip(path, file, data)</span>
-        <span class="c1"># else:</span>
-        <span class="c1">#     utils.store_file(path, file, data)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">decode</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;storing adsb-data&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;gzip&quot;</span> <span class="o">==</span> <span class="s2">&quot;gzip&quot;</span><span class="p">:</span>
+            <span class="c1"># standard output</span>
+            <span class="n">utils</span><span class="o">.</span><span class="n">store_file_jsonGzip</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">utils</span><span class="o">.</span><span class="n">store_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;doing mlat stuff from here on...&quot;</span><span class="p">)</span>
     <span class="n">multilateration</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>

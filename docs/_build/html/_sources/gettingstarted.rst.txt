@@ -29,3 +29,5 @@ The directory structure should be like this and the input files from each statio
 
 Run the program executing **python3 main.py** in the command line.
 The output files will be stored in the **data** folder (if it doesn't exists, it will be created)
+These files in the data folder contain the decoded data from all the frames.
+The console output gives shows the frames occuring thrice or more in different station files.
